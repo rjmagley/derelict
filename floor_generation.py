@@ -1,10 +1,12 @@
 from __future__ import annotations
 
-from typing import Tuple, Iterator, List
+from typing import Tuple, Iterator, List, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from game_engine import GameEngine
+
 import math
 import random
-
-from itertools import islice
 
 import tcod
 
@@ -53,9 +55,10 @@ class RectangularRoom(Room):
             self.y < other_room.y2
         )
 
-def generate_floor(width: int, height: int, player: Player) -> FloorMap:
+def generate_floor(width: int, height: int, engine: GameEngine) -> FloorMap:
 
-    floor = FloorMap(width, height, entities=[player])
+    player = engine.player
+    floor = FloorMap(engine, width, height, entities={player})
 
     rooms: List[Room] = []
 
@@ -103,12 +106,15 @@ def tunnel_between(start: Tuple[int, int], end: Tuple[int, int]) -> Iterator[Tup
     for x, y in tcod.los.bresenham((corner_x, corner_y), (x2, y2)).tolist():
         yield x, y
 
-def place_enemies(room: Room, floor: FloorMap) -> None:
+def place_enemies(room: Room, map: FloorMap) -> None:
 
     number_mobs = random.randint(0, 3)
     for i in range(number_mobs):
         x = random.randint(room.x1 + 1, room.x2 - 1)
         y = random.randint(room.y1 + 1, room.y2 - 1)
-
-        if not any (e.x == x and e.y == y for e in floor.entities):
-            floor.entities.append(monsters.create_goblin(x, y))
+        print(f"attempting placement at {x, y}")
+        if not any (e.x == x and e.y == y for e in map.entities):
+            map.entities.add(monsters.create_goblin(x=x, y=y, map=map))
+            print(map.entities)
+        else:
+            print("placement failed")

@@ -1,4 +1,8 @@
-from typing import Set, Iterable, Any
+from typing import Set, Iterable, Any, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from entities.base_entity import BaseEntity
+    from floor_map import FloorMap
 
 from tcod.context import Context
 from tcod.console import Console
@@ -14,33 +18,21 @@ from floor_map import FloorMap
 # GameEngine - responsible for holding state of entire game - entities, maps,
 # and so on, as well as drawing to console
 class GameEngine():
-    def __init__(self, event_handler: EventHandler, player: Player, map: FloorMap):
-        self.event_handler = event_handler
+
+    map: FloorMap
+
+    def __init__(self, player: Player):
+        self.event_handler = EventHandler(self)
         self.player = player
-        self.map = map
-        self.update_fov()
 
-    def handle_events(self, events: Iterable[Any]) -> None:
-        for e in events:
-            action = self.event_handler.dispatch(e)
-
-            if action is None:
-                continue
-
-            if isinstance(action, MovementAction):
-                if self.map.tiles['walkable'][self.player.x + action.dx, self.player.y + action.dy]:
-                    self.player.move(dx=action.dx, dy=action.dy)
-
-            elif isinstance(action, EscapeAction):
-                raise SystemExit
-
-        self.update_fov()
+    def handle_enemy_actions(self) -> None:
+        for e in self.map.entities - {self.player}:
+            if e.ai:
+                e.ai.perform()
 
     def render(self, console: Console, context: Context) -> None:
         self.map.render(console)
-
         context.present(console)
-
         console.clear()
 
     def update_fov(self) -> None:

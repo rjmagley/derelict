@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Iterable, TYPE_CHECKING
+from typing import Iterable, TYPE_CHECKING, List
 
 import numpy
 import tile_types
@@ -9,12 +9,14 @@ from tcod.console import Console
 
 if TYPE_CHECKING:
     from entities.base_entity import BaseEntity
+    from game_engine import GameEngine
 
 # FloorMap - contains all the data for a given floor, including its layout
 # should also probably contain its entities if we want the player to be able to
 # go up and down floors at will
 class FloorMap():
-    def __init__(self, width: int, height: int, entities: Iterable[BaseEntity] = ()) -> None:
+    def __init__(self, engine: GameEngine, width: int, height: int, entities: Iterable[BaseEntity] = {}) -> None:
+        self.engine = engine
         self.width = width
         self.height = height
         self.entities = entities
@@ -23,16 +25,11 @@ class FloorMap():
         self.visible = numpy.full((width, height), fill_value=False, order='F')
         self.explored = numpy.full((width, height), fill_value=False, order='F')
 
+
     def get_blocking_entity_at_location(self, x: int, y: int) -> Optional[BaseEntity]:
-        print("calling get blocking entity")
-        # for e in (entity for entity in self.entities if entity.blocks_movement == True):
-        #     if e.x == x and e.y == y:
-        #         print(f"blocked by {e}")
-        #         return e
 
         for e in self.entities:
-            if e.x == x and e.y == y and entity.blocks_movement == True:
-                print(f"blocked by {e}")
+            if e.x == x and e.y == y and e.blocks_movement == True:
                 return e
 
         return None
@@ -46,6 +43,5 @@ class FloorMap():
             choicelist=[self.tiles['light'], self.tiles['dark']],
             default=tile_types.unseen
         )
-
         for e in (entity for entity in self.entities if self.visible[entity.x, entity.y]):
             console.print(x=e.x, y=e.y, fg=e.color, string=e.char)

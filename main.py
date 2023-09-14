@@ -11,15 +11,15 @@ def main():
     screen_width = 80
     screen_height = 24
 
-    player = Player(x=40, y=12, char='@')
-    npc = Combatant(x=30, y=6)
-    entities={player, npc}
+    player = Player(x=40, y=12, char='@', hp=10, defense=5, power=5)
+    engine = GameEngine(player=player)
 
-    map = generate_floor(80, 20, player)
+    map = generate_floor(80, 20, engine)
+    player.map = map
 
-    event_handler = EventHandler()
+    engine.map = map
 
-    engine = GameEngine(event_handler=event_handler, player=player, map=map)  
+    engine.update_fov()
 
     tileset = tcod.tileset.load_tilesheet("tileset.png", 16, 16, tcod.tileset.CHARMAP_CP437)
 
@@ -27,10 +27,7 @@ def main():
         root_console = tcod.console.Console(screen_width, screen_height, order="F")
         while True:
             engine.render(console=root_console, context=context)
-
-            events = tcod.event.wait()
-
-            engine.handle_events(events)
+            engine.event_handler.handle_events()
 
 
 if __name__ == "__main__":
