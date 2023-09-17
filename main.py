@@ -1,8 +1,7 @@
 import tcod
 
 from entities.player import Player
-from entities.combatant import Combatant
-from input_handlers.event_handler import EventHandler
+from input_handlers.game_event_handler import GameEventHandler
 from actions.actions import *
 from game_engine import GameEngine
 from floor_generation import generate_floor
@@ -16,6 +15,7 @@ def main():
 
     map = generate_floor(80, 20, engine)
     player.map = map
+    player.engine = engine
 
     engine.map = map
 

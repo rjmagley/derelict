@@ -62,7 +62,7 @@ def generate_floor(width: int, height: int, engine: GameEngine) -> FloorMap:
 
     rooms: List[Room] = []
 
-    for r in range(6):
+    for r in range(16):
         new_room_width = random.randint(6, 12)
         new_room_height = random.randint(6, 12)
 
@@ -71,10 +71,8 @@ def generate_floor(width: int, height: int, engine: GameEngine) -> FloorMap:
 
         new_room = RectangularRoom(x=x, y=y, width=new_room_width, height=new_room_height)
 
-        print(f"trying to generate room at {x} {y}")
 
         if any(new_room.intersects(n) for n in rooms):
-            print(f"count not generate new room at {x} {y}")
             continue
 
         floor.tiles[new_room.inner] = tile_types.floor
@@ -108,13 +106,14 @@ def tunnel_between(start: Tuple[int, int], end: Tuple[int, int]) -> Iterator[Tup
 
 def place_enemies(room: Room, map: FloorMap) -> None:
 
-    number_mobs = random.randint(0, 3)
-    for i in range(number_mobs):
-        x = random.randint(room.x1 + 1, room.x2 - 1)
-        y = random.randint(room.y1 + 1, room.y2 - 1)
-        print(f"attempting placement at {x, y}")
-        if not any (e.x == x and e.y == y for e in map.entities):
-            map.entities.add(monsters.create_goblin(x=x, y=y, map=map))
-            print(map.entities)
-        else:
-            print("placement failed")
+    # number_mobs = random.randint(0, 3)
+    # for i in range(number_mobs):
+    #     x = random.randint(room.x1 + 1, room.x2 - 1)
+    #     y = random.randint(room.y1 + 1, room.y2 - 1)
+    #     print(f"attempting placement at {x, y}")
+    #     if not any (e.x == x and e.y == y for e in map.entities):
+    #         map.entities.add(monsters.create_goblin(x=x, y=y, map=map))
+    #         print(map.entities)
+    #     else:
+    #         print("placement failed")
+    pass

@@ -1,10 +1,12 @@
 from __future__ import annotations
 
-from typing import Optional, TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING, Tuple
+
+from entities.combatant import Combatant
 
 if TYPE_CHECKING:
     from game_engine import GameEngine
-    from entities.base_entity import BaseEntity
+    from entities import BaseEntity
     from entities.combatant import Combatant
     from entities.mover import Mover
 
@@ -33,8 +35,24 @@ class DirectionalAction(Action):
         self.dy = dy
 
     @property
+    def direction(self) -> Tuple[int, int]:
+        return self.dx, self.dy
+
+    @property
+    def destination(self) -> Tuple[int, int]:
+        return self.entity.x + self.dx, self.entity.y + self.dy
+
+    @property
     def blocking_entity(self) -> Optional[BaseEntity]:
-        return self.engine.map.get_blocking_entity_at_location(self.dx, self.dy)
+        return self.engine.map.get_blocking_entity_at_location(*self.destination)
+
+    @property
+    def target_entity(self) -> Optional[BaseEntity]:
+        for e in self.engine.map.get_entities_at_location(*self.destination):
+            if isinstance(e, Combatant) and e.is_alive:
+                return e
+
+        return None
 
     def perform(self) -> None:
         raise NotImplementedError()
@@ -42,10 +60,10 @@ class DirectionalAction(Action):
 
 class BumpAction(DirectionalAction):
     def perform(self) -> None:
-        if self.blocking_entity:
-            return MeleeAction(self.entity, self.dx, self.dy).perform()
+        if isinstance(self.blocking_entity, Combatant) and self.blocking_entity.is_alive:
+            return MeleeAction(self.entity, *self.direction).perform()
         else:
-            return MovementAction(self.entity, self.dx, self.dy).perform()
+            return MovementAction(self.entity, *self.direction).perform()
 
 
 class MovementAction(DirectionalAction):
@@ -54,24 +72,25 @@ class MovementAction(DirectionalAction):
         destination_x = self.entity.x + self.dx
         destination_y = self.entity.y + self.dy
 
-        if not self.engine.map.in_bounds(destination_x, destination_y):
+        if not self.engine.map.in_bounds(*self.destination):
             return
-        if not self.engine.map.tiles['walkable'][destination_x, destination_y]:
+        if not self.engine.map.tiles['walkable'][*self.destination]:
             return
-        if self.engine.map.get_blocking_entity_at_location(destination_x, destination_y):
+        if self.engine.map.get_blocking_entity_at_location(*self.destination):
             return
 
-        self.entity.move(self.dx, self.dy)
+        self.entity.move(*self.direction)
 
 class MeleeAction(DirectionalAction):
     
     def perform(self) -> None:
 
-        target = self.blocking_entity
-        
+        target = self.target_entity
+        print(f"{self.entity.name} attempts to attack {target.name}")
         if not target:
             return
-        print("attacking {target.name}")
+
+        self.entity.attack(target)
 
 class WaitAction(Action):
     def perform(self) -> None:

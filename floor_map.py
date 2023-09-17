@@ -1,11 +1,13 @@
 from __future__ import annotations
 
-from typing import Iterable, TYPE_CHECKING, List
+from typing import Iterable, TYPE_CHECKING, List, Set
 
 import numpy
 import tile_types
 
 from tcod.console import Console
+
+from entities.combatant import Combatant
 
 if TYPE_CHECKING:
     from entities.base_entity import BaseEntity
@@ -25,6 +27,19 @@ class FloorMap():
         self.visible = numpy.full((width, height), fill_value=False, order='F')
         self.explored = numpy.full((width, height), fill_value=False, order='F')
 
+    @property
+    def living_entities(self) -> Set[BaseEntity]:
+        yield from (e for e in self.entities if isinstance(e, Combatant) and e.is_alive)
+
+    def get_entities_at_location(self, x: int, y: int) -> Optional[BaseEntity]:
+        
+        result = []
+        
+        for e in self.entities:
+            if e.x == x and e.y == y:
+                result.append(e)
+
+        return sorted(result, key = lambda x: x.render_order.value)
 
     def get_blocking_entity_at_location(self, x: int, y: int) -> Optional[BaseEntity]:
 

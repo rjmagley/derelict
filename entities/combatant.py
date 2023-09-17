@@ -5,7 +5,11 @@ from typing import Optional, Tuple, Type, TypeVar, TYPE_CHECKING
 from .base_entity import BaseEntity
 from .mover import Mover
 
-from entities.ai.basic_ai import BasicAI
+import color
+
+from render_order import RenderOrder
+
+# from entities.ai.basic_ai import BasicAI
 
 if TYPE_CHECKING:
     from entities.combatant import Combatant
@@ -21,6 +25,7 @@ class Combatant(Mover):
         self._hp = hp
         self.defense = defense
         self.power = power
+        self.render_order = RenderOrder.COMBATANT
         if ai != None:
             self.ai = ai(self)
 
@@ -31,7 +36,29 @@ class Combatant(Mover):
     @hp.setter
     def hp(self, value: int) -> None:
         self._hp = max(0, min(value, self.max_hp))
+        if self._hp == 0 and self.ai:
+            self.die()
 
     @property
     def is_alive(self) -> bool:
-        return self._hp > 0
+        return self.ai != None
+
+    def attack(self, target: Combatant):
+        damage = self.power - target.defense
+        output_string = f"{self.name} attacks {target.name} "
+        if damage > 0:
+            output_string += f"for {damage} damage."
+        else:
+            output_string += "for no damage."
+        print(output_string)
+        target.hp -= damage
+        
+
+    def die(self) -> None:
+        print(f"{self.name} dies!")
+        self.char = "%"
+        self.color = color.red
+        self.blocks_movement = False
+        self.ai = None
+        self.name = f"remains of {self.name}"
+        self.render_order = RenderOrder.CORPSE

@@ -1,8 +1,11 @@
+from __future__ import annotations
+
 from typing import Set, Iterable, Any, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from entities.base_entity import BaseEntity
     from floor_map import FloorMap
+    from input_handlers.event_handler import EventHandler
 
 from tcod.context import Context
 from tcod.console import Console
@@ -11,7 +14,7 @@ from tcod.map import compute_fov
 from actions.actions import EscapeAction, MovementAction
 from entities.base_entity import BaseEntity
 from entities.player import Player
-from input_handlers.event_handler import EventHandler
+from input_handlers.game_event_handler import GameEventHandler
 from floor_map import FloorMap
 
 
@@ -20,9 +23,10 @@ from floor_map import FloorMap
 class GameEngine():
 
     map: FloorMap
+    event_handler: EventHandler
 
     def __init__(self, player: Player):
-        self.event_handler = EventHandler(self)
+        self.event_handler = GameEventHandler(self)
         self.player = player
 
     def handle_enemy_actions(self) -> None:
