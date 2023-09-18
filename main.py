@@ -4,7 +4,7 @@ from entities.player import Player
 from input_handlers.game_event_handler import GameEventHandler
 from actions.actions import *
 from game_engine import GameEngine
-from floor_generation import generate_floor
+from floor_generation import generate_floor, generate_test_floor2
 
 def main():
     screen_width = 80
@@ -13,7 +13,8 @@ def main():
     player = Player(x=40, y=12, char='@', hp=10, defense=5, power=5)
     engine = GameEngine(player=player)
 
-    map = generate_floor(80, 20, engine)
+    map = generate_test_floor2(160, 20, engine)
+    # map = generate_test_floor(160, 20, engine)
     player.map = map
     player.engine = engine
 

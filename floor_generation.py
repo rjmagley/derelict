@@ -106,14 +106,42 @@ def tunnel_between(start: Tuple[int, int], end: Tuple[int, int]) -> Iterator[Tup
 
 def place_enemies(room: Room, map: FloorMap) -> None:
 
-    # number_mobs = random.randint(0, 3)
-    # for i in range(number_mobs):
-    #     x = random.randint(room.x1 + 1, room.x2 - 1)
-    #     y = random.randint(room.y1 + 1, room.y2 - 1)
-    #     print(f"attempting placement at {x, y}")
-    #     if not any (e.x == x and e.y == y for e in map.entities):
-    #         map.entities.add(monsters.create_goblin(x=x, y=y, map=map))
-    #         print(map.entities)
-    #     else:
-    #         print("placement failed")
+    number_mobs = random.randint(0, 3)
+    for i in range(number_mobs):
+        x = random.randint(room.x1 + 1, room.x2 - 1)
+        y = random.randint(room.y1 + 1, room.y2 - 1)
+        print(f"attempting placement at {x, y}")
+        if not any (e.x == x and e.y == y for e in map.entities):
+            map.entities.add(monsters.create_goblin(x=x, y=y, map=map))
+            print(map.entities)
+        else:
+            print("placement failed")
     pass
+
+def generate_test_floor(width: int, height: int, engine: GameEngine) -> FloorMap:
+
+    player = engine.player
+    player.x, player.y = 5, 5
+    floor = FloorMap(engine, width, height, entities={player})
+
+    floor.tiles[1:159, 1:19] = tile_types.floor
+
+    floor.tiles[10:20, 5:15] = tile_types.wall
+    floor.tiles[40:50, 10:25] = tile_types.wall
+    floor.tiles[70:100, 5:25] = tile_types.wall
+    floor.tiles[3:113, 2:4] = tile_types.wall
+
+    print(floor)
+
+    floor.entities.add(monsters.create_dummy(x=6, y=6, map=floor))
+    floor.entities.add(monsters.create_dummy(x=66, y=6, map=floor))
+
+    return floor
+
+def generate_test_floor2(width: int, height: int, engine: GameEngine) -> FloorMap:
+
+    floor = generate_floor(160, 20, engine)
+    floor.tiles[1:20, 1:19] = tile_types.floor
+    floor.tiles[139:159, 1:19] = tile_types.floor
+
+    return floor

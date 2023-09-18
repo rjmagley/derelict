@@ -12,6 +12,11 @@ class BasicAI():
     
     entity: BaseEntity
 
+    def __init__(self, entity: Combatant):
+        super().__init__()
+        self.entity = entity
+        self.path: List[Tuple[int, int]] = []
+
     def get_path_to(self, x: int, y: int) -> List[Tuple[int, int]]:
 
         cost = numpy.array(self.entity.map.tiles['walkable'], dtype=numpy.int8)
@@ -29,12 +34,15 @@ class BasicAI():
 
         return [(index[0], index[1]) for index in path]
 
+    def perform(self) -> None:
+        pass
+
 
 # BasicHostile - a hostile AI that wants to close to melee range and attack
 class BasicHostile(BasicAI):
 
     def __init__(self, entity: Combatant):
-        super().__init__()
+        super().__init__(entity)
         self.entity = entity
         self.path: List[Tuple[int, int]] = []
 
