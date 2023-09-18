@@ -16,7 +16,6 @@ from tcod.map import compute_fov
 from actions.actions import EscapeAction, MovementAction
 from entities.base_entity import BaseEntity
 from entities.player import Player
-from input_handlers import Handlers
 from input_handlers.game_event_handler import GameEventHandler
 from input_handlers.message_history_handler import MessageHistoryHandler
 from floor_map import FloorMap
@@ -42,12 +41,8 @@ class GameEngine():
         self.root_console = root_console
         self.context = context
 
-    def switch_handler(self, handler: Handlers):
-        match handler:
-            case Handlers.GAME_EVENT_HANDLER:
-                self.event_handler = GameEventHandler(self)
-            case Handlers.MESSAGE_HISTORY_HANDLER:
-                self.event_handler = MessageHistoryHandler(self)
+    def switch_handler(self, handler):
+        self.event_handler = handler(self)
 
     def change_map(self, map) -> None:
         self.map = map
@@ -154,7 +149,7 @@ class GameEngine():
         self.message_console.clear()
 
     def render_message_history(self) -> None:
-        y_offset = 22
+        y_offset = 23
 
         self.root_console.print(0, 0, string="Message History:")
 

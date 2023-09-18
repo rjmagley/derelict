@@ -1,9 +1,4 @@
-from enum import auto, Enum
-import tcod.event
-
-class Handlers(Enum):
-    GAME_EVENT_HANDLER = auto()
-    MESSAGE_HISTORY_HANDLER = auto()
+import tcod
 
 MOVE_KEYS = {
     # Arrow keys.

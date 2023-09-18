@@ -2,14 +2,15 @@ from __future__ import annotations
 
 from typing import Optional, TYPE_CHECKING
 
-from . import MOVE_KEYS, WAIT_KEYS, CURSOR_Y_KEYS, CONFIRM_KEYS, ESCAPE_KEYS, Handlers
+from . import MOVE_KEYS, WAIT_KEYS, CURSOR_Y_KEYS, CONFIRM_KEYS, ESCAPE_KEYS
 
 import tcod
 
 if TYPE_CHECKING:
     from game_engine import GameEngine
-
+    
 from .event_handler import EventHandler
+from . import game_event_handler
 
 
 class MessageHistoryHandler(EventHandler):
@@ -34,4 +35,4 @@ class MessageHistoryHandler(EventHandler):
         key = event.sym
 
         if key in ESCAPE_KEYS:
-            self.engine.switch_handler(Handlers.GAME_EVENT_HANDLER)
+            self.engine.switch_handler(game_event_handler.GameEventHandler)

@@ -1,16 +1,24 @@
-from . import MOVE_KEYS, WAIT_KEYS, CURSOR_Y_KEYS, CONFIRM_KEYS, ESCAPE_KEYS, Handlers
+from __future__ import annotations
+
+from . import MOVE_KEYS, WAIT_KEYS, CURSOR_Y_KEYS, CONFIRM_KEYS, ESCAPE_KEYS
+
+from . import message_history_handler
 
 from typing import Optional, TYPE_CHECKING
 
 import tcod.event
 
 from actions.actions import Action, EscapeAction, BumpAction, WaitAction
-from .event_handler import EventHandler
 
 if TYPE_CHECKING:
     from game_engine import GameEngine
 
+from .event_handler import EventHandler
+
 class GameEventHandler(EventHandler):
+
+    def __init__(self, engine: GameEngine):
+        super().__init__(engine)
 
     def handle_events(self) -> None:
         for e in tcod.event.wait():
@@ -45,7 +53,7 @@ class GameEventHandler(EventHandler):
             action = EscapeAction(player)
 
         elif event.mod & tcod.event.KMOD_CTRL and key == tcod.event.KeySym.p:
-            self.engine.switch_handler(Handlers.MESSAGE_HISTORY_HANDLER)
+            self.engine.switch_handler(message_history_handler.MessageHistoryHandler)
 
         # No valid key was pressed
         return action
