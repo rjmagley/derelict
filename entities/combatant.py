@@ -50,12 +50,12 @@ class Combatant(Mover):
             output_string += f"for {damage} damage."
         else:
             output_string += "for no damage."
-        print(output_string)
+        self.engine.message_log.add_message(output_string)
         target.hp -= damage
         
 
     def die(self) -> None:
-        print(f"{self.name} dies!")
+        self.engine.message_log.add_message(f"{self.name} dies!", color.red)
         self.char = "%"
         self.color = color.red
         self.blocks_movement = False
