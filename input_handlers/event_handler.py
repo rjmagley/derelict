@@ -15,7 +15,16 @@ class EventHandler(tcod.event.EventDispatch[Action]):
         self.engine = engine
 
     def handle_events(self) -> None:
-        raise NotImplementedError()
+        for e in tcod.event.wait():
+            action = self.dispatch(e)
+
+            if action is None:
+                continue
+
+            if action.perform():
+
+                self.engine.handle_enemy_actions()
+                self.engine.update_fov()
 
     def ev_quit(self, event: tcod.event.Quit) -> Optional[Action]:
         raise SystemExit()

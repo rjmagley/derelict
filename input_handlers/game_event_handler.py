@@ -8,7 +8,7 @@ from typing import Optional, TYPE_CHECKING
 
 import tcod.event
 
-from actions.actions import Action, EscapeAction, BumpAction, WaitAction
+from actions.actions import Action, EscapeAction, BumpAction, WaitAction, PickupItemAction
 
 if TYPE_CHECKING:
     from game_engine import GameEngine
@@ -20,26 +20,10 @@ class GameEventHandler(EventHandler):
     def __init__(self, engine: GameEngine):
         super().__init__(engine)
 
-    def handle_events(self) -> None:
-        for e in tcod.event.wait():
-            action = self.dispatch(e)
-            print(e)
-
-            if action is None:
-                continue
-
-            action.perform()
-
-            self.engine.handle_enemy_actions()
-            self.engine.update_fov()
-
-
     def ev_keydown(self, event: tcod.event.KeyDown) -> Optional[Action]:
         action: Optional[Action] = None
         player = self.engine.player
         key = event.sym
-
-        print(event.mod)
 
         if key in MOVE_KEYS:
             dx, dy = MOVE_KEYS[key]
@@ -51,6 +35,9 @@ class GameEventHandler(EventHandler):
 
         elif key in ESCAPE_KEYS:
             action = EscapeAction(player)
+
+        elif key == tcod.event.KeySym.g:
+            action = PickupItemAction(player)
 
         elif event.mod & tcod.event.KMOD_CTRL and key == tcod.event.KeySym.p:
             self.engine.switch_handler(message_history_handler.MessageHistoryHandler)

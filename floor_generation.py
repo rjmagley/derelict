@@ -14,6 +14,7 @@ from floor_map import FloorMap
 from entities.player import Player
 import tile_types
 from entities import monsters
+from items import place_random_weapon
 
 # right now I'm following the tutorial's general implementation of this stuff
 # later I'd rather do something vault-based, like DCSS does
@@ -84,9 +85,15 @@ def generate_floor(width: int, height: int, engine: GameEngine) -> FloorMap:
                 floor.tiles[x, y] = tile_types.floor
 
         place_enemies(new_room, floor)
+        place_items(new_room, floor)
 
         rooms.append(new_room) 
 
+    # just in case something tries to break out of the walls of the level:
+    floor.tiles[0:160, 0:1] = tile_types.wall
+    floor.tiles[0:160, 23:24] = tile_types.wall
+    floor.tiles[0:1, 0:24] = tile_types.wall
+    floor.tiles[159:60, 0:24] = tile_types.wall
 
     return floor
 
@@ -116,7 +123,13 @@ def place_enemies(room: Room, map: FloorMap) -> None:
             print(map.entities)
         else:
             print("placement failed")
-    pass
+
+
+def place_items(room: Room, map: FloorMap) -> None:
+
+    x = random.randint(room.x1 + 1, room.x2 - 1)
+    y = random.randint(room.y1 + 1, room.y2 - 1)
+    map.entities.add(place_random_weapon(x, y))
 
 def generate_test_floor(width: int, height: int, engine: GameEngine) -> FloorMap:
 

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Set, Iterable, Any, TYPE_CHECKING
+from typing import Set, Iterable, Any, TYPE_CHECKING, Tuple
 
 if TYPE_CHECKING:
     from entities.base_entity import BaseEntity
@@ -44,12 +44,15 @@ class GameEngine():
     def switch_handler(self, handler):
         self.event_handler = handler(self)
 
+    def add_message(self, text: str, fg: Tuple[int, int, int] = color.white) -> None:
+        self.message_log.add_message(text, fg)
+
     def change_map(self, map) -> None:
         self.map = map
         self.map_console = Console(map.width, map.height, order="F")
 
     def handle_enemy_actions(self) -> None:
-        for e in self.map.entities - {self.player}:
+        for e in self.map.living_entities:
             if e.ai:
                 e.ai.perform()
 
@@ -134,6 +137,18 @@ class GameEngine():
     def render_status(self, root_console: Console) -> None:
         # status window is 20x20 to the right of the playfield
         self.status_console.print(x = 0, y = 1, string = f"ARM: {self.player.hp}/{self.player.max_hp}", fg = color.white)
+
+        self.status_console.print(x = 0, y = 3, string="Hands:", fg = color.white)
+        if self.player.right_hand == None:
+            self.status_console.print(x = 0, y = 4, string="Unarmed", fg = color.white)
+        else:
+            self.status_console.print(x = 0, y = 4, string=self.player.right_hand.status_string, fg = color.white)
+
+        if self.player.left_hand == None:
+            self.status_console.print(x = 0, y = 6, string="Unarmed", fg = color.white)
+        else:
+            self.status_console.print(x = 0, y = 6, string=self.player.right_hand.status_string, fg = color.white)
+
         self.status_console.blit(dest = root_console, dest_x = 59, dest_y = 0, width = 20, height = 20)
 
     def render_messages(self, root_console: Console) -> None:

@@ -8,10 +8,12 @@ import tile_types
 from tcod.console import Console
 
 from entities.combatant import Combatant
+from items.base_item import BaseItem
 
 if TYPE_CHECKING:
     from entities.base_entity import BaseEntity
     from game_engine import GameEngine
+    
 
 # FloorMap - contains all the data for a given floor, including its layout
 # should also probably contain its entities if we want the player to be able to
@@ -30,17 +32,17 @@ class FloorMap():
 
     @property
     def living_entities(self) -> Generator[BaseEntity]:
-        yield from (e for e in self.entities if isinstance(e, Combatant) and e.is_alive)
+        yield from (e for e in self.entities if isinstance(e, Combatant) and e.is_alive and e != self.engine.player)
 
     def get_entities_at_location(self, x: int, y: int) -> List[BaseEntity]:
         
-        result = []
+        results = []
         
         for e in self.entities:
             if e.x == x and e.y == y:
-                result.append(e)
+                results.append(e)
 
-        return sorted(result, key = lambda x: x.render_order.value)
+        return sorted(results, key = lambda x: x.render_order.value)
 
     def get_blocking_entity_at_location(self, x: int, y: int) -> Optional[BaseEntity]:
 
@@ -52,6 +54,14 @@ class FloorMap():
 
     def in_bounds(self, x: int, y: int) -> bool:
         return 0 <= x < self.width and 0 <= y < self.height
+
+    def get_items_at_location(self, x: int, y: int) -> List[BaseItem]:
+        results = []
+        for e in [e for e in self.entities if isinstance(e, BaseItem)]:
+            if e.x == x and e.y == y:
+                results.append(e)
+
+        return results
 
     # original render function 
     # def render(self, console: Console) -> None:

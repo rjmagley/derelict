@@ -1,12 +1,18 @@
 from .combatant import Combatant
+from items.melee_weapon import MeleeWeapon
 
 from input_handlers.endgame_event_handler import EndgameEventHandler
+
+from .inventory import Inventory
 
 # Player - the player character, moved by the player, etc.
 class Player(Combatant):
 
     def __init__(self, **kwargs):
         super().__init__(name = "Player", blocks_movement = True, **kwargs)
+        self.inventory = Inventory()
+        self.right_hand = None
+        self.left_hand = None
 
     @property
     def hp(self) -> int:
@@ -16,12 +22,40 @@ class Player(Combatant):
     def is_alive(self) -> bool:
         return self._hp > 0
 
+    @property
+    def barehanded(self) -> bool:
+        return self.right_hand == None and self.left_hand == None
+
     @hp.setter
     def hp(self, value: int) -> None:
         self._hp = max(0, min(value, self.max_hp))
         if self._hp <= 0:
-            self.engine.event_handler = EndgameEventHandler(self.engine)
+            self.engine.switch_handler(EndgameEventHandler)
             self.die()
 
     def die(self) -> None:
         print("You died!")
+
+    def attack(self, target: Combatant):
+        damage = 0
+        if self.barehanded:
+            damage = self.power - target.defense
+            output_string = f"You attack {target.name} barehanded "
+            if damage > 0:
+                output_string += f"for {damage} damage."
+            else:
+                output_string += "for no damage."
+            self.engine.message_log.add_message(output_string)
+            target.hp -= damage
+        else:
+            # god this is gonna need a lot of logic to figure out melee vs.
+            # ranged - probably split into a few different functions
+            if self.right_hand:
+                damage = self.right_hand.roll_damage() - target.defense
+                output_string = f"You attack {target.name} with your {self.right_hand.name} "
+                if damage > 0:
+                    output_string += f"for {damage} damage."
+                else:
+                    output_string += "for no damage."
+                self.engine.message_log.add_message(output_string)
+                target.hp -= damage
