@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import Optional, TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING, Type
+from string import ascii_uppercase
 
 from . import MOVE_KEYS, WAIT_KEYS, CURSOR_Y_KEYS, CONFIRM_KEYS, ESCAPE_KEYS
 
@@ -8,22 +9,20 @@ import tcod
 
 if TYPE_CHECKING:
     from game_engine import GameEngine
+    from items.base_item import BaseItem
     
 from .event_handler import EventHandler
-from . import game_event_handler
+from input_handlers import inventory_view_event_handler
 
 
-class MessageHistoryHandler(EventHandler):
-
-    def __init__(self, engine: GameEngine):
+class ViewItemEventHandler(EventHandler):
+    def __init__(self, engine: GameEngine, item: Type[BaseItem]):
         super().__init__(engine)
-
-    # there should be more here for like, scrolling through messages
-    # I just don't want to deal with this right now
+        self.item = item
 
     def ev_keydown(self, event: tcod.event.KeyDown) -> Optional[Action]:
         player = self.engine.player
         key = event.sym
 
         if key in ESCAPE_KEYS:
-            self.engine.switch_handler(game_event_handler.GameEventHandler)
+            self.engine.switch_handler(inventory_view_event_handler.InventoryViewEventHandler)
