@@ -22,6 +22,7 @@ from input_handlers.game_event_handler import GameEventHandler
 from input_handlers.message_history_handler import MessageHistoryHandler
 from input_handlers.inventory_view_event_handler import InventoryViewEventHandler
 from input_handlers.view_item_event_handler import ViewItemEventHandler
+from input_handlers.look_event_handler import LookEventHandler
 
 from items.base_weapon import BaseWeapon
 from items.ranged_weapon import RangedWeapon
@@ -33,6 +34,7 @@ import color
 
 # GameEngine - responsible for holding state of entire game - entities, maps,
 # and so on, as well as drawing to console
+# the drawing bits might be better off in another class
 class GameEngine():
 
     map: FloorMap
@@ -50,9 +52,10 @@ class GameEngine():
         self.root_console = root_console
         self.context = context
 
-    def switch_handler(self, handler, item = None):
-        if item:
-            self.event_handler = handler(self, item)
+    def switch_handler(self, handler, **kwargs):
+        print(kwargs)
+        if 'item' in kwargs:
+            self.event_handler = handler(self, kwargs['item'])
         else:
             self.event_handler = handler(self)
 
@@ -97,6 +100,12 @@ class GameEngine():
                 if isinstance(self.event_handler.item, BaseWeapon):
                     self.render_weapon_description(self.root_console, self.event_handler.item)
                     self.context.present(self.root_console)
+            case LookEventHandler.__name__:
+                self.render_map(self.root_console)
+                self.render_status(self.root_console)
+                self.context.present(self.root_console)
+                self.root_console.clear()
+                
 
     def update_fov(self) -> None:
         self.map.visible[:] = compute_fov(
@@ -162,6 +171,11 @@ class GameEngine():
 
         for e in sorted_entities:
             self.map_console.print(x=e.x, y=e.y, fg=e.color, string=e.char)
+
+        # plop a cursor if we're looking around
+        if isinstance(self.event_handler, LookEventHandler):
+            print(f"having a look at {self.event_handler.x}, {self.event_handler.y}")
+            self.map_console.print(x = self.event_handler.x, y = self.event_handler.y, fg = color.white, string='X')
 
         self.map_console.blit(dest = root_console, dest_x = 0, dest_y = 0, src_x = render_x1, src_y = 0, width = 60, height = 20)
 
@@ -247,3 +261,7 @@ class GameEngine():
 
         self.inventory_console.blit(dest = root_console, dest_x = 0, dest_y = 0, width = 59, height = 20)
         self.inventory_console.clear()
+
+    # prints a single cursor on the map
+    def render_cursor(self, root_console: Console, x: int, y: int) -> None:
+        self.map_console.print(x = x, y = y, fg = color.white, string='X')

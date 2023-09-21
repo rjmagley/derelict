@@ -6,6 +6,8 @@ if TYPE_CHECKING:
     from floor_map import FloorMap
     from game_engine import GameEngine
 
+import math
+
 import color
 
 from render_order import RenderOrder
@@ -30,3 +32,9 @@ class BaseEntity():
             self.map = map
             map.entities.add(self)
             self.engine = map.engine
+
+    def distance(self, target: BaseEntity):
+        return math.sqrt(
+            (target.x - self.x) ** 2 +
+            (target.y - self.y) ** 2
+        )

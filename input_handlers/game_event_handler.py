@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from . import MOVE_KEYS, WAIT_KEYS, CURSOR_Y_KEYS, CONFIRM_KEYS, ESCAPE_KEYS
 
-from . import message_history_handler, inventory_view_event_handler
+from . import message_history_handler, inventory_view_event_handler, look_event_handler
 
 from typing import Optional, TYPE_CHECKING
 
@@ -42,6 +42,9 @@ class GameEventHandler(EventHandler):
 
             case tcod.event.KeySym.i:
                 self.engine.switch_handler(inventory_view_event_handler.InventoryViewEventHandler)
+
+            case tcod.event.KeySym.x:
+                self.engine.switch_handler(look_event_handler.LookEventHandler)
 
             case tcod.event.KeySym.p if event.mod & tcod.event.KMOD_CTRL:
                 self.engine.switch_handler(message_history_handler.MessageHistoryHandler)

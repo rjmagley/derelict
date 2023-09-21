@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-from typing import Optional, TYPE_CHECKING
-from string import ascii_uppercase
+from typing import TYPE_CHECKING
 
 from . import MOVE_KEYS, WAIT_KEYS, CURSOR_Y_KEYS, CONFIRM_KEYS, ESCAPE_KEYS
 
@@ -12,23 +11,22 @@ if TYPE_CHECKING:
     
 from .event_handler import EventHandler
 from . import game_event_handler
-from . import view_item_event_handler
 
 
-class InventoryViewEventHandler(EventHandler):
+
+class LookEventHandler(EventHandler):
 
     def __init__(self, engine: GameEngine):
         super().__init__(engine)
+        self.x = self.engine.player.x
+        self.y = self.engine.player.y
 
     def ev_keydown(self, event: tcod.event.KeyDown) -> Optional[Action]:
-        player = self.engine.player
         key = event.sym
 
-        inventory_keys = ascii_uppercase[0:len(player.inventory.items)]
-        inventory_items = {k: i for k, i in zip(inventory_keys, player.inventory.items)}
-
-        if key.label in inventory_keys:
-            self.engine.switch_handler(view_item_event_handler.ViewItemEventHandler, item=inventory_items[key.label])
+        if key in MOVE_KEYS and self.engine.map.in_bounds(self.x, self.y):
+            self.x += MOVE_KEYS[key][0]
+            self.y += MOVE_KEYS[key][1]
 
         if key in ESCAPE_KEYS:
             self.engine.switch_handler(game_event_handler.GameEventHandler)
