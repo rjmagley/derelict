@@ -115,6 +115,8 @@ class PickupItemAction(Action):
             if player.inventory.space_remaining:
                 self.engine.map.entities.remove(target_item)
                 player.inventory.items.append(target_item)
+                # probably need to fix this when weapons aren't the only items
+                # that exist
                 if player.right_hand == None:
                     player.right_hand = target_item
 
@@ -126,6 +128,35 @@ class PickupItemAction(Action):
             self.engine.add_message("Nothing to get here.", color.light_gray)
         return False
 
+
+class PlayerFireAction(Action):
+
+    def __init__(self, player, target, weapon) -> None:
+        super().__init__(player)
+        self.player = player
+        self.target = target
+        self.weapon = weapon
+
+    # for now, weapons don't overpenetrate, a burst can't hit another target,
+    # etc. - will need more work
+    def perform(self) -> bool:
+        self.player.ranged_attack(self.target, self.weapon)
+        return True
+
+class PlayerReloadAction(Action):
+
+    def __init__(self, player, weapon) -> None:
+        super().__init__(player)
+        self.player = player
+        self.weapon = weapon
+
+    # for now, weapons don't overpenetrate, a burst can't hit another target,
+    # etc. - will need more work
+    def perform(self) -> bool:
+        ammo_needed = self.weapon.magazine_size - self.weapon.loaded_ammo
+        self.weapon.loaded_ammo += ammo_needed
+        self.engine.add_message(f"You reload your {self.weapon.name}.")
+        return True
 
 class WaitAction(Action):
     def perform(self) -> bool:

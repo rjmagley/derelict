@@ -1,9 +1,14 @@
+from random import randint
+
 from .combatant import Combatant
 from items.melee_weapon import MeleeWeapon
+from items.ranged_weapon import RangedWeapon
 
 # from input_handlers.endgame_event_handler import EndgameEventHandler
 
 from .inventory import Inventory
+
+import color
 
 # Player - the player character, moved by the player, etc.
 class Player(Combatant):
@@ -16,6 +21,19 @@ class Player(Combatant):
         # "right" hand
         self.right_hand = None
         self.left_hand = None
+        # ammunition is a dictionary representing the four ammunition types
+        # ammunition is stored as a number from 0 to the player's max ammo
+        # (starts at 1000) and rendered as a percentage on the UI
+        self.max_light_ammo = 1000
+        self.max_heavy_ammo = 1000
+        self.max_explosive_ammo = 1000
+        self.max_exotic_ammo = 1000
+        self.ammunition = {
+            'light': 1000,
+            'heavy': 1000,
+            'explosive': 1000,
+            'exotic': 1000
+        }
 
     @property
     def hp(self) -> int:
@@ -62,3 +80,13 @@ class Player(Combatant):
                     output_string += "for no damage."
                 self.engine.message_log.add_message(output_string)
                 target.hp -= damage
+
+    # for now, just a fairly high chance to hit
+    # will be modified later by player/enemy stats
+    def ranged_attack(self, target: Combatant, weapon: RangedWeapon):
+        damage = weapon.fire()
+        if randint(1, 10) > 7:
+            self.engine.add_message(f"You hit the {target.name} for {damage} damage.")
+            target.take_damage(damage)
+        else:
+            self.engine.add_message(f"You miss the {target.name}.", color.light_gray)

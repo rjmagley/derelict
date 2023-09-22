@@ -18,11 +18,9 @@ class RangedWeapon(BaseWeapon):
 
     # returns true if the weapon can fire and false if it can't (empty,
     # disabled, etc)
-    def fire(self) -> bool:
-        if self.loaded_ammo < self.burst_count:
-            return False
-        self.loaded_ammo -= self.burst_count
-        return True
+    @property
+    def can_fire(self) -> bool:
+        return self.loaded_ammo != 0
 
     @property
     def status_string(self) -> str:
@@ -32,6 +30,15 @@ class RangedWeapon(BaseWeapon):
     @property
     def ammo_status(self) -> str:
         return f"{self.loaded_ammo}/{self.magazine_size}"
+
+    def fire(self) -> int:
+        total_damage = 0
+        burst = min(self.burst_count, self.loaded_ammo)
+        for x in range(0, burst):
+            total_damage += self.roll_damage()
+        self.loaded_ammo -= burst
+        return total_damage
+
 
 class PistolWeapon(RangedWeapon):
     def __init__(self, **kwargs):

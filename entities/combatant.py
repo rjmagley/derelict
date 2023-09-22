@@ -62,3 +62,6 @@ class Combatant(Mover):
         self.ai = None
         self.name = f"remains of {self.name}"
         self.render_order = RenderOrder.CORPSE
+
+    def take_damage(self, damage: int) -> None:
+        self.hp -= max(0, damage - self.defense)

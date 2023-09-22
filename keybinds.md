@@ -5,5 +5,6 @@ i: inventory
 x: examine/look
 f: fire weapon in main hand
 F: fire auxillary weapons or offhand weapon
+r: reload weapon in main hand
 
 Ctrl-P: message log
