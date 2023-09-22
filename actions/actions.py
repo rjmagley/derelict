@@ -119,6 +119,7 @@ class PickupItemAction(Action):
                     player.right_hand = target_item
 
                 self.engine.add_message(f"You grab the {target_item.name}.", color.light_gray)
+                return True
             else:
                 self.engine.add_message("Your inventory is full.", color.light_gray)
         else:

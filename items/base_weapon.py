@@ -14,6 +14,10 @@ class BaseWeapon(BaseItem):
     def status_string(self) -> str:
         return f"{self.name} - {self.die_count}d{self.damage_die}"
 
+    @property
+    def ammo_status(self) -> str:
+        return ""
+
     def roll_damage(self):
         damage = 0
         for i in range(0, self.die_count):

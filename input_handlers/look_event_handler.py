@@ -10,7 +10,8 @@ if TYPE_CHECKING:
     from game_engine import GameEngine
     
 from .event_handler import EventHandler
-from . import game_event_handler
+from input_handlers.handler_types import HandlerType
+
 
 
 
@@ -20,6 +21,7 @@ class LookEventHandler(EventHandler):
         super().__init__(engine)
         self.x = self.engine.player.x
         self.y = self.engine.player.y
+        self.handler_type = HandlerType.LOOK
 
     def ev_keydown(self, event: tcod.event.KeyDown) -> Optional[Action]:
         key = event.sym
@@ -29,4 +31,4 @@ class LookEventHandler(EventHandler):
             self.y += MOVE_KEYS[key][1]
 
         if key in ESCAPE_KEYS:
-            self.engine.switch_handler(game_event_handler.GameEventHandler)
+            self.engine.switch_handler(HandlerType.GAME)

@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from . import MOVE_KEYS, WAIT_KEYS, CURSOR_Y_KEYS, CONFIRM_KEYS, ESCAPE_KEYS
 
-from . import message_history_handler, inventory_view_event_handler, look_event_handler
-
 from typing import Optional, TYPE_CHECKING
 
 import tcod.event
@@ -15,10 +13,14 @@ if TYPE_CHECKING:
 
 from .event_handler import EventHandler
 
+from input_handlers.handler_types import HandlerType
+from items import RangedWeapon
+
 class GameEventHandler(EventHandler):
 
     def __init__(self, engine: GameEngine):
         super().__init__(engine)
+        self.handler_type = HandlerType.GAME
 
     def ev_keydown(self, event: tcod.event.KeyDown) -> Optional[Action]:
         action: Optional[Action] = None
@@ -41,13 +43,22 @@ class GameEventHandler(EventHandler):
                 action = PickupItemAction(player)
 
             case tcod.event.KeySym.i:
-                self.engine.switch_handler(inventory_view_event_handler.InventoryViewEventHandler)
+                self.engine.switch_handler(HandlerType.INVENTORY_VIEW)
 
             case tcod.event.KeySym.x:
-                self.engine.switch_handler(look_event_handler.LookEventHandler)
+                self.engine.switch_handler(HandlerType.LOOK)
+
+            case tcod.event.KeySym.f:
+                if not isinstance(self.engine.player.right_hand, RangedWeapon):
+                    self.engine.add_message("You don't have a ranged weapon in hand.")
+                    return
+                if not self.engine.player.right_hand.loaded_ammo > 0:
+                    self.engine.add_message("Your weapon is empty.")
+                    return
+                self.engine.switch_handler(HandlerType.TARGETING, weapon=self.engine.player.right_hand)
 
             case tcod.event.KeySym.p if event.mod & tcod.event.KMOD_CTRL:
-                self.engine.switch_handler(message_history_handler.MessageHistoryHandler)
+                self.engine.switch_handler(HandlerType.MESSAGE_HISTORY)
                 
 
         # key = event.sym

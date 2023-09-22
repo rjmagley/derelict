@@ -10,14 +10,14 @@ if TYPE_CHECKING:
     from game_engine import GameEngine
     
 from .event_handler import EventHandler
-from . import game_event_handler
+from input_handlers.handler_types import HandlerType
 
 
 class MessageHistoryHandler(EventHandler):
 
     def __init__(self, engine: GameEngine):
         super().__init__(engine)
-
+        self.handler_type = HandlerType.MESSAGE_HISTORY
     # there should be more here for like, scrolling through messages
     # I just don't want to deal with this right now
 
@@ -26,4 +26,4 @@ class MessageHistoryHandler(EventHandler):
         key = event.sym
 
         if key in ESCAPE_KEYS:
-            self.engine.switch_handler(game_event_handler.GameEventHandler)
+            self.engine.switch_handler(HandlerType.GAME)

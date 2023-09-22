@@ -18,19 +18,17 @@ from tcod.map import compute_fov
 from actions.actions import EscapeAction, MovementAction
 from entities.base_entity import BaseEntity
 from entities.player import Player
-from input_handlers.game_event_handler import GameEventHandler
-from input_handlers.message_history_handler import MessageHistoryHandler
-from input_handlers.inventory_view_event_handler import InventoryViewEventHandler
-from input_handlers.view_item_event_handler import ViewItemEventHandler
-from input_handlers.look_event_handler import LookEventHandler
-
+from input_handlers import HandlerType, provide_handler
 from items.base_weapon import BaseWeapon
 from items.ranged_weapon import RangedWeapon
+from input_handlers.game_event_handler import GameEventHandler
 
 from floor_map import FloorMap
 from messages import MessageLog
 import tile_types
 import color
+
+
 
 # GameEngine - responsible for holding state of entire game - entities, maps,
 # and so on, as well as drawing to console
@@ -38,7 +36,7 @@ import color
 class GameEngine():
 
     map: FloorMap
-    event_handler: EventHandler | ViewItemEventHandler
+    event_handler: EventHandler
     context: Context
 
     def __init__(self, player: Player, root_console: Console, context: Context):
@@ -47,17 +45,13 @@ class GameEngine():
         self.message_log = MessageLog()
         self.map_console = Console(0, 0, order="F")
         self.inventory_console = Console(60, 24, order="F")
-        self.message_console = Console(80, 4, order="F")
+        self.bottom_console = Console(80, 4, order="F")
         self.status_console = Console(20, 20, order="F")
         self.root_console = root_console
         self.context = context
 
-    def switch_handler(self, handler, **kwargs):
-        print(kwargs)
-        if 'item' in kwargs:
-            self.event_handler = handler(self, kwargs['item'])
-        else:
-            self.event_handler = handler(self)
+    def switch_handler(self, handler, **kwargs) -> None:
+        self.event_handler = provide_handler(handler)(self, **kwargs)
 
     def add_message(self, text: str, fg: Tuple[int, int, int] = color.white) -> None:
         self.message_log.add_message(text, fg)
@@ -82,27 +76,33 @@ class GameEngine():
 
         # all of these are getting self.root_console as an argument because
         # eventually they should hang out in a different file
-        match type(self.event_handler).__name__:
-            case GameEventHandler.__name__:
+        match self.event_handler.handler_type:
+            case HandlerType.GAME:
                 self.update_fov()
                 self.render_map(self.root_console)
                 self.render_status(self.root_console)
                 self.render_messages(self.root_console)
                 self.context.present(self.root_console)
                 self.root_console.clear()
-            case MessageHistoryHandler.__name__:
+            case HandlerType.MESSAGE_HISTORY:
                 self.render_message_history()
-            case InventoryViewEventHandler.__name__:
+            case HandlerType.INVENTORY_VIEW:
                 self.render_status(self.root_console)
                 self.render_inventory(self.root_console)
                 self.context.present(self.root_console)
-            case ViewItemEventHandler.__name__:
+            case HandlerType.ITEM_VIEW:
                 if isinstance(self.event_handler.item, BaseWeapon):
                     self.render_weapon_description(self.root_console, self.event_handler.item)
                     self.context.present(self.root_console)
-            case LookEventHandler.__name__:
+            case HandlerType.LOOK:
                 self.render_map(self.root_console)
                 self.render_status(self.root_console)
+                self.context.present(self.root_console)
+                self.root_console.clear()
+            case HandlerType.TARGETING:
+                self.render_map(self.root_console)
+                self.render_status(self.root_console)
+                self.render_targeting_information(self.root_console, self.event_handler.weapon)
                 self.context.present(self.root_console)
                 self.root_console.clear()
                 
@@ -173,8 +173,8 @@ class GameEngine():
             self.map_console.print(x=e.x, y=e.y, fg=e.color, string=e.char)
 
         # plop a cursor if we're looking around
-        if isinstance(self.event_handler, LookEventHandler):
-            print(f"having a look at {self.event_handler.x}, {self.event_handler.y}")
+        if self.event_handler.handler_type == HandlerType.LOOK or self.event_handler.handler_type == HandlerType.TARGETING:
+            # print(f"having a look at {self.event_handler.x}, {self.event_handler.y}")
             self.map_console.print(x = self.event_handler.x, y = self.event_handler.y, fg = color.white, string='X')
 
         self.map_console.blit(dest = root_console, dest_x = 0, dest_y = 0, src_x = render_x1, src_y = 0, width = 60, height = 20)
@@ -192,11 +192,13 @@ class GameEngine():
             self.status_console.print(x = 0, y = 7, string="Unarmed", fg = color.white)
         else:
             self.status_console.print(x = 0, y = 7, string=self.player.right_hand.status_string, fg = color.white)
+            self.status_console.print(x = 0, y = 8, string=self.player.right_hand.ammo_status, fg = color.white)
 
         if self.player.left_hand == None:
             self.status_console.print(x = 0, y = 9, string="Unarmed", fg = color.white)
         else:
             self.status_console.print(x = 0, y = 9, string=self.player.left_hand.status_string, fg = color.white)
+            self.status_console.print(x = 0, y = 10, string=self.player.left_hand.ammo_status, fg = color.white)
 
         self.status_console.blit(dest = root_console, dest_x = 59, dest_y = 0, width = 20, height = 20)
 
@@ -204,13 +206,13 @@ class GameEngine():
         y_offset = 3
 
         for message, color in self.message_log.return_messages():
-            self.message_console.print(0, y_offset, string=message, fg=color)
+            self.bottom_console.print(0, y_offset, string=message, fg=color)
             y_offset -= 1
             if y_offset < 0:
                 break
 
-        self.message_console.blit(dest = root_console, dest_x = 0, dest_y = 20, width = 80, height = 4)
-        self.message_console.clear()
+        self.bottom_console.blit(dest = root_console, dest_x = 0, dest_y = 20, width = 80, height = 4)
+        self.bottom_console.clear()
 
     def render_message_history(self) -> None:
         y_offset = 23
@@ -265,3 +267,15 @@ class GameEngine():
     # prints a single cursor on the map
     def render_cursor(self, root_console: Console, x: int, y: int) -> None:
         self.map_console.print(x = x, y = y, fg = color.white, string='X')
+
+    def render_targeting_information(self, root_console: Console, weapon: RangedWeapon) -> None:
+        self.bottom_console.print(x=0, y=0, fg=color.white, string=f"Targeting with your {weapon.name}")
+        target = self.map.get_blocking_entity_at_location(self.event_handler.x, self.event_handler.y)
+        if target:
+            self.bottom_console.print(x=0, y=1, fg=color.white, string=f"Aiming at {target.name}")
+        else:
+            self.bottom_console.print(x=0, y=1, fg=color.light_gray, string=f"Nothing here.")
+
+
+        self.bottom_console.blit(dest = root_console, dest_x = 0, dest_y = 20, width = 80, height = 4)
+        self.bottom_console.clear()

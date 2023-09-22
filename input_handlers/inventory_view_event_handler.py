@@ -14,11 +14,13 @@ from .event_handler import EventHandler
 from . import game_event_handler
 from . import view_item_event_handler
 
+from input_handlers.handler_types import HandlerType
 
 class InventoryViewEventHandler(EventHandler):
 
     def __init__(self, engine: GameEngine):
         super().__init__(engine)
+        self.handler_type = HandlerType.INVENTORY_VIEW
 
     def ev_keydown(self, event: tcod.event.KeyDown) -> Optional[Action]:
         player = self.engine.player
@@ -28,7 +30,7 @@ class InventoryViewEventHandler(EventHandler):
         inventory_items = {k: i for k, i in zip(inventory_keys, player.inventory.items)}
 
         if key.label in inventory_keys:
-            self.engine.switch_handler(view_item_event_handler.ViewItemEventHandler, item=inventory_items[key.label])
+            self.engine.switch_handler(HandlerType.ITEM_VIEW, item=inventory_items[key.label])
 
         if key in ESCAPE_KEYS:
-            self.engine.switch_handler(game_event_handler.GameEventHandler)
+            self.engine.switch_handler(HandlerType.GAME)

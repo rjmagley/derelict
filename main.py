@@ -1,7 +1,6 @@
 import tcod
 
 from entities.player import Player
-from input_handlers.game_event_handler import GameEventHandler
 from actions.actions import *
 from game_engine import GameEngine
 from floor_generation import generate_floor, generate_test_floor2

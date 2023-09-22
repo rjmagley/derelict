@@ -1,7 +1,7 @@
 from .combatant import Combatant
 from items.melee_weapon import MeleeWeapon
 
-from input_handlers.endgame_event_handler import EndgameEventHandler
+# from input_handlers.endgame_event_handler import EndgameEventHandler
 
 from .inventory import Inventory
 
@@ -11,6 +11,9 @@ class Player(Combatant):
     def __init__(self, **kwargs):
         super().__init__(name = "Player", blocks_movement = True, **kwargs)
         self.inventory = Inventory()
+        # weapons held by the player
+        # some weapons take up both hands - those are considered to be in the
+        # "right" hand
         self.right_hand = None
         self.left_hand = None
 
@@ -30,7 +33,7 @@ class Player(Combatant):
     def hp(self, value: int) -> None:
         self._hp = max(0, min(value, self.max_hp))
         if self._hp <= 0:
-            self.engine.switch_handler(EndgameEventHandler)
+            # self.engine.switch_handler(EndgameEventHandler)
             self.die()
 
     def die(self) -> None:

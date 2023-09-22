@@ -45,3 +45,32 @@ CONFIRM_KEYS = {
 ESCAPE_KEYS = {
     tcod.event.KeySym.ESCAPE
 }
+
+from typing import Set, Iterable, Any, TYPE_CHECKING, Tuple
+
+from .event_handler import EventHandler
+from .endgame_event_handler import EndgameEventHandler
+from .game_event_handler import GameEventHandler
+from .inventory_view_event_handler import InventoryViewEventHandler
+from .look_event_handler import LookEventHandler
+from .message_history_handler import MessageHistoryHandler
+from .view_item_event_handler import ViewItemEventHandler
+from .targeting_handler import TargetingEventHandler
+from .handler_types import HandlerType
+
+def provide_handler(handler: HandlerType) -> type[EventHandler]:
+    match handler:
+        case HandlerType.ENDGAME:
+            return EndgameEventHandler
+        case HandlerType.GAME:
+            return GameEventHandler
+        case HandlerType.INVENTORY_VIEW:
+            return InventoryViewEventHandler
+        case HandlerType.ITEM_VIEW:
+            return ViewItemEventHandler
+        case HandlerType.LOOK:
+            return LookEventHandler
+        case HandlerType.MESSAGE_HISTORY:
+            return MessageHistoryHandler
+        case HandlerType.TARGETING:
+            return TargetingEventHandler
