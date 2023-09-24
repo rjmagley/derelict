@@ -91,7 +91,7 @@ def generate_floor(width: int, height: int, engine: GameEngine) -> FloorMap:
 
     # just in case something tries to break out of the walls of the level:
     floor.tiles[0:160, 0:1] = tile_types.wall
-    floor.tiles[0:160, 22:23] = tile_types.wall
+    floor.tiles[0:160, 23:24] = tile_types.wall
     floor.tiles[0:1, 0:24] = tile_types.wall
     floor.tiles[159:160, 0:24] = tile_types.wall
 

@@ -63,6 +63,12 @@ class FloorMap():
 
         return results
 
+    def living_entities_by_distance(self) -> List[Combatant]:
+        entities = [e for e in self.entities if isinstance(e, Combatant) and e.is_alive and e != self.engine.player and self.visible[e.x, e.y]]
+        results = sorted(entities, key=lambda e:  e.distance(self.engine.player))
+
+        return results
+
     # original render function 
     # def render(self, console: Console) -> None:
     #     console.rgb[0:self.width, 0:self.height] = numpy.select(

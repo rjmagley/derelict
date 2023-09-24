@@ -19,11 +19,13 @@ class TargetingEventHandler(LookEventHandler):
 
     def __init__(self, engine: GameEngine, weapon: RangedWeapon):
         super().__init__(engine)
-        self.x = self.engine.player.x
-        self.y = self.engine.player.y
+        self.player = self.engine.player
+        self.targets = self.engine.map.living_entities_by_distance()
+        self.x = self.targets[0].x if self.targets else self.player.x
+        self.y = self.targets[0].y if self.targets else self.player.y
         self.handler_type = HandlerType.TARGETING
         self.weapon = weapon
-        self.player = self.engine.player
+        
 
     def ev_keydown(self, event: tcod.event.KeyDown) -> Optional[Action]:
         key = event.sym
