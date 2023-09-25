@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 from .event_handler import EventHandler
 
 from input_handlers.handler_types import HandlerType
-from items import RangedWeapon
+from items.ranged_weapon import RangedWeapon
 
 class GameEventHandler(EventHandler):
 

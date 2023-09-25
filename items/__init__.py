@@ -1,9 +1,23 @@
-import random
-from .melee_weapon import MeleeWeapon
-from .ranged_weapon import RangedWeapon
+from __future__ import annotations
 
-def place_random_melee_weapon(x: int, y: int) -> MeleeWeapon:
-    return MeleeWeapon(x=x, y=y, damage_die=4, die_count=2, name="Weapon")
+from enum import auto, StrEnum
 
-def place_random_ranged_weapon(x: int, y: int) -> RangedWeapon:
-    return RangedWeapon(x=x, y=y, damage_die=4, die_count=2, magazine_size = 10, burst_count = 2, char="{", name="Pistol")
+class WeaponType(StrEnum):
+    PISTOL = "pistol"
+    RIFLE = "rifle"
+    SMG = "smg"
+    SHOTGUN = "shotgun"
+    LAUNCHER = "launcher"
+    HEAVY = "heavy"
+    ENERGY = "energy"
+    SWORD = "sword"
+    AXE = "axe"
+    POLEARM = "polearm"
+    BLUNT = "blunt"
+
+class AmmunitionType(StrEnum):
+    LIGHT = "light"
+    HEAVY = "heavy"
+    EXPLOSIVE = "explosive"
+    EXOTIC = "exotic"
+    

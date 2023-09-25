@@ -14,7 +14,7 @@ from floor_map import FloorMap
 from entities.player import Player
 import tile_types
 from entities import monsters
-from items import place_random_ranged_weapon
+from items.ranged_weapon import place_random_ranged_weapon
 
 # right now I'm following the tutorial's general implementation of this stuff
 # later I'd rather do something vault-based, like DCSS does

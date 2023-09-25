@@ -3,6 +3,7 @@ from random import randint
 from .combatant import Combatant
 from items.melee_weapon import MeleeWeapon
 from items.ranged_weapon import RangedWeapon
+from items import WeaponType
 
 # from input_handlers.endgame_event_handler import EndgameEventHandler
 
@@ -33,6 +34,19 @@ class Player(Combatant):
             'heavy': 1000,
             'explosive': 1000,
             'exotic': 1000
+        }
+        self.player_stats = {
+            WeaponType.PISTOL: 10,
+            WeaponType.RIFLE: 10,
+            WeaponType.SMG: 10,
+            WeaponType.SHOTGUN: 10,
+            WeaponType.LAUNCHER: 10,
+            WeaponType.HEAVY: 10,
+            WeaponType.ENERGY: 10,
+            WeaponType.SWORD: 10,
+            WeaponType.AXE: 10,
+            WeaponType.POLEARM: 10,
+            WeaponType.BLUNT: 10
         }
 
     @property
@@ -85,7 +99,7 @@ class Player(Combatant):
     # will be modified later by player/enemy stats
     def ranged_attack(self, target: Combatant, weapon: RangedWeapon):
         damage = weapon.fire()
-        if randint(1, 10) > 7:
+        if randint(1, 10) > 3:
             self.engine.add_message(f"You hit the {target.name} for {damage} damage.")
             target.take_damage(damage)
         else:

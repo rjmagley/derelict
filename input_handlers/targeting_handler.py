@@ -21,8 +21,9 @@ class TargetingEventHandler(LookEventHandler):
         super().__init__(engine)
         self.player = self.engine.player
         self.targets = self.engine.map.living_entities_by_distance()
-        self.x = self.targets[0].x if self.targets else self.player.x
-        self.y = self.targets[0].y if self.targets else self.player.y
+        self.target_index = 0
+        self.x = self.targets[self.target_index].x if self.targets else self.player.x
+        self.y = self.targets[self.target_index].y if self.targets else self.player.y
         self.handler_type = HandlerType.TARGETING
         self.weapon = weapon
         
@@ -35,6 +36,11 @@ class TargetingEventHandler(LookEventHandler):
             case key if key in MOVE_KEYS and self.engine.map.in_bounds(self.x, self.y):
                 self.x += MOVE_KEYS[key][0]
                 self.y += MOVE_KEYS[key][1]
+
+            case tcod.event.KeySym.TAB:
+                self.target_index = (self.target_index + 1) % len(self.targets)
+                self.x = self.targets[self.target_index].x if self.targets else self.player.x
+                self.y = self.targets[self.target_index].y if self.targets else self.player.y
 
             case tcod.event.KeySym.f:
                 print("found an f")

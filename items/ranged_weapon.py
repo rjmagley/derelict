@@ -1,11 +1,7 @@
 import random
 
 from .base_weapon import BaseWeapon
-
-from enum import auto, StrEnum
-
-class WeaponType(StrEnum):
-    PISTOL = "pistol"
+from . import WeaponType
 
 
 class RangedWeapon(BaseWeapon):
@@ -14,7 +10,7 @@ class RangedWeapon(BaseWeapon):
         self.magazine_size = magazine_size
         self.burst_count = burst_count
         self.loaded_ammo = magazine_size
-        print(self.damage_die)
+        self.char = '{'
 
     # returns true if the weapon can fire and false if it can't (empty,
     # disabled, etc)
@@ -39,8 +35,14 @@ class RangedWeapon(BaseWeapon):
         self.loaded_ammo -= burst
         return total_damage
 
+def place_random_ranged_weapon(x: int, y: int) -> RangedWeapon:
+    weapon_choices = [
+        {'damage_die': 4, 'die_count': 2, 'magazine_size': 10, 'burst_count': 2, 'weapon_types': {WeaponType.PISTOL}, 'name': 'Burst Pistol', 'hands': 1},
+        {'damage_die': 3, 'die_count': 2, 'magazine_size': 24, 'burst_count': 3, 'weapon_types': {WeaponType.SMG}, 'name': 'Light SMG', 'hands': 1},
+        {'damage_die': 4, 'die_count': 6, 'magazine_size': 5, 'burst_count': 1, 'weapon_types': {WeaponType.RIFLE}, 'name': 'Heavy Repeater', 'hands': 2},
+        {'damage_die': 7, 'die_count': 3, 'magazine_size': 5, 'burst_count': 1, 'weapon_types': {WeaponType.SHOTGUN}, 'name': 'Shotgun', 'hands': 1},
+    ]
 
-class PistolWeapon(RangedWeapon):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.weapon_type = WeaponType.PISTOL
+    weapon_stats = random.choice(weapon_choices)
+
+    return RangedWeapon(x=x, y=y, **weapon_stats)
