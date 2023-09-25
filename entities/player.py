@@ -61,6 +61,13 @@ class Player(Combatant):
     def barehanded(self) -> bool:
         return self.right_hand == None and self.left_hand == None
 
+    @property
+    def twohanded_weapon(self) -> bool:
+        if self.right_hand == None:
+            return False
+        else:
+            return self.right_hand.hands == 2
+
     @hp.setter
     def hp(self, value: int) -> None:
         self._hp = max(0, min(value, self.max_hp))

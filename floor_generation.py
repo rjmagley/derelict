@@ -78,9 +78,7 @@ def generate_floor(width: int, height: int, engine: GameEngine) -> FloorMap:
 
         floor.tiles[new_room.inner] = tile_types.floor
 
-        if len(rooms) == 0:
-            player.x, player.y = new_room.center
-        else:
+        if len(rooms) > 0:
             for x, y in tunnel_between(rooms[-1].center, new_room.center):
                 floor.tiles[x, y] = tile_types.floor
 
@@ -94,6 +92,8 @@ def generate_floor(width: int, height: int, engine: GameEngine) -> FloorMap:
     floor.tiles[0:160, 23:24] = tile_types.wall
     floor.tiles[0:1, 0:24] = tile_types.wall
     floor.tiles[159:160, 0:24] = tile_types.wall
+
+    player.x, player.y = 3, 10
 
     return floor
 

@@ -43,7 +43,6 @@ class TargetingEventHandler(LookEventHandler):
                 self.y = self.targets[self.target_index].y if self.targets else self.player.y
 
             case tcod.event.KeySym.f:
-                print("found an f")
                 target = self.engine.map.get_blocking_entity_at_location(self.x, self.y)
                 if not target:
                     # handle this differently later when things like AoEs are implemented

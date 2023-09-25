@@ -46,7 +46,7 @@ class GameEngine():
         self.map_console = Console(0, 0, order="F")
         self.inventory_console = Console(60, 24, order="F")
         self.bottom_console = Console(80, 4, order="F")
-        self.status_console = Console(20, 20, order="F")
+        self.side_console = Console(20, 20, order="F")
         self.root_console = root_console
         self.context = context
 
@@ -181,26 +181,28 @@ class GameEngine():
 
     def render_status(self, root_console: Console) -> None:
         # status window is 20x20 to the right of the playfield
-        self.status_console.print(x = 0, y = 0, string = f"Player Name", fg = color.white)
-        self.status_console.print(x = 0, y = 1, string = f"ARM: {self.player.hp}/{self.player.max_hp}", fg = color.white)
-        self.status_console.print(x = 0, y = 2, string = f"SHD: xxx/xxx", fg = color.white)
-        self.status_console.print(x = 0, y = 3, string = f"PSY: xxx/xxx", fg = color.white)
-        self.status_console.print(x = 0, y = 4, string = f"ENG: xxx/xxx", fg = color.white)
+        self.side_console.print(x = 0, y = 0, string = f"Player Name", fg = color.white)
+        self.side_console.print(x = 0, y = 1, string = f"ARM: {self.player.hp}/{self.player.max_hp}", fg = color.white)
+        self.side_console.print(x = 0, y = 2, string = f"SHD: xxx/xxx", fg = color.white)
+        self.side_console.print(x = 0, y = 3, string = f"PSY: xxx/xxx", fg = color.white)
+        self.side_console.print(x = 0, y = 4, string = f"ENG: xxx/xxx", fg = color.white)
 
-        self.status_console.print(x = 0, y = 6, string="Hands:", fg = color.white)
+        self.side_console.print(x = 0, y = 6, string="Hands:", fg = color.white)
         if self.player.right_hand == None:
-            self.status_console.print(x = 0, y = 7, string="Unarmed", fg = color.white)
+            self.side_console.print(x = 0, y = 7, string="Unarmed", fg = color.white)
         else:
-            self.status_console.print(x = 0, y = 7, string=self.player.right_hand.status_string, fg = color.white)
-            self.status_console.print(x = 0, y = 8, string=self.player.right_hand.ammo_status, fg = color.white)
+            self.side_console.print(x = 0, y = 7, string=self.player.right_hand.status_string, fg = color.white)
+            self.side_console.print(x = 0, y = 8, string=self.player.right_hand.ammo_status, fg = color.white)
 
-        if self.player.left_hand == None:
-            self.status_console.print(x = 0, y = 9, string="Unarmed", fg = color.white)
-        else:
-            self.status_console.print(x = 0, y = 9, string=self.player.left_hand.status_string, fg = color.white)
-            self.status_console.print(x = 0, y = 10, string=self.player.left_hand.ammo_status, fg = color.white)
+        if not self.player.twohanded_weapon:
+            if self.player.left_hand == None:
+                self.side_console.print(x = 0, y = 9, string="Unarmed", fg = color.white)
+            else:
+                self.side_console.print(x = 0, y = 9, string=self.player.left_hand.status_string, fg = color.white)
+                self.side_console.print(x = 0, y = 10, string=self.player.left_hand.ammo_status, fg = color.white)
 
-        self.status_console.blit(dest = root_console, dest_x = 59, dest_y = 0, width = 20, height = 20)
+        self.side_console.blit(dest = root_console, dest_x = 59, dest_y = 0, width = 20, height = 20)
+        self.side_console.clear()
 
     def render_messages(self, root_console: Console) -> None:
         y_offset = 3
