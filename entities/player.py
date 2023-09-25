@@ -1,4 +1,12 @@
+from __future__ import annotations
+
+from typing import Type
+
+from enum import auto, StrEnum
+
 from random import randint
+
+from items.base_weapon import BaseWeapon
 
 from .combatant import Combatant
 from items.melee_weapon import MeleeWeapon
@@ -10,6 +18,9 @@ from items import WeaponType
 from .inventory import Inventory
 
 import color
+
+class Skill(StrEnum):
+    DUALWIELD = "dual-wielding"
 
 # Player - the player character, moved by the player, etc.
 class Player(Combatant):
@@ -46,7 +57,9 @@ class Player(Combatant):
             WeaponType.SWORD: 10,
             WeaponType.AXE: 10,
             WeaponType.POLEARM: 10,
-            WeaponType.BLUNT: 10
+            WeaponType.BLUNT: 10,
+            WeaponType.SHIELD: 10,
+            Skill.DUALWIELD: 10
         }
 
     @property
@@ -74,6 +87,26 @@ class Player(Combatant):
         if self._hp <= 0:
             # self.engine.switch_handler(EndgameEventHandler)
             self.die()
+
+    # returns true if equipping was successful, false otherwise
+    # currently constantly returns True because there's no reason for equipping
+    # to fail, but there may be in the future
+    def equip_right_hand(self, weapon: BaseWeapon) -> bool:
+        if weapon.hands == 1:
+            self.right_hand = weapon
+        else:
+            self.left_hand = None
+            self.right_hand = weapon
+        return True
+
+    def equip_left_hand(self, weapon: BaseWeapon) -> bool:
+        if weapon.hands == 1:
+            self.left_hand = weapon
+        else:
+            # two-handed weapons take up both hands
+            self.left_hand = None
+            self.right_hand = weapon
+        return True
 
     def die(self) -> None:
         print("You died!")

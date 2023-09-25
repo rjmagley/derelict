@@ -14,6 +14,7 @@ class WeaponType(StrEnum):
     AXE = "axe"
     POLEARM = "polearm"
     BLUNT = "blunt"
+    SHIELD = "shield"
 
 class AmmunitionType(StrEnum):
     LIGHT = "light"
