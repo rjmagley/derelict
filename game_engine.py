@@ -181,11 +181,18 @@ class GameEngine():
 
     def render_status(self, root_console: Console) -> None:
         # status window is 20x20 to the right of the playfield
+
+        # start with rendering resources and ammo
         self.side_console.print(x = 0, y = 0, string = f"Player Name", fg = color.white)
+        self.side_console.print(x = 16, y = 0, string = "Ammo", fg = color.white)
         self.side_console.print(x = 0, y = 1, string = f"ARM: {self.player.hp}/{self.player.max_hp}", fg = color.white)
+        self.side_console.print(x = 15, y = 1, string = f"L:{(self.player.ammunition['light']/self.player.max_light_ammo)*100:.0f}", fg = color.light_gray)
         self.side_console.print(x = 0, y = 2, string = f"SHD: xxx/xxx", fg = color.white)
+        self.side_console.print(x = 15, y = 2, string = f"H:{(self.player.ammunition['heavy']/self.player.max_heavy_ammo)*100:.0f}", fg = color.white)
         self.side_console.print(x = 0, y = 3, string = f"PSY: xxx/xxx", fg = color.white)
+        self.side_console.print(x = 15, y = 3, string = f"E:{(self.player.ammunition['explosive']/self.player.max_explosive_ammo)*100:.0f}", fg = color.yellow)
         self.side_console.print(x = 0, y = 4, string = f"ENG: xxx/xxx", fg = color.white)
+        self.side_console.print(x = 15, y = 4, string = f"X:{(self.player.ammunition['exotic']/self.player.max_exotic_ammo)*100:.0f}", fg = color.magenta)
 
         self.side_console.print(x = 0, y = 6, string="Hands:", fg = color.white)
         if self.player.right_hand == None:

@@ -11,7 +11,7 @@ from items.base_weapon import BaseWeapon
 from .combatant import Combatant
 from items.melee_weapon import MeleeWeapon
 from items.ranged_weapon import RangedWeapon
-from items import WeaponType
+from items import WeaponType, AmmunitionType
 
 # from input_handlers.endgame_event_handler import EndgameEventHandler
 
@@ -41,10 +41,10 @@ class Player(Combatant):
         self.max_explosive_ammo = 1000
         self.max_exotic_ammo = 1000
         self.ammunition = {
-            'light': 1000,
-            'heavy': 1000,
-            'explosive': 1000,
-            'exotic': 1000
+            AmmunitionType.LIGHT: 1000,
+            AmmunitionType.HEAVY: 1000,
+            AmmunitionType.EXPLOSIVE: 1000,
+            AmmunitionType.EXOTIC: 1000
         }
         self.player_stats = {
             WeaponType.PISTOL: 10,

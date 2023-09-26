@@ -150,13 +150,10 @@ class PlayerReloadAction(Action):
         self.player = player
         self.weapon = weapon
 
-    # for now, weapons don't overpenetrate, a burst can't hit another target,
-    # etc. - will need more work
     def perform(self) -> bool:
-        ammo_needed = self.weapon.magazine_size - self.weapon.loaded_ammo
-        self.weapon.loaded_ammo += ammo_needed
-        self.engine.add_message(f"You reload your {self.weapon.name}.")
-        return True
+        result, string = self.weapon.reload(self.player)
+        self.engine.add_message(string)
+        return result
 
 class WaitAction(Action):
     def perform(self) -> bool:
