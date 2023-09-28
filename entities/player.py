@@ -15,6 +15,8 @@ from items.melee_weapon import MeleeWeapon
 from items.ranged_weapon import RangedWeapon
 from items import WeaponType, AmmunitionType
 
+from die_rollers import player_attack_roll
+
 # from input_handlers.endgame_event_handler import EndgameEventHandler
 
 from .inventory import Inventory
@@ -50,8 +52,8 @@ class Player(Combatant):
         }
         self.player_stats = {
             WeaponType.PISTOL: 10,
-            WeaponType.RIFLE: 10,
-            WeaponType.SMG: 10,
+            WeaponType.RIFLE: 18,
+            WeaponType.SMG: 14,
             WeaponType.SHOTGUN: 10,
             WeaponType.LAUNCHER: 10,
             WeaponType.HEAVY: 10,
@@ -104,6 +106,7 @@ class Player(Combatant):
             self.right_hand = weapon
         return ActionResult(True, f"You equip the {weapon.name}.", color.white, 10)
 
+    # eventually this should probably become "equip_offhand" or something
     def equip_left_hand(self, weapon: BaseWeapon) -> ActionResult:
         if self.twohanded_weapon:
             return ActionResult(False, f"Both your hands are full.", color.light_gray)
@@ -144,7 +147,7 @@ class Player(Combatant):
     # will be modified later by player/enemy stats
     def ranged_attack(self, target: Combatant, weapon: RangedWeapon) -> ActionResult:
         damage = weapon.fire()
-        if randint(1, 10) > 3:
+        if player_attack_roll(weapon, self):
             message = f"You hit the {target.name} for {damage} damage."
             target.take_damage(damage)
             return ActionResult(True, message, color.white, 10)

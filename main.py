@@ -28,6 +28,8 @@ def main():
     # map = generate_test_floor(160, 20, engine)
     player.map = map
     player.engine = engine
+    starting_weapon.map = map
+    starting_weapon.engine = engine
 
     engine.change_map(map)
     engine.message_log.add_message("hai2u")

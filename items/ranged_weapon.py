@@ -101,14 +101,15 @@ class RangedWeapon(BaseWeapon):
             return ActionResult(True, f"You load a round into the {self.name}.", color.white, 5)
 
 
-def place_random_ranged_weapon(x: int, y: int) -> RangedWeapon:
+def place_random_ranged_weapon(x: int, y: int, map = None) -> RangedWeapon:
     weapon_choices = [
-        {'damage_die': 4, 'die_count': 2, 'magazine_size': 10, 'burst_count': 2, 'weapon_types': {WeaponType.PISTOL}, 'name': 'Burst Pistol', 'hands': 1, 'ammunition_size': 10, 'ammunition_type': AmmunitionType.LIGHT},
-        {'damage_die': 3, 'die_count': 2, 'magazine_size': 24, 'burst_count': 3, 'weapon_types': {WeaponType.SMG}, 'name': 'Light SMG', 'hands': 1, 'ammunition_size': 10, 'ammunition_type': AmmunitionType.LIGHT},
-        {'damage_die': 4, 'die_count': 6, 'magazine_size': 5, 'burst_count': 1, 'weapon_types': {WeaponType.RIFLE}, 'name': 'Heavy Repeater', 'hands': 2, 'ammunition_size': 12, 'ammunition_type': AmmunitionType.HEAVY},
-        {'damage_die': 3, 'die_count': 7, 'magazine_size': 5, 'burst_count': 1, 'weapon_types': {WeaponType.SHOTGUN}, 'name': 'Shotgun', 'hands': 2, 'ammunition_size': 14, 'ammunition_type': AmmunitionType.HEAVY, 'reload_type': ReloadType.SINGLE},
+        {'damage_die': 4, 'die_count': 2, 'magazine_size': 10, 'burst_count': 2, 'weapon_types': [WeaponType.PISTOL], 'name': 'Burst Pistol', 'hands': 1, 'ammunition_size': 10, 'ammunition_type': AmmunitionType.LIGHT},
+        {'damage_die': 3, 'die_count': 2, 'magazine_size': 24, 'burst_count': 3, 'weapon_types': [WeaponType.SMG], 'name': 'Light SMG', 'hands': 1, 'ammunition_size': 10, 'ammunition_type': AmmunitionType.LIGHT},
+        {'damage_die': 4, 'die_count': 6, 'magazine_size': 5, 'burst_count': 1, 'weapon_types': [WeaponType.RIFLE], 'name': 'Heavy Repeater', 'hands': 2, 'ammunition_size': 12, 'ammunition_type': AmmunitionType.HEAVY},
+        {'damage_die': 3, 'die_count': 7, 'magazine_size': 5, 'burst_count': 1, 'weapon_types': [WeaponType.SHOTGUN], 'name': 'Shotgun', 'hands': 2, 'ammunition_size': 14, 'ammunition_type': AmmunitionType.HEAVY, 'reload_type': ReloadType.SINGLE},
+        {'damage_die': 2, 'die_count': 5, 'magazine_size': 12, 'burst_count': 3, 'weapon_types': [WeaponType.SHOTGUN, WeaponType.SMG], 'name': 'Weird Test Hybrid', 'hands': 2, 'ammunition_size': 14, 'ammunition_type': AmmunitionType.HEAVY, 'reload_type': ReloadType.SINGLE}
     ]
 
     weapon_stats = random.choice(weapon_choices)
 
-    return RangedWeapon(x=x, y=y, **weapon_stats)
+    return RangedWeapon(x=x, y=y, map=map, **weapon_stats)
