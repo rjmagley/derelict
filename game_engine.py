@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import string
+import time
 
 from typing import Set, Iterable, Any, TYPE_CHECKING, Tuple
 
@@ -60,10 +61,33 @@ class GameEngine():
         self.map = map
         self.map_console = Console(map.width, map.height, order="F")
 
-    def handle_enemy_actions(self) -> None:
-        for e in self.map.living_entities:
-            if e.ai:
-                e.ai.perform()
+    def handle_turns(self) -> None:
+        if self.player.delay % 10 == 0:
+            self.player.periodic_refresh()
+        if self.player.delay <= 0:
+            action_result = self.event_handler.handle_events()
+            if action_result == None:
+                return None
+            elif action_result.time_passed:
+                self.player.delay += action_result.time_taken
+            if action_result.message:
+                self.add_message(action_result.message, action_result.message_color)
+
+        else:
+            for e in [e for e in self.map.awake_entities if e != self.player]:
+
+                if e.ai:
+                    print(f"{e.name} - {e.delay}")
+                    if e.delay <= 0:
+                        action_result = e.ai.perform()
+                        if action_result.time_passed:
+                            e.delay += action_result.time_taken
+                    else:
+                        e.delay -= 1
+            self.player.delay -= 1
+        
+        self.update_fov()
+
 
     def render(self) -> None:
         # turns out you can't just reference a class in match/case statements
@@ -183,7 +207,7 @@ class GameEngine():
         # status window is 20x20 to the right of the playfield
 
         # start with rendering resources and ammo
-        self.side_console.print(x = 0, y = 0, string = f"Player Name", fg = color.white)
+        self.side_console.print(x = 0, y = 0, string = f"{self.player.delay}", fg = color.white)
         self.side_console.print(x = 16, y = 0, string = "Ammo", fg = color.white)
         self.side_console.print(x = 0, y = 1, string = f"ARM: {self.player.hp}/{self.player.max_hp}", fg = color.white)
         self.side_console.print(x = 15, y = 1, string = f"L:{(self.player.ammunition['light']/self.player.max_light_ammo)*100:.0f}", fg = color.light_gray)

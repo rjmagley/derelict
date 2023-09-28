@@ -13,12 +13,9 @@ def main():
 
     context = tcod.context.new(columns=screen_width, rows=screen_height, tileset=tileset, title="Derelict", vsync=False)
 
-    context.renderer = 5
-        
-    print(context.sdl_renderer)
-
     root_console = tcod.console.Console(screen_width, screen_height, order="F")
     player = Player(x=40, y=12, char='@', hp=10, defense=5, power=5)
+    player.delay = 0
     engine = GameEngine(player=player, root_console=root_console, context=context)
 
     map = generate_test_floor2(160, 20, engine)
@@ -33,7 +30,7 @@ def main():
 
     while True:
         engine.render()
-        engine.event_handler.handle_events()
+        engine.handle_turns()
 
 
 if __name__ == "__main__":

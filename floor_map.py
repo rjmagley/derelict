@@ -8,6 +8,7 @@ import tile_types
 from tcod.console import Console
 
 from entities.combatant import Combatant
+from entities.mover import Mover
 from items.base_item import BaseItem
 
 if TYPE_CHECKING:
@@ -33,6 +34,11 @@ class FloorMap():
     @property
     def living_entities(self) -> Generator[BaseEntity]:
         yield from (e for e in self.entities if isinstance(e, Combatant) and e.is_alive and e != self.engine.player)
+
+    @property
+    def awake_entities(self) -> List[Mover]:
+        movers = [e for e in self.entities if isinstance(e, Mover) and e.awake == True and e.is_alive]
+        return movers
 
     def get_entities_at_location(self, x: int, y: int) -> List[BaseEntity]:
         

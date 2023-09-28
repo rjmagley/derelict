@@ -147,3 +147,8 @@ class Player(Combatant):
             return ActionResult(True, message, color.white, 10)
         else:
             return ActionResult(True, f"You miss the {target.name}.", color.light_gray, 10)
+
+    # gonna call this every 10 auts to do things like player shield recharge,
+    # ticking down status effects, etc. 
+    def periodic_refresh(self):
+        pass

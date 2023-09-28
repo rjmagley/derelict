@@ -113,16 +113,16 @@ def tunnel_between(start: Tuple[int, int], end: Tuple[int, int]) -> Iterator[Tup
 
 def place_enemies(room: Room, map: FloorMap) -> None:
 
-    number_mobs = random.randint(0, 3)
+    number_mobs = random.randint(0, 5)
     for i in range(number_mobs):
         x = random.randint(room.x1 + 1, room.x2 - 1)
         y = random.randint(room.y1 + 1, room.y2 - 1)
         print(f"attempting placement at {x, y}")
         if not any (e.x == x and e.y == y for e in map.entities):
-            map.entities.add(monsters.create_goblin(x=x, y=y, map=map))
-            print(map.entities)
-        else:
-            print("placement failed")
+            if random.random() > .5: 
+                map.entities.add(monsters.create_goblin(x=x, y=y, map=map))
+            else:
+                map.entities.add(monsters.create_slow_goblin(x=x, y=y, map=map))
 
 
 def place_items(room: Room, map: FloorMap) -> None:

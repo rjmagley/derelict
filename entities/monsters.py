@@ -6,6 +6,9 @@ import color
 def create_goblin(x: int, y: int, map: FloorMap) -> Combatant:
     return Combatant(x=x, y=y, char='g', color=color.green, name='goblin', blocks_movement=True, hp=10, defense=1, power=0, ai=BasicHostile, map=map)
 
+def create_slow_goblin(x: int, y: int, map: FloorMap) -> Combatant:
+    return Combatant(x=x, y=y, char='g', color=color.yellow, name='goblin', blocks_movement=True, hp=10, defense=1, power=0, ai=BasicHostile, map=map, move_speed=15)
+
 def create_orc(x: int, y: int) -> Combatant:
     return Combatant(x=x, y=y, char='o', color=color.green, name='orc', blocks_movement=True, hp=10, defense=2, power=2, ai=BasicHostile, map=map)
 

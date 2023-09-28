@@ -88,7 +88,7 @@ class MovementAction(DirectionalAction):
             return ActionResult(False, "Something blocks your way.", color.light_gray)
 
         self.entity.move(*self.direction)
-        return ActionResult(True, time_taken = 10)
+        return ActionResult(True, time_taken = self.entity.move_speed)
 
 
 class MeleeAction(DirectionalAction):

@@ -46,7 +46,7 @@ class BasicHostile(BasicAI):
         self.entity = entity
         self.path: List[Tuple[int, int]] = []
 
-    def perform(self) -> None:
+    def perform(self) -> ActionResult:
         target = self.entity.engine.player
         destination_x = target.x - self.entity.x
         destination_y = target.y - self.entity.y

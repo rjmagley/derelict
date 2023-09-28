@@ -74,7 +74,7 @@ class RangedWeapon(BaseWeapon):
         if player.ammunition[self.ammunition_type] >= ammunition_needed:
             player.ammunition[self.ammunition_type] -= ammunition_needed
             self.loaded_ammo = self.magazine_size
-            return ActionResult(False, "You fully load your weapon.", color.white, 10)
+            return ActionResult(True, "You fully load your weapon.", color.white, 10)
 
         # player cannot fully reload - need to do a partial
         else:
@@ -98,7 +98,7 @@ class RangedWeapon(BaseWeapon):
         else:
             player.ammunition[self.ammunition_type] -= self.ammunition_size
             self.loaded_ammo += 1
-            return ActionResult(True, f"You load a round into the {self.name}.", color.white, 10)
+            return ActionResult(True, f"You load a round into the {self.name}.", color.white, 5)
 
 
 def place_random_ranged_weapon(x: int, y: int) -> RangedWeapon:
