@@ -4,6 +4,7 @@ from typing import Optional, TYPE_CHECKING, Tuple
 
 from entities.combatant import Combatant
 
+from . import ActionResult
 import color
 
 if TYPE_CHECKING:

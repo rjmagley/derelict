@@ -11,8 +11,12 @@ def main():
 
     tileset = tcod.tileset.load_tilesheet("tileset.png", 16, 16, tcod.tileset.CHARMAP_CP437)
 
-    context = tcod.context.new_terminal(screen_width, screen_height, tileset=tileset, title="Derelict", vsync=False)
+    context = tcod.context.new(columns=screen_width, rows=screen_height, tileset=tileset, title="Derelict", vsync=False)
+
+    context.renderer = 5
         
+    print(context.sdl_renderer)
+
     root_console = tcod.console.Console(screen_width, screen_height, order="F")
     player = Player(x=40, y=12, char='@', hp=10, defense=5, power=5)
     engine = GameEngine(player=player, root_console=root_console, context=context)
