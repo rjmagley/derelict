@@ -4,6 +4,7 @@ from typing import Optional, TYPE_CHECKING, Type
 from string import ascii_uppercase
 
 from . import MOVE_KEYS, WAIT_KEYS, CURSOR_Y_KEYS, CONFIRM_KEYS, ESCAPE_KEYS
+from actions import ActionResult
 
 import tcod
 
@@ -24,6 +25,16 @@ class ViewItemEventHandler(EventHandler):
     def ev_keydown(self, event: tcod.event.KeyDown) -> Optional[Action]:
         player = self.engine.player
         key = event.sym
+
+        if not player.has_equipped(self.item):
+            if key == tcod.event.KeySym.e:
+                action_result = player.equip_right_hand(self.item)
+                self.engine.switch_handler(HandlerType.INVENTORY_VIEW)
+                return action_result
+            if key == tcod.event.KeySym.f and self.item.hands == 1:
+                action_result = player.equip_left_hand(self.item)
+                self.engine.switch_handler(HandlerType.INVENTORY_VIEW)
+                return action_result
 
         if key in ESCAPE_KEYS:
             self.engine.switch_handler(HandlerType.INVENTORY_VIEW)

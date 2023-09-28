@@ -90,16 +90,6 @@ class GameEngine():
 
 
     def render(self) -> None:
-        # turns out you can't just reference a class in match/case statements
-        # this is probably hacky as hell - the insances of each handler could
-        # probably use an enum stating what kind of handler they are or
-        # something - but this works for now
-
-        # also that enum would reduce the number of imports hanging out up top,
-        # that might be cool
-
-        # all of these are getting self.root_console as an argument because
-        # eventually they should hang out in a different file
         match self.event_handler.handler_type:
             case HandlerType.GAME:
                 self.update_fov()
@@ -135,8 +125,13 @@ class GameEngine():
         self.map.visible[:] = compute_fov(
             self.map.tiles['transparent'],
             (self.player.x, self.player.y),
-            radius=60
+            radius=50
         )
+
+        sleepers = self.map.asleep_entities
+        for e in sleepers:
+            if self.map.visible[e.x, e.y]:
+                e.awake = True
 
         self.map.explored |= self.map.visible
 
@@ -263,11 +258,11 @@ class GameEngine():
 
     def render_inventory(self, root_console: Console) -> None:
 
-        self.inventory_console.print(5, 0, string="Inventory:")
+        self.inventory_console.print(1, 0, string="Inventory:")
 
         y_offset = 2
         for item, letter in zip(self.player.inventory.items, string.ascii_lowercase):
-            self.inventory_console.print(5, y_offset, string=f"{letter} - {item.name}")
+            self.inventory_console.print(1, y_offset, string=f"{letter} - {item.name}")
             y_offset += 1
 
         self.inventory_console.blit(dest = root_console, dest_x = 0, dest_y = 0, width = 59, height = 20)
@@ -278,21 +273,31 @@ class GameEngine():
     # for this? christ
     def render_weapon_description(self, root_console: Console, item) -> None:
         
+        y_offset = 3
+
         self.inventory_console.print(5, 1, string=f"{item.name} - {item.hands}-handed weapon")
-        damage_string = f"Damage: {item.damage_die}d{item.die_count}"
+        damage_string = f"Damage: {item.die_count}d{item.damage_die}"
         if isinstance(item, RangedWeapon):
-            damage_string += f" - fires in {item.burst_count}-round burst"
-        self.inventory_console.print(5, 3, string=damage_string)
+            if item.burst_count > 1:
+                damage_string += f" - fires in {item.burst_count}-round burst"
+        self.inventory_console.print(5, y_offset, string=damage_string)
 
-        y_offset = 5
+        y_offset += 1
 
-        if isinstance(item, RangedWeapon):
-            self.inventory_console.print(5, y_offset, string=f"{item.loaded_ammo} of {item.magazine_size} in magazine")
-            y_offset += 2
 
         if item.description:
             self.inventory_console.print(5, y_offset, string=item.description)
             y_offset += 1
+
+        if isinstance(item, RangedWeapon):
+            self.inventory_console.print(5, y_offset, string=f"{item.loaded_ammo} of {item.magazine_size} in magazine")
+            y_offset += 1
+
+        if self.player.has_equipped(item):
+            self.inventory_console.print(5, y_offset, string=f"{item.name} is in your hand{'s' if item.hands == 2 else ''}")
+        else:
+            self.inventory_console.print(5, y_offset, string=f"Press 'e' to equip the {item.name}")
+        
 
         self.inventory_console.blit(dest = root_console, dest_x = 0, dest_y = 0, width = 59, height = 20)
         self.inventory_console.clear()

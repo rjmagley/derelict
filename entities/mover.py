@@ -11,7 +11,7 @@ class Mover(BaseEntity):
         self.delay = 10
         # an entity is "awake" if it needs to act - this will cut down on some
         # of the checks that have to be made later
-        self.awake = True
+        self.awake = False
         self.move_speed = move_speed
 
     @property

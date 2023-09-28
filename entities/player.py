@@ -90,25 +90,28 @@ class Player(Combatant):
             # self.engine.switch_handler(EndgameEventHandler)
             self.die()
 
+    def has_equipped(self, item: BaseWeapon):
+        return item is self.right_hand or item is self.left_hand
+
     # returns true if equipping was successful, false otherwise
     # currently constantly returns True because there's no reason for equipping
     # to fail, but there may be in the future
-    def equip_right_hand(self, weapon: BaseWeapon) -> bool:
+    def equip_right_hand(self, weapon: BaseWeapon) -> ActionResult:
         if weapon.hands == 1:
             self.right_hand = weapon
         else:
             self.left_hand = None
             self.right_hand = weapon
-        return True
+        return ActionResult(True, f"You equip the {weapon.name}.", color.white, 10)
 
-    def equip_left_hand(self, weapon: BaseWeapon) -> bool:
+    def equip_left_hand(self, weapon: BaseWeapon) -> ActionResult:
+        if self.twohanded_weapon:
+            return ActionResult(False, f"Both your hands are full.", color.light_gray)
         if weapon.hands == 1:
             self.left_hand = weapon
+            return ActionResult(True, f"You equip the {weapon.name} in your off hand.", color.white, 10)
         else:
-            # two-handed weapons take up both hands
-            self.left_hand = None
-            self.right_hand = weapon
-        return True
+            return ActionResult(False, f"The {weapon.name} is too big for your offhand.", color.light_gray)
 
     def die(self) -> None:
         print("You died!")
@@ -147,6 +150,8 @@ class Player(Combatant):
             return ActionResult(True, message, color.white, 10)
         else:
             return ActionResult(True, f"You miss the {target.name}.", color.light_gray, 10)
+
+
 
     # gonna call this every 10 auts to do things like player shield recharge,
     # ticking down status effects, etc. 

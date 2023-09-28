@@ -40,6 +40,11 @@ class FloorMap():
         movers = [e for e in self.entities if isinstance(e, Mover) and e.awake == True and e.is_alive]
         return movers
 
+    @property
+    def asleep_entities(self) -> List[Mover]:
+        movers = [e for e in self.entities if isinstance(e, Mover) and e.awake == False and e.is_alive]
+        return movers
+
     def get_entities_at_location(self, x: int, y: int) -> List[BaseEntity]:
         
         results = []
