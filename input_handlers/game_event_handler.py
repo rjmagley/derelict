@@ -29,6 +29,8 @@ class GameEventHandler(EventHandler):
 
         key, mod = event.sym, event.mod
 
+        print(key.label)
+
         match key:
             case key if key in MOVE_KEYS:
                 dx, dy = MOVE_KEYS[key]
@@ -57,6 +59,9 @@ class GameEventHandler(EventHandler):
                 if not isinstance(player.right_hand, RangedWeapon):
                     return ActionResult(False, "You don't have a ranged weapon in hand.")
                 self.engine.switch_handler(HandlerType.TARGETING, weapon=player.right_hand)
+
+            case tcod.event.KeySym.N5 if event.mod & tcod.event.KMOD_SHIFT:
+                self.engine.switch_handler(HandlerType.CHARACTER_PROFILE)
 
             case tcod.event.KeySym.p if event.mod & tcod.event.KMOD_CTRL:
                 self.engine.switch_handler(HandlerType.MESSAGE_HISTORY)

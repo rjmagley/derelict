@@ -119,6 +119,10 @@ class GameEngine():
                 self.render_targeting_information(self.root_console, self.event_handler.weapon)
                 self.context.present(self.root_console)
                 self.root_console.clear()
+            case HandlerType.CHARACTER_PROFILE:
+                self.render_character_profile(self.root_console)
+                self.context.present(self.root_console)
+                self.root_console.clear()
                 
 
     def update_fov(self) -> None:
@@ -320,3 +324,8 @@ class GameEngine():
 
         self.bottom_console.blit(dest = root_console, dest_x = 0, dest_y = 20, width = 80, height = 4)
         self.bottom_console.clear()
+
+    def render_character_profile(self, root_console: Console) -> None:
+        player = self.player
+
+        self.root_console.print(x=0, y=0, string=f"Character Information for {player.name}", fg=color.white)

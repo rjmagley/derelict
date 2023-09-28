@@ -8,3 +8,4 @@ class HandlerType(Enum):
     LOOK = auto()
     MESSAGE_HISTORY = auto()
     TARGETING = auto()
+    CHARACTER_PROFILE = auto()

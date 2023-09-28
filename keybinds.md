@@ -7,6 +7,8 @@ f: fire weapon in main hand
 F: fire auxillary weapons or offhand weapon
 r: reload weapon in main hand
 
+%: player status screen
+
 when targeting:
 f: fire weapon
 tab: switch to next target in view
