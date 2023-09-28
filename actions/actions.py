@@ -2,8 +2,9 @@ from __future__ import annotations
 
 from typing import Optional, TYPE_CHECKING, Tuple
 
-from entities.combatant import Combatant
+from decimal import Decimal
 
+from entities.combatant import Combatant
 from . import ActionResult
 import color
 
@@ -68,7 +69,7 @@ class DirectionalAction(Action):
 
 class BumpAction(DirectionalAction):
 
-    def perform(self) -> bool:
+    def perform(self) -> ActionResult:
         if isinstance(self.blocking_entity, Combatant) and self.blocking_entity.is_alive:
             return MeleeAction(self.entity, *self.direction).perform()
         else:
@@ -77,38 +78,34 @@ class BumpAction(DirectionalAction):
 
 class MovementAction(DirectionalAction):
 
-    def perform(self) -> bool:
-        destination_x = self.entity.x + self.dx
-        destination_y = self.entity.y + self.dy
-
+    def perform(self) -> ActionResult:
         if not self.engine.map.in_bounds(*self.destination):
             self.engine.add_message("You can't move there.", color.light_gray)
-            return False
+            return ActionResult(False, "You can't move there.", color.light_gray)
         if not self.engine.map.tiles['walkable'][*self.destination]:
-            self.engine.add_message("You can't move there.", color.light_gray)
-            return False
+            return ActionResult(False, "You can't move there.", color.light_gray)
         if self.engine.map.get_blocking_entity_at_location(*self.destination):
-            return False
+            return ActionResult(False, "Something blocks your way.", color.light_gray)
 
         self.entity.move(*self.direction)
-        return True
+        return ActionResult(True, time_taken = 10)
 
 
 class MeleeAction(DirectionalAction):
     
-    def perform(self) -> bool:
+    def perform(self) -> ActionResult:
 
         target = self.target_entity
         if not target:
-            return False
+            return ActionResult()
 
-        self.entity.attack(target)
-        return True
+        message = self.entity.attack(target)
+        return ActionResult(True, message, color.white, 10)
 
 
 class PickupItemAction(Action):
 
-    def perform(self) -> bool:
+    def perform(self) -> ActionResult:
         player = self.engine.player
         items = self.engine.map.get_items_at_location(self.entity.x, self.entity.y)
         if len(items) == 1:
@@ -121,13 +118,11 @@ class PickupItemAction(Action):
                 if player.right_hand == None:
                     player.right_hand = target_item
 
-                self.engine.add_message(f"You grab the {target_item.name}.", color.light_gray)
-                return True
+                return ActionResult(True, f"You grab the {target_item.name}.", color.light_gray, 10)
             else:
-                self.engine.add_message("Your inventory is full.", color.light_gray)
+                return ActionResult(False, "Your inventory is full.", color.light_gray)
         else:
-            self.engine.add_message("Nothing to get here.", color.light_gray)
-        return False
+            return ActionResult(False, "There's nothing to pick up.", color.light_gray)
 
 
 class PlayerFireAction(Action):
@@ -140,9 +135,8 @@ class PlayerFireAction(Action):
 
     # for now, weapons don't overpenetrate, a burst can't hit another target,
     # etc. - will need more work
-    def perform(self) -> bool:
-        self.player.ranged_attack(self.target, self.weapon)
-        return True
+    def perform(self) -> ActionResult:
+        return self.player.ranged_attack(self.target, self.weapon)
 
 class PlayerReloadAction(Action):
 
@@ -151,11 +145,10 @@ class PlayerReloadAction(Action):
         self.player = player
         self.weapon = weapon
 
-    def perform(self) -> bool:
-        result, string = self.weapon.reload(self.player)
-        self.engine.add_message(string)
-        return result
+    def perform(self) -> ActionResult:
+        return self.weapon.reload(self.player)
+
 
 class WaitAction(Action):
-    def perform(self) -> bool:
-        return True
+    def perform(self) -> ActionResult:
+        return ActionResult(True, time_taken = 10)

@@ -13,6 +13,7 @@ class MessageLog:
         self.messages: List[Message] = []
 
     def add_message(self, text: str, fg: Tuple[int, int, int] = color.white) -> None:
+        print(f"adding message: {text}")
         self.messages.append(Message(text, fg))
         if len(self.messages) > 200:
             self.messages.pop(0)
@@ -21,3 +22,9 @@ class MessageLog:
         for m in reversed(self.messages):
             for l in reversed(textwrap.wrap(m.plain_text, 80)):
                 yield l, m.fg
+
+    def return_last_message(self) -> Tuple[str, Tuple[int, int, int]]:
+        if len(self.messages) >= 1:
+            return (self.messages[-1].plain_text, self.messages[-1].fg)
+        else:
+            return ("", (0,0,0))

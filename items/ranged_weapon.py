@@ -4,6 +4,8 @@ from typing import Optional, TYPE_CHECKING, Tuple
 
 import random
 
+import color
+from actions import ActionResult
 from .base_weapon import BaseWeapon
 from . import WeaponType, AmmunitionType, ReloadType
 
@@ -56,23 +58,23 @@ class RangedWeapon(BaseWeapon):
     # selected by the reload_type
 
     # standard magazine reload - player reloads entire weapon in one go
-    def standard_reload(self, player: Player) -> tuple[bool, str]:
+    def standard_reload(self, player: Player) -> ActionResult:
 
         # no need to reload if full
         if self.loaded_ammo >= self.magazine_size:
-            return (False, "Your weapon is fully loaded.")
+            return ActionResult(False, "Your weapon is already fully loaded.", color.light_gray)
 
         # determine how many units of ammo needed
         ammunition_needed = (self.magazine_size - self.loaded_ammo) * self.ammunition_size
         
         if player.ammunition[self.ammunition_type] < self.ammunition_size:
-            return (False, "You don't have enough ammo to load even one round.")
+            return ActionResult(False, "You don't have enough ammo to load even one round.", color.light_gray)
 
         # player has enough ammo to fully load magazine - no fancy math needed
         if player.ammunition[self.ammunition_type] >= ammunition_needed:
             player.ammunition[self.ammunition_type] -= ammunition_needed
             self.loaded_ammo = self.magazine_size
-            return (True, "You fully load your weapon.")
+            return ActionResult(False, "You fully load your weapon.", color.white, 10)
 
         # player cannot fully reload - need to do a partial
         else:
@@ -81,22 +83,22 @@ class RangedWeapon(BaseWeapon):
             ammunition_used = ammunition_available // self.ammunition_size
             self.loaded_ammo += ammunition_used
             player.ammunition[self.ammunition_type] -= ammunition_used * self.ammunition_size
-            return (True, "You load as much ammo as you have.")
+            return ActionResult(True, "You load as much ammo as you have.", color.white, 10)
 
     # single reload - player reloads one round at a time
-    def single_reload(self, player: Player) -> tuple[bool, str]:
+    def single_reload(self, player: Player) -> ActionResult:
 
         # no need to reload if full
         if self.loaded_ammo >= self.magazine_size:
-            return (False, "Your weapon is fully loaded.")
+            return ActionResult(False, "Your weapon is already fully loaded.", color.light_gray)
 
         elif player.ammunition[self.ammunition_type] < self.ammunition_size:
-            return (False, "You don't have enough ammo to load even one round.")
+            return ActionResult(False, "You don't have enough ammo to load even one round.", color.light_gray)
 
         else:
             player.ammunition[self.ammunition_type] -= self.ammunition_size
             self.loaded_ammo += 1
-            return (True, f"You load a round into the {self.name}.")
+            return ActionResult(True, f"You load a round into the {self.name}.", color.white, 10)
 
 
 def place_random_ranged_weapon(x: int, y: int) -> RangedWeapon:

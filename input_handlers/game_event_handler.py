@@ -6,6 +6,7 @@ from typing import Optional, TYPE_CHECKING
 
 import tcod.event
 
+from actions import ActionResult
 from actions.actions import Action, EscapeAction, BumpAction, WaitAction, PickupItemAction, PlayerReloadAction
 
 if TYPE_CHECKING:
@@ -22,8 +23,8 @@ class GameEventHandler(EventHandler):
         super().__init__(engine)
         self.handler_type = HandlerType.GAME
 
-    def ev_keydown(self, event: tcod.event.KeyDown) -> Optional[Action]:
-        action: Optional[Action] = None
+    def ev_keydown(self, event: tcod.event.KeyDown) -> ActionResult:
+        action = ActionResult(False)
         player = self.engine.player
 
         key, mod = event.sym, event.mod
@@ -31,16 +32,16 @@ class GameEventHandler(EventHandler):
         match key:
             case key if key in MOVE_KEYS:
                 dx, dy = MOVE_KEYS[key]
-                action = BumpAction(player, dx, dy)
+                action = BumpAction(player, dx, dy).perform()
             case key if key in WAIT_KEYS:
                 print("waiting")
-                action = WaitAction(player)
+                action = WaitAction(player).perform()
 
             case key if key in ESCAPE_KEYS:
                 action = EscapeAction(player)
 
             case tcod.event.KeySym.g:
-                action = PickupItemAction(player)
+                action = PickupItemAction(player).perform()
 
             case tcod.event.KeySym.i:
                 self.engine.switch_handler(HandlerType.INVENTORY_VIEW)
@@ -50,22 +51,11 @@ class GameEventHandler(EventHandler):
 
             case tcod.event.KeySym.r:
                 weapon = player.right_hand
-                if not isinstance(weapon, RangedWeapon):
-                    self.engine.add_message("You don't have a ranged weapon in hand.")
-                    return
-                elif weapon.loaded_ammo >= weapon.magazine_size:
-                    self.engine.add_message("Your weapon is already loaded.")
-                    return
-                else:
-                    action = PlayerReloadAction(player, weapon)
+                action = PlayerReloadAction(player, weapon).perform()
 
             case tcod.event.KeySym.f:
                 if not isinstance(player.right_hand, RangedWeapon):
-                    self.engine.add_message("You don't have a ranged weapon in hand.")
-                    return
-                if not player.right_hand.loaded_ammo > 0:
-                    self.engine.add_message("Your weapon is empty.")
-                    return
+                    return ActionResult(False, "You don't have a ranged weapon in hand.")
                 self.engine.switch_handler(HandlerType.TARGETING, weapon=player.right_hand)
 
             case tcod.event.KeySym.p if event.mod & tcod.event.KMOD_CTRL:
@@ -92,4 +82,5 @@ class GameEventHandler(EventHandler):
         #     self.engine.switch_handler(message_history_handler.MessageHistoryHandler)
 
         # No valid key was pressed
+        print(action)
         return action

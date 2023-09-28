@@ -285,6 +285,9 @@ class GameEngine():
         else:
             self.bottom_console.print(x=0, y=1, fg=color.light_gray, string=f"Nothing here.")
 
+        message = self.message_log.return_last_message()
+        self.bottom_console.print(x=0, y=3, fg=message[1], string=message[0])
+
 
         self.bottom_console.blit(dest = root_console, dest_x = 0, dest_y = 20, width = 80, height = 4)
         self.bottom_console.clear()

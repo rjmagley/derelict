@@ -8,6 +8,8 @@ from random import randint
 
 from items.base_weapon import BaseWeapon
 
+from actions import ActionResult
+
 from .combatant import Combatant
 from items.melee_weapon import MeleeWeapon
 from items.ranged_weapon import RangedWeapon
@@ -137,10 +139,11 @@ class Player(Combatant):
 
     # for now, just a fairly high chance to hit
     # will be modified later by player/enemy stats
-    def ranged_attack(self, target: Combatant, weapon: RangedWeapon):
+    def ranged_attack(self, target: Combatant, weapon: RangedWeapon) -> ActionResult:
         damage = weapon.fire()
         if randint(1, 10) > 3:
-            self.engine.add_message(f"You hit the {target.name} for {damage} damage.")
+            message = f"You hit the {target.name} for {damage} damage."
             target.take_damage(damage)
+            return ActionResult(True, message, color.white, 10)
         else:
-            self.engine.add_message(f"You miss the {target.name}.", color.light_gray)
+            return ActionResult(True, f"You miss the {target.name}.", color.light_gray, 10)

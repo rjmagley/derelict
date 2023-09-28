@@ -8,13 +8,15 @@ from typing import Tuple
 # especially adding messages to the log
 # this dataclass contains some key information to pass around -
 # - if the action causes time to pass
-# - how long the action will take
 # - if a message is printed as a result of the action
 # - the color of the printed message
+# - how long the action will take
+# action time is measured in auts, stolen shamelessly from DCSS because it's
+# a good term - 10 auts can be thought of as one "second"
 
 @dataclass
 class ActionResult():
-    time_passed: bool
-    time_taken: Decimal
-    message: str
-    message_color: Tuple[int, int, int]
+    time_passed: bool = False
+    message: str = ""
+    message_color: Tuple[int, int, int] = (192, 192, 192)
+    time_taken: int = 0

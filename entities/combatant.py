@@ -43,7 +43,10 @@ class Combatant(Mover):
     def is_alive(self) -> bool:
         return self.ai != None
 
-    def attack(self, target: Combatant):
+    # returning a string to pass to the ActionResult
+    # will eventually need to also return time taken
+    # may need to just return the ActionResult itself
+    def attack(self, target: Combatant) -> str:
         damage = self.power - target.defense
         output_string = f"{self.name} attacks {target.name} "
         if damage > 0:

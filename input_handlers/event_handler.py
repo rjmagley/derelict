@@ -18,14 +18,21 @@ class EventHandler(tcod.event.EventDispatch[Action]):
 
     def handle_events(self) -> None:
         for e in tcod.event.wait():
-            action = self.dispatch(e)
+            action_result = self.dispatch(e)
 
-            if action is None:
-                continue
+            print(action_result)
+            if action_result is None:
+                return None
+
+            if action_result.message != None:
+                self.engine.add_message(action_result.message, action_result.message_color)
+
+            if action_result.time_passed is False:
+                return None
 
             # action should be something that takes a player's turn -
             # if a handler returns an action, something is happening
-            if action.perform():
+            else:
 
                 self.engine.handle_enemy_actions()
                 self.engine.update_fov()

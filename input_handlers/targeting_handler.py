@@ -7,6 +7,7 @@ from . import MOVE_KEYS, WAIT_KEYS, CURSOR_Y_KEYS, CONFIRM_KEYS, ESCAPE_KEYS
 import tcod
 
 from actions.actions import PlayerFireAction
+from actions import ActionResult
 
 if TYPE_CHECKING:
     from game_engine import GameEngine
@@ -28,7 +29,7 @@ class TargetingEventHandler(LookEventHandler):
         self.weapon = weapon
         
 
-    def ev_keydown(self, event: tcod.event.KeyDown) -> Optional[Action]:
+    def ev_keydown(self, event: tcod.event.KeyDown) -> ActionResult:
         key = event.sym
 
         print("targeting keydown")
@@ -46,14 +47,15 @@ class TargetingEventHandler(LookEventHandler):
                 target = self.engine.map.get_blocking_entity_at_location(self.x, self.y)
                 if not target:
                     # handle this differently later when things like AoEs are implemented
-                    self.engine.add_message("There's nothing to shoot there.")
-                    return
+                    print("no target here")
+                    return ActionResult(False, "There's nothing to shoot there.")
                 if not self.weapon.can_fire:
-                    self.engine.add_message("Your weapon is empty.")
-                    return
-                action = PlayerFireAction(self.player, target, self.weapon)
+                    print("can't fire")
+                    return ActionResult(False, "Your weapon is empty.")
+                action = PlayerFireAction(self.player, target, self.weapon).perform()
                 self.engine.switch_handler(HandlerType.GAME)
                 return action
 
             case key if key in ESCAPE_KEYS:
                 self.engine.switch_handler(HandlerType.GAME)
+                return ActionResult(False)
