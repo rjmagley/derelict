@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import Type
 
+from decimal import Decimal
+
 from enum import auto, StrEnum
 
 from random import randint
@@ -37,9 +39,11 @@ class Player(Combatant):
         # "right" hand
         self.right_hand = None
         self.left_hand = None
-        # later we're gonna calculate shields based on armor
+        # later we're gonna calculate shields based on player equipment
         self._shield_points = 10
         self.max_shield = 10
+        self.shield_regeneration_rate = Decimal(1.0)
+        self.partial_shield = 0
         # ammunition is a dictionary representing the four ammunition types
         # ammunition is stored as a number from 0 to the player's max ammo
         # (starts at 1000) and rendered as a percentage on the UI
@@ -92,12 +96,26 @@ class Player(Combatant):
         else:
             return self.right_hand.hands == 2
 
-    @hp.setter
-    def hp(self, value: int) -> None:
-        self._hp = max(0, min(value, self.max_hp))
-        if self._hp <= 0:
-            # self.engine.switch_handler(EndgameEventHandler)
-            self.die()
+    # the player's HP setter is a bit messier than normal - players have
+    # shields, then armor, then a few states before death
+    def take_damage(self, value: int) -> None:
+        print(f"receiving {value} damage, shield is currently {self.shield}")
+        if value <= self.shield:
+            self._shield_points -= value
+            if self.shield == 0:
+                # shield broken - passing for now
+                pass
+        else:
+            if self.shield > 0:
+                value -= self._shield_points
+                self._shield_points = 0
+            if value >= 0:
+                print(f"player taking {value} damage")
+                self._hp -= value
+                if self._hp <= 0:
+                    print("player died")
+                    # self.engine.switch_handler(EndgameEventHandler)
+                    self.die()
 
     def has_equipped(self, item: BaseWeapon):
         return item is self.right_hand or item is self.left_hand
@@ -165,4 +183,9 @@ class Player(Combatant):
     # gonna call this every 10 auts to do things like player shield recharge,
     # ticking down status effects, etc. 
     def periodic_refresh(self):
+        if self.shield < self.max_shield:
+            self.partial_shield += self.shield_regeneration_rate
+            if self.partial_shield >= 100:
+                self.partial_shield -= 100
+                self._shield_points += 1
         pass

@@ -48,13 +48,15 @@ class Combatant(Mover):
     # may need to just return the ActionResult itself
     def attack(self, target: Combatant) -> str:
         damage = self.power - target.defense
+        print(f"{self.name} attacking {target.name} - damage is {damage}")
+        
         output_string = f"{self.name} attacks {target.name} "
         if damage > 0:
             output_string += f"for {damage} damage."
         else:
             output_string += "for no damage."
         self.engine.message_log.add_message(output_string)
-        target.hp -= damage
+        target.take_damage(damage)
         
 
     def die(self) -> None:

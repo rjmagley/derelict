@@ -77,7 +77,7 @@ class GameEngine():
             for e in [e for e in self.map.awake_entities if e != self.player]:
 
                 if e.ai:
-                    print(f"{e.name} - {e.delay}")
+                    # print(f"{e.name} - {e.delay}")
                     if e.delay <= 0:
                         action_result = e.ai.perform()
                         if action_result.time_passed:
