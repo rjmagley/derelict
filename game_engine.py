@@ -21,6 +21,7 @@ from actions.actions import EscapeAction, MovementAction
 from entities.base_entity import BaseEntity
 from entities.player import Player
 from input_handlers import HandlerType, provide_handler
+from items import AmmunitionType
 from items.base_weapon import BaseWeapon
 from items.ranged_weapon import RangedWeapon
 from input_handlers.game_event_handler import GameEventHandler
@@ -213,13 +214,13 @@ class GameEngine():
         self.side_console.print(x = 0, y = 0, string = f"{self.player.delay}", fg = color.white)
         self.side_console.print(x = 16, y = 0, string = "Ammo", fg = color.white)
         self.side_console.print(x = 0, y = 1, string = f"ARM: {self.player.hp}/{self.player.max_hp}", fg = color.white)
-        self.side_console.print(x = 15, y = 1, string = f"L:{magazine.get_percentage('light')}", fg = color.light_gray)
+        self.side_console.print(x = 15, y = 1, string = f"L:{magazine.get_percentage(AmmunitionType.LIGHT)}", fg = color.light_gray)
         self.side_console.print(x = 0, y = 2, string = f"SHD: {self.player.shield}/{self.player.max_shield}", fg = color.bright_cyan)
-        self.side_console.print(x = 15, y = 2, string = f"H:{magazine.get_percentage('heavy')}", fg = color.white)
+        self.side_console.print(x = 15, y = 2, string = f"H:{magazine.get_percentage(AmmunitionType.HEAVY)}", fg = color.white)
         self.side_console.print(x = 0, y = 3, string = f"PSY: xxx/xxx", fg = color.white)
-        self.side_console.print(x = 15, y = 3, string = f"E:{magazine.get_percentage('explosive')}", fg = color.yellow)
+        self.side_console.print(x = 15, y = 3, string = f"E:{magazine.get_percentage(AmmunitionType.EXPLOSIVE)}", fg = color.yellow)
         self.side_console.print(x = 0, y = 4, string = f"ENG: xxx/xxx", fg = color.white)
-        self.side_console.print(x = 15, y = 4, string = f"X:{magazine.get_percentage('exotic')}", fg = color.magenta)
+        self.side_console.print(x = 15, y = 4, string = f"X:{magazine.get_percentage(AmmunitionType.EXOTIC)}", fg = color.magenta)
 
         self.side_console.print(x = 0, y = 6, string="Hands:", fg = color.white)
         if self.player.right_hand == None:
