@@ -37,6 +37,9 @@ class Player(Combatant):
         # "right" hand
         self.right_hand = None
         self.left_hand = None
+        # later we're gonna calculate shields based on armor
+        self._shield_points = 10
+        self.max_shield = 10
         # ammunition is a dictionary representing the four ammunition types
         # ammunition is stored as a number from 0 to the player's max ammo
         # (starts at 1000) and rendered as a percentage on the UI
@@ -69,6 +72,10 @@ class Player(Combatant):
     @property
     def hp(self) -> int:
         return self._hp
+
+    @property
+    def shield(self) -> int:
+        return self._shield_points
 
     @property
     def is_alive(self) -> bool:
@@ -143,8 +150,7 @@ class Player(Combatant):
                 self.engine.message_log.add_message(output_string)
                 target.hp -= damage
 
-    # for now, just a fairly high chance to hit
-    # will be modified later by player/enemy stats
+
     def ranged_attack(self, target: Combatant, weapon: RangedWeapon) -> ActionResult:
         damage = weapon.fire()
         if player_attack_roll(weapon, self):
