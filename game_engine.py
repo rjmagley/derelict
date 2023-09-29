@@ -63,7 +63,12 @@ class GameEngine():
         self.map = map
         self.map_console = Console(map.width, map.height, order="F")
 
+    # after adding shields this is a lil bugged - it's getting way too many
+    # inputs, so the shield regenerates super quick
+    # instantly if you mouse over ther window lmao
+    
     def handle_turns(self) -> None:
+        print(f"calling handle turns")
         if self.player.delay % 10 == 0:
             self.player.periodic_refresh()
         if self.player.delay <= 0:
@@ -215,7 +220,7 @@ class GameEngine():
         self.side_console.print(x = 16, y = 0, string = "Ammo", fg = color.white)
         self.side_console.print(x = 0, y = 1, string = f"ARM: {self.player.hp}/{self.player.max_hp}", fg = color.white)
         self.side_console.print(x = 15, y = 1, string = f"L:{magazine.get_percentage(AmmunitionType.LIGHT)}", fg = color.light_gray)
-        self.side_console.print(x = 0, y = 2, string = f"SHD: {self.player.shield}/{self.player.max_shield}", fg = color.bright_cyan)
+        self.side_console.print(x = 0, y = 2, string = f"SHD: {self.player.shield_generator.get_shield_status()}", fg = color.bright_cyan)
         self.side_console.print(x = 15, y = 2, string = f"H:{magazine.get_percentage(AmmunitionType.HEAVY)}", fg = color.white)
         self.side_console.print(x = 0, y = 3, string = f"PSY: xxx/xxx", fg = color.white)
         self.side_console.print(x = 15, y = 3, string = f"E:{magazine.get_percentage(AmmunitionType.EXPLOSIVE)}", fg = color.yellow)

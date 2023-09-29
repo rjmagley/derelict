@@ -23,6 +23,7 @@ from die_rollers import player_attack_roll
 
 from items.inventory import Inventory
 from items.magazine import Magazine
+from items.shield_generator import ShieldGenerator
 
 import color
 
@@ -49,10 +50,9 @@ class Player(Combatant):
         self.left_shoulder = None
 
         # later we're gonna calculate shields based on player equipment
-        self._shield_points = 10
-        self.max_shield = 10
-        self.shield_regeneration_rate = Decimal(1.0)
-        self.partial_shield = 0
+
+        self.shield_generator = ShieldGenerator()
+
         # ammunition is a dictionary representing the four ammunition types
         # ammunition is stored as a number from 0 to the player's max ammo
         # (starts at 1000) and rendered as a percentage on the UI
@@ -79,7 +79,7 @@ class Player(Combatant):
 
     @property
     def shield(self) -> int:
-        return self._shield_points
+        return self.shield_generator.current_shield
 
     @property
     def is_alive(self) -> bool:
@@ -100,22 +100,14 @@ class Player(Combatant):
     # shields, then armor, then a few states before death
     def take_damage(self, value: int) -> None:
         print(f"receiving {value} damage, shield is currently {self.shield}")
-        if value <= self.shield:
-            self._shield_points -= value
-            if self.shield == 0:
-                # shield broken - passing for now
-                pass
-        else:
-            if self.shield > 0:
-                value -= self._shield_points
-                self._shield_points = 0
-            if value >= 0:
-                print(f"player taking {value} damage")
-                self._hp -= value
-                if self._hp <= 0:
-                    print("player died")
-                    # self.engine.switch_handler(EndgameEventHandler)
-                    self.die()
+        remaining_damage = self.shield_generator.take_damage(value)
+        if remaining_damage > 0:
+            print(f"player taking {value} damage")
+            self._hp -= value
+            if self._hp <= 0:
+                print("player died")
+                # self.engine.switch_handler(EndgameEventHandler)
+                self.die()
 
     def has_equipped(self, item: BaseWeapon):
         return item is self.right_hand or item is self.left_hand
@@ -183,9 +175,5 @@ class Player(Combatant):
     # gonna call this every 10 auts to do things like player shield recharge,
     # ticking down status effects, etc. 
     def periodic_refresh(self):
-        if self.shield < self.max_shield:
-            self.partial_shield += self.shield_regeneration_rate
-            if self.partial_shield >= 100:
-                self.partial_shield -= 100
-                self._shield_points += 1
+        self.shield_generator.regeneration()
         pass

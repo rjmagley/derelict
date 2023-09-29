@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Tuple
 
 from items import AmmunitionType
+from items.base_item import BaseItem
 
 # the Magazine represents the player equipment for managing and
 # creating ammunition
@@ -10,12 +11,11 @@ from items import AmmunitionType
 # unwieldy - there are also potentially some situations where having enemies
 # with a limited/regenerating ammunition pool would be neat
 
-class Magazine():
+class Magazine(BaseItem):
 
     def __init__(self,
-        max_ammo_count: Tuple[int, int, int, int] = (1000, 1000, 1000, 1000),
-        name: str = "Basic Magazine"):
-        self.name = name
+        max_ammo_count: Tuple[int, int, int, int] = (1000, 1000, 1000, 1000), empty: bool = False, **kwargs):
+        super().__init__(name = "Basic Magazine", char = "$", **kwargs)
         self.maximum_ammunition = {
             AmmunitionType.LIGHT: max_ammo_count[0],
             AmmunitionType.HEAVY: max_ammo_count[0],
@@ -24,10 +24,10 @@ class Magazine():
         }
 
         self.ammunition = {
-            AmmunitionType.LIGHT: max_ammo_count[0],
-            AmmunitionType.HEAVY: max_ammo_count[0],
-            AmmunitionType.EXPLOSIVE: max_ammo_count[0],
-            AmmunitionType.EXOTIC: max_ammo_count[0]
+            AmmunitionType.LIGHT: 0 if empty else max_ammo_count[0],
+            AmmunitionType.HEAVY: 0 if empty else max_ammo_count[0],
+            AmmunitionType.EXPLOSIVE: 0 if empty else max_ammo_count[0],
+            AmmunitionType.EXOTIC: 0 if empty else max_ammo_count[0]
         }
 
     def get_max_ammo(self, ammo_type: AmmunitionType) -> int:
