@@ -21,7 +21,8 @@ from die_rollers import player_attack_roll
 
 # from input_handlers.endgame_event_handler import EndgameEventHandler
 
-from .inventory import Inventory
+from items.inventory import Inventory
+from items.magazine import Magazine
 
 import color
 
@@ -33,12 +34,20 @@ class Player(Combatant):
 
     def __init__(self, **kwargs):
         super().__init__(name = "Player", blocks_movement = True, **kwargs)
+        # the player's inventory - handles things held by the player
+        # things equipped by the player are different
         self.inventory = Inventory()
-        # weapons held by the player
+
+        self.magazine = Magazine()
+
+        # weapons held by the player, in hands/on shoulders
         # some weapons take up both hands - those are considered to be in the
         # "right" hand
         self.right_hand = None
         self.left_hand = None
+        self.right_shoulder = None
+        self.left_shoulder = None
+
         # later we're gonna calculate shields based on player equipment
         self._shield_points = 10
         self.max_shield = 10
@@ -47,16 +56,7 @@ class Player(Combatant):
         # ammunition is a dictionary representing the four ammunition types
         # ammunition is stored as a number from 0 to the player's max ammo
         # (starts at 1000) and rendered as a percentage on the UI
-        self.max_light_ammo = 1000
-        self.max_heavy_ammo = 1000
-        self.max_explosive_ammo = 1000
-        self.max_exotic_ammo = 1000
-        self.ammunition = {
-            AmmunitionType.LIGHT: 1000,
-            AmmunitionType.HEAVY: 1000,
-            AmmunitionType.EXPLOSIVE: 1000,
-            AmmunitionType.EXOTIC: 1000
-        }
+        
         self.player_stats = {
             WeaponType.PISTOL: 10,
             WeaponType.RIFLE: 18,

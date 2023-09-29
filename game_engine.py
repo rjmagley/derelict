@@ -9,6 +9,7 @@ if TYPE_CHECKING:
     from entities.base_entity import BaseEntity
     from floor_map import FloorMap
     from input_handlers.event_handler import EventHandler
+    from items.magazine import Magazine
 
 import numpy
 
@@ -206,16 +207,19 @@ class GameEngine():
         # status window is 20x20 to the right of the playfield
 
         # start with rendering resources and ammo
+
+        magazine: Magazine = self.player.magazine
+
         self.side_console.print(x = 0, y = 0, string = f"{self.player.delay}", fg = color.white)
         self.side_console.print(x = 16, y = 0, string = "Ammo", fg = color.white)
         self.side_console.print(x = 0, y = 1, string = f"ARM: {self.player.hp}/{self.player.max_hp}", fg = color.white)
-        self.side_console.print(x = 15, y = 1, string = f"L:{(self.player.ammunition['light']/self.player.max_light_ammo)*100:.0f}", fg = color.light_gray)
+        self.side_console.print(x = 15, y = 1, string = f"L:{magazine.get_percentage('light')}", fg = color.light_gray)
         self.side_console.print(x = 0, y = 2, string = f"SHD: {self.player.shield}/{self.player.max_shield}", fg = color.bright_cyan)
-        self.side_console.print(x = 15, y = 2, string = f"H:{(self.player.ammunition['heavy']/self.player.max_heavy_ammo)*100:.0f}", fg = color.white)
+        self.side_console.print(x = 15, y = 2, string = f"H:{magazine.get_percentage('heavy')}", fg = color.white)
         self.side_console.print(x = 0, y = 3, string = f"PSY: xxx/xxx", fg = color.white)
-        self.side_console.print(x = 15, y = 3, string = f"E:{(self.player.ammunition['explosive']/self.player.max_explosive_ammo)*100:.0f}", fg = color.yellow)
+        self.side_console.print(x = 15, y = 3, string = f"E:{magazine.get_percentage('explosive')}", fg = color.yellow)
         self.side_console.print(x = 0, y = 4, string = f"ENG: xxx/xxx", fg = color.white)
-        self.side_console.print(x = 15, y = 4, string = f"X:{(self.player.ammunition['exotic']/self.player.max_exotic_ammo)*100:.0f}", fg = color.magenta)
+        self.side_console.print(x = 15, y = 4, string = f"X:{magazine.get_percentage('exotic')}", fg = color.magenta)
 
         self.side_console.print(x = 0, y = 6, string="Hands:", fg = color.white)
         if self.player.right_hand == None:

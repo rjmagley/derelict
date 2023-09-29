@@ -1,0 +1,47 @@
+from __future__ import annotations
+
+from typing import Tuple
+
+from items import AmmunitionType
+
+# the Magazine represents the player equipment for managing and
+# creating ammunition
+# it's split off into a seperate class so that the Player class doesn't get
+# unwieldy - there are also potentially some situations where having enemies
+# with a limited/regenerating ammunition pool would be neat
+
+class Magazine():
+
+    def __init__(self,
+        max_ammo_count: Tuple[int, int, int, int] = (1000, 1000, 1000, 1000),
+        name: str = "Basic Magazine"):
+        self.name = name
+        self.maximum_ammunition = {
+            AmmunitionType.LIGHT: max_ammo_count[0],
+            AmmunitionType.HEAVY: max_ammo_count[0],
+            AmmunitionType.EXPLOSIVE: max_ammo_count[0],
+            AmmunitionType.EXOTIC: max_ammo_count[0]
+        }
+
+        self.ammunition = {
+            AmmunitionType.LIGHT: max_ammo_count[0],
+            AmmunitionType.HEAVY: max_ammo_count[0],
+            AmmunitionType.EXPLOSIVE: max_ammo_count[0],
+            AmmunitionType.EXOTIC: max_ammo_count[0]
+        }
+
+    def get_max_ammo(self, ammo_type: AmmunitionType) -> int:
+        return self.maximum_ammunition[ammo_type]
+
+    def get_current_ammo(self, ammo_type: AmmunitionType) -> int:
+        return self.ammunition[ammo_type]
+
+    def get_percentage(self, ammo_type: AmmunitionType) -> str:
+        return f"{self.ammunition[ammo_type]/self.maximum_ammunition[ammo_type]*100:.0f}"
+
+    # returns false if the requested amount of ammunition cannot be provided
+    def spend_ammo(self, ammo_type: AmmunitionType, amount: int) -> bool:
+        if amount > self.get_current_ammo(ammo_type):
+            return False
+        self.ammunition[ammo_type] -= amount
+        return True

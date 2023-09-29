@@ -9,9 +9,10 @@ from actions import ActionResult
 from .base_weapon import BaseWeapon
 from . import WeaponType, AmmunitionType, ReloadType
 
+
 if TYPE_CHECKING:
     from entities.player import Player
-
+    from magazine import Magazine
 
 class RangedWeapon(BaseWeapon):
     def __init__(self, magazine_size: int = 6, burst_count: int = 1, ammunition_size: int = 10, ammunition_type: AmmunitionType = AmmunitionType.LIGHT, reload_type: ReloadType = ReloadType.STANDARD, **kwargs):
@@ -60,6 +61,8 @@ class RangedWeapon(BaseWeapon):
     # standard magazine reload - player reloads entire weapon in one go
     def standard_reload(self, player: Player) -> ActionResult:
 
+        magazine: Magazine = player.magazine
+
         # no need to reload if full
         if self.loaded_ammo >= self.magazine_size:
             return ActionResult(False, "Your weapon is already fully loaded.", color.light_gray)
@@ -67,36 +70,38 @@ class RangedWeapon(BaseWeapon):
         # determine how many units of ammo needed
         ammunition_needed = (self.magazine_size - self.loaded_ammo) * self.ammunition_size
         
-        if player.ammunition[self.ammunition_type] < self.ammunition_size:
+        if magazine.get_current_ammo(self.ammunition_type) < self.ammunition_size:
             return ActionResult(False, "You don't have enough ammo to load even one round.", color.light_gray)
 
         # player has enough ammo to fully load magazine - no fancy math needed
-        if player.ammunition[self.ammunition_type] >= ammunition_needed:
-            player.ammunition[self.ammunition_type] -= ammunition_needed
+        if magazine.get_current_ammo(self.ammunition_type) >= ammunition_needed:
+            magazine.spend_ammo(self.ammunition_type, ammunition_needed)
             self.loaded_ammo = self.magazine_size
             return ActionResult(True, "You fully load your weapon.", color.white, 10)
 
         # player cannot fully reload - need to do a partial
         else:
-            ammunition_available = player.ammunition[self.ammunition_type] - ammunition_needed
+            ammunition_available = magazine.get_current_ammo(self.ammunition_type)
 
             ammunition_used = ammunition_available // self.ammunition_size
             self.loaded_ammo += ammunition_used
-            player.ammunition[self.ammunition_type] -= ammunition_used * self.ammunition_size
+            magazine.spend_ammo(self.ammunition_type, ammunition_used * self.ammunition_size)
             return ActionResult(True, "You load as much ammo as you have.", color.white, 10)
 
     # single reload - player reloads one round at a time
     def single_reload(self, player: Player) -> ActionResult:
 
+        magazine: Magazine = player.magazine
+
         # no need to reload if full
         if self.loaded_ammo >= self.magazine_size:
             return ActionResult(False, "Your weapon is already fully loaded.", color.light_gray)
 
-        elif player.ammunition[self.ammunition_type] < self.ammunition_size:
+        elif magazine.get_current_ammo(self.ammunition_type) < self.ammunition_size:
             return ActionResult(False, "You don't have enough ammo to load even one round.", color.light_gray)
 
         else:
-            player.ammunition[self.ammunition_type] -= self.ammunition_size
+            magazine.spend_ammo(self.ammunition_type, self.ammunition_size)
             self.loaded_ammo += 1
             return ActionResult(True, f"You load a round into the {self.name}.", color.white, 5)
 
