@@ -22,6 +22,7 @@ class ArmorType(StrEnum):
     ARMS = "arms"
     LEGS = "legs"
     BACKPACK = "backpack"
+    SHIELD_GENERATOR = "shield"
 
 class AmmunitionType(StrEnum):
     LIGHT = "light"
@@ -40,3 +41,12 @@ class ReloadType(StrEnum):
     SINGLE = "single"
     BELT = "belt"
     RECHARGE = "recharge"
+
+# various properties that armor can have, positive or negative
+class ArmorProperty(StrEnum):
+    ENERGY_CAPACITY = "energy capacity"
+    ENERGY_REGENERATION = "energy regeneration"
+    BASE_ARMOR = "base armor"
+    BASE_SHIELD = "base shield"
+    SHIELD_REBOOT_TIME = "shield reboot time"
+    SHIELD_REGENERATION = "shield regeneration"

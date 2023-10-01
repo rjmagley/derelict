@@ -4,6 +4,7 @@ from entities.player import Player
 from actions.actions import *
 from game_engine import GameEngine
 from items.ranged_weapon import place_random_ranged_weapon
+from items.ranged_energy_weapon import get_test_energy_weapon
 from floor_generation import generate_floor, generate_test_floor2
 
 def main():
@@ -18,12 +19,12 @@ def main():
     player = Player(x=40, y=12, char='@')
     player.delay = 0
     
-    starting_weapon = place_random_ranged_weapon(x=40, y=12)
+    starting_weapon = get_test_energy_weapon()
     engine = GameEngine(player=player, root_console=root_console, context=context)
 
     player.inventory.items.append(starting_weapon)
     player.right_hand = starting_weapon
-
+    
     map = generate_test_floor2(160, 20, engine)
     # map = generate_test_floor(160, 20, engine)
     player.map = map

@@ -154,6 +154,7 @@ class GameEngine():
         # get the player's X and Y values
         player_x, player_y = self.player.x, self.player.y
 
+
         # the map renders ten columns behind the player and fifty ahead of them
         # (the player is included in that fifty)
         # combat is intended to include very long ranges, and the game's intent
@@ -224,11 +225,11 @@ class GameEngine():
         self.side_console.print(x = 16, y = 0, string = "Ammo", fg = color.white)
         self.side_console.print(x = 0, y = 1, string = f"ARM: {self.player.armor_points}/{self.player.max_armor}", fg = color.white)
         self.side_console.print(x = 15, y = 1, string = f"L:{magazine.get_percentage(AmmunitionType.LIGHT)}", fg = color.light_gray)
-        self.side_console.print(x = 0, y = 2, string = f"SHD: {self.player.shield_generator.get_shield_status()}", fg = color.bright_cyan)
+        self.side_console.print(x = 0, y = 2, string = f"SHD: {self.player.get_shield_status()}", fg = color.bright_cyan)
         self.side_console.print(x = 15, y = 2, string = f"H:{magazine.get_percentage(AmmunitionType.HEAVY)}", fg = color.white)
         self.side_console.print(x = 0, y = 3, string = f"PSY: xxx/xxx", fg = color.white)
         self.side_console.print(x = 15, y = 3, string = f"E:{magazine.get_percentage(AmmunitionType.EXPLOSIVE)}", fg = color.yellow)
-        self.side_console.print(x = 0, y = 4, string = f"ENG: xxx/xxx", fg = color.white)
+        self.side_console.print(x = 0, y = 4, string = f"ENG: {self.player.get_energy_status()}", fg = color.bright_blue)
         self.side_console.print(x = 15, y = 4, string = f"X:{magazine.get_percentage(AmmunitionType.EXOTIC)}", fg = color.magenta)
 
         self.side_console.print(x = 0, y = 6, string="Hands:", fg = color.white)

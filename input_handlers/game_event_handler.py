@@ -16,6 +16,7 @@ from .event_handler import EventHandler
 
 from input_handlers.handler_types import HandlerType
 from items.ranged_weapon import RangedWeapon
+from items.ranged_energy_weapon import RangedEnergyWeapon
 
 class GameEventHandler(EventHandler):
 
@@ -56,9 +57,11 @@ class GameEventHandler(EventHandler):
                 action = PlayerReloadAction(player, weapon).perform()
 
             case tcod.event.KeySym.f:
-                if not isinstance(player.right_hand, RangedWeapon):
+                if isinstance(player.right_hand, RangedWeapon) or isinstance(player.right_hand, RangedEnergyWeapon):
+                    self.engine.switch_handler(HandlerType.TARGETING, weapon=player.right_hand)
+                else:
                     return ActionResult(False, "You don't have a ranged weapon in hand.")
-                self.engine.switch_handler(HandlerType.TARGETING, weapon=player.right_hand)
+                
 
             case tcod.event.KeySym.N5 if event.mod & tcod.event.KMOD_SHIFT:
                 self.engine.switch_handler(HandlerType.CHARACTER_PROFILE)

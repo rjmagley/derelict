@@ -1,13 +1,13 @@
 from __future__ import annotations
 
-from typing import Optional
+from typing import Optional, Dict, Any
 
-from . import ArmorType
+from . import ArmorType, ArmorProperty
 from .base_item import BaseItem
 
 class BaseArmor(BaseItem):
 
-    def __init__(self, armor_type: ArmorType, armor_points: int = 5, damage_resist: int = 0, name: Optional[str] = None, **kwargs):
+    def __init__(self, armor_type: ArmorType, armor_points: int = 5, damage_resist: int = 0, name: Optional[str] = None, properties: Dict[ArmorProperty, Any] = {}, **kwargs):
         if name == None:
             match armor_type:
                 case ArmorType.HELMET:
@@ -26,4 +26,4 @@ class BaseArmor(BaseItem):
         self.armor_type = armor_type
         # properties is where various buffs will hang out
         # for now, just an empty dictionary
-        self.properties = {}
+        self.properties = properties

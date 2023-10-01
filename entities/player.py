@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Type, List, Optional
+from typing import Type, List, Optional, Any
 
 from decimal import Decimal
 
@@ -16,7 +16,7 @@ from actions import ActionResult
 from .mover import Mover
 from items.melee_weapon import MeleeWeapon
 from items.ranged_weapon import RangedWeapon
-from items import WeaponType, AmmunitionType, ArmorType
+from items import WeaponType, AmmunitionType, ArmorType, ArmorProperty
 
 from die_rollers import player_attack_roll
 
@@ -24,7 +24,6 @@ from die_rollers import player_attack_roll
 
 from items.inventory import Inventory
 from items.magazine import Magazine
-from items.shield_generator import ShieldGenerator
 from items.base_armor import BaseArmor
 
 import color
@@ -37,7 +36,7 @@ class Player(Mover):
 
     def __init__(self, **kwargs):
         
-        self.render_order = RenderOrder.COMBATANT
+        
 
         # the player's inventory - handles things held by the player
         # things equipped by the player are different
@@ -47,14 +46,15 @@ class Player(Mover):
         self.magazine = Magazine()
 
         # shield generator controls shield stuff
-        self.shield_generator = ShieldGenerator()
+        
 
-        # these five represent all the player's armor
-        self.helmet = BaseArmor(armor_type = ArmorType.HELMET)
-        self.chest = BaseArmor(armor_type = ArmorType.TORSO)
-        self.arms = BaseArmor(armor_type = ArmorType.ARMS)
-        self.legs = BaseArmor(armor_type = ArmorType.LEGS)
-        self.backpack = BaseArmor(armor_type = ArmorType.BACKPACK)
+        # these six represent all the player's armor
+        self.helmet = BaseArmor(armor_type = ArmorType.HELMET, properties = {ArmorProperty.BASE_ARMOR: 10})
+        self.chest = BaseArmor(armor_type = ArmorType.TORSO, damage_resist = 3, properties = {ArmorProperty.BASE_ARMOR: 10})
+        self.arms = BaseArmor(armor_type = ArmorType.ARMS, properties = {ArmorProperty.BASE_ARMOR: 10})
+        self.legs = BaseArmor(armor_type = ArmorType.LEGS, properties = {ArmorProperty.BASE_ARMOR: 10})
+        self.backpack = BaseArmor(armor_type = ArmorType.BACKPACK, properties = {ArmorProperty.BASE_ARMOR: 10, ArmorProperty.ENERGY_CAPACITY: 50, ArmorProperty.ENERGY_REGENERATION: Decimal(10.0)})
+        self.shield_generator = BaseArmor(armor_type = ArmorType.SHIELD_GENERATOR, properties = {ArmorProperty.BASE_SHIELD: 10, ArmorProperty.SHIELD_REBOOT_TIME: 5, ArmorProperty.SHIELD_REGENERATION: Decimal(15.0)})
 
 
         # weapons held by the player, in hands/on shoulders
@@ -70,37 +70,53 @@ class Player(Mover):
         # (starts at 1000) and rendered as a percentage on the UI
         
         self.player_stats = {
-            WeaponType.PISTOL: 10,
+            WeaponType.PISTOL: 14,
             WeaponType.RIFLE: 18,
             WeaponType.SMG: 14,
-            WeaponType.SHOTGUN: 10,
-            WeaponType.LAUNCHER: 10,
-            WeaponType.HEAVY: 10,
-            WeaponType.ENERGY: 10,
-            WeaponType.SWORD: 10,
-            WeaponType.AXE: 10,
-            WeaponType.POLEARM: 10,
-            WeaponType.BLUNT: 10,
-            WeaponType.SHIELD: 10,
-            Skill.DUALWIELD: 10
+            WeaponType.SHOTGUN: 14,
+            WeaponType.LAUNCHER: 14,
+            WeaponType.HEAVY: 14,
+            WeaponType.ENERGY: 14,
+            WeaponType.SWORD: 14,
+            WeaponType.AXE: 14,
+            WeaponType.POLEARM: 14,
+            WeaponType.BLUNT: 14,
+            WeaponType.SHIELD: 14,
+            Skill.DUALWIELD: 14
         }
 
         self.armor_points = self.max_armor
+        self.energy_points = self.max_energy
+        self.shield_points = self.max_shield
+        self.partial_energy = 0
+        self.partial_shield = 0
+        self.shield_reboot_time = 0
 
-        super().__init__(name = "Player", blocks_movement = True, **kwargs)
+        super().__init__(name = "Player", blocks_movement = True, render_order = RenderOrder.COMBATANT, **kwargs)
+
 
 
     @property
     def max_armor(self) -> int:
-        return sum([a.max_armor_points for a in self.armor])
+        return sum(self.get_armor_properties(ArmorProperty.BASE_ARMOR))
 
-    # @max_armor.setter
-    # def max_armor(self, value) -> None:
-    #     self.max_armor = sum([a.max_armor_points for a in self.armor])
+    @property
+    def max_energy(self) -> int:
+        return sum(self.get_armor_properties(ArmorProperty.ENERGY_CAPACITY))
+
+    @property
+    def max_shield(self) -> int:
+        return sum(self.get_armor_properties(ArmorProperty.BASE_SHIELD))
+
+    # armor properties are in a dictionary
+    # key is an ArmorProperty, value is... an int, I think? for now?
+    # that might change
+    def get_armor_properties(self, armor_property: ArmorProperty) -> List[int]:
+        return [a.properties[armor_property] for a in self.armor if armor_property in a.properties]
 
     @property
     def armor(self) -> List[BaseArmor]:
-        return [self.helmet, self.chest, self.arms, self.legs, self.backpack]
+        return [self.helmet, self.chest, self.arms, self.legs, self.backpack, self.shield_generator]
 
     @property
     def hp(self) -> int:
@@ -111,10 +127,6 @@ class Player(Mover):
         self.armor_points -= value
         if self.armor_points <= 0:
             self.die()
-
-    @property
-    def shield(self) -> int:
-        return self.shield_generator.current_shield
 
     @property
     def is_alive(self) -> bool:
@@ -142,8 +154,7 @@ class Player(Mover):
     # the player's HP setter is a bit messier than normal - players have
     # shields, then armor, then a few states before death
     def take_damage(self, value: int) -> None:
-        print(f"receiving {value} damage, shield is currently {self.shield}")
-        remaining_damage = self.shield_generator.take_damage(value)
+        remaining_damage = self.take_shield_damage(value)
         if remaining_damage > 0:
             print(f"player taking {value} damage")
             self.armor_points -= value
@@ -151,6 +162,17 @@ class Player(Mover):
                 print("player died")
                 # self.engine.switch_handler(EndgameEventHandler)
                 self.die()
+
+    # depletes shield, returns any damage left to hit armor
+    def take_shield_damage(self, value: int) -> int:
+        if value >= self.shield_points:
+            remaining_damage = value - self.shield_points
+            self.shield_points = 0
+            self.shield_reboot_time += sum(self.get_armor_properties(ArmorProperty.SHIELD_REBOOT_TIME))
+            return remaining_damage
+        else:
+            self.shield_points -= value
+            return 0
 
     def has_equipped(self, item: BaseWeapon):
         return item is self.right_hand or item is self.left_hand
@@ -213,10 +235,35 @@ class Player(Mover):
         else:
             return ActionResult(True, f"You miss the {target.name}.", color.light_gray, 10)
 
+    def regenerate_energy(self) -> None:
+        if self.energy_points < self.max_energy:
+            self.partial_energy += sum(self.get_armor_properties(ArmorProperty.ENERGY_REGENERATION))
+            if self.partial_energy >= 100:
+                self.partial_energy -= 100
+                self.energy_points += 1
+        pass
 
+    def regenerate_shield(self) -> None:
+        if self.shield_reboot_time == 0:
+            if self.shield_points < self.max_shield:
+                self.partial_shield += sum(self.get_armor_properties(ArmorProperty.SHIELD_REGENERATION))
+                if self.partial_shield >= 100:
+                    self.partial_shield -= 100
+                    self.shield_points += 1
+        else:
+            self.shield_reboot_time -= 1
+            if self.shield_reboot_time == 0:
+                self.shield_points = self.max_shield // 3
+
+    def get_energy_status(self) -> str:
+        return f"{self.energy_points}/{self.max_energy}"
+
+    def get_shield_status(self) -> str:
+        return f"{self.shield_points}/{self.max_shield}"
 
     # gonna call this every 10 auts to do things like player shield recharge,
     # ticking down status effects, etc. 
     def periodic_refresh(self):
-        self.shield_generator.regeneration()
+        self.regenerate_shield()
+        self.regenerate_energy()
         pass
