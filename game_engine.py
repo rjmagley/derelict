@@ -54,6 +54,7 @@ class GameEngine():
         self.context = context
 
     def switch_handler(self, handler, **kwargs) -> None:
+        print(f"switching handler to {handler}")
         self.event_handler = provide_handler(handler)(self, **kwargs)
 
     def add_message(self, text: str, fg: Tuple[int, int, int] = color.white) -> None:
@@ -68,30 +69,32 @@ class GameEngine():
     # instantly if you mouse over ther window lmao
     
     def handle_turns(self) -> None:
-        print(f"calling handle turns")
         if self.player.delay % 10 == 0:
             self.player.periodic_refresh()
         if self.player.delay <= 0:
-            action_result = self.event_handler.handle_events()
-            if action_result == None:
-                return None
-            elif action_result.time_passed:
-                self.player.delay += action_result.time_taken
-            if action_result.message:
-                self.add_message(action_result.message, action_result.message_color)
+            turn_passed = False
+            while turn_passed != True:
+                self.render()
+                action_result = self.event_handler.handle_events()
+                if action_result == None:
+                    continue
+                elif action_result.time_passed:
+                    turn_passed = True
+                    self.player.delay += action_result.time_taken
+                if action_result.message:
+                    self.add_message(action_result.message, action_result.message_color)
 
-        else:
-            for e in [e for e in self.map.awake_entities if e != self.player]:
+        for e in [e for e in self.map.awake_entities if e != self.player]:
 
-                if e.ai:
-                    # print(f"{e.name} - {e.delay}")
-                    if e.delay <= 0:
-                        action_result = e.ai.perform()
-                        if action_result.time_passed:
-                            e.delay += action_result.time_taken
-                    else:
-                        e.delay -= 1
-            self.player.delay -= 1
+            if e.ai:
+                # print(f"{e.name} - {e.delay}")
+                if e.delay <= 0:
+                    action_result = e.ai.perform()
+                    if action_result.time_passed:
+                        e.delay += action_result.time_taken
+                else:
+                    e.delay -= 1
+        self.player.delay -= 1
         
         self.update_fov()
 
