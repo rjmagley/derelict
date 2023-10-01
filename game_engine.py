@@ -89,6 +89,7 @@ class GameEngine():
             if e.ai:
                 # print(f"{e.name} - {e.delay}")
                 if e.delay <= 0:
+                    print(f"{e.name} has a turn")
                     action_result = e.ai.perform()
                     if action_result.time_passed:
                         e.delay += action_result.time_taken
@@ -221,7 +222,7 @@ class GameEngine():
 
         self.side_console.print(x = 0, y = 0, string = f"{self.player.delay}", fg = color.white)
         self.side_console.print(x = 16, y = 0, string = "Ammo", fg = color.white)
-        self.side_console.print(x = 0, y = 1, string = f"ARM: {self.player.hp}/{self.player.max_hp}", fg = color.white)
+        self.side_console.print(x = 0, y = 1, string = f"ARM: {self.player.armor_points}/{self.player.max_armor}", fg = color.white)
         self.side_console.print(x = 15, y = 1, string = f"L:{magazine.get_percentage(AmmunitionType.LIGHT)}", fg = color.light_gray)
         self.side_console.print(x = 0, y = 2, string = f"SHD: {self.player.shield_generator.get_shield_status()}", fg = color.bright_cyan)
         self.side_console.print(x = 15, y = 2, string = f"H:{magazine.get_percentage(AmmunitionType.HEAVY)}", fg = color.white)

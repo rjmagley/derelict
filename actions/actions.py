@@ -5,6 +5,7 @@ from typing import Optional, TYPE_CHECKING, Tuple
 from decimal import Decimal
 
 from entities.combatant import Combatant
+from entities.mover import Mover
 from . import ActionResult
 import color
 
@@ -12,7 +13,7 @@ if TYPE_CHECKING:
     from game_engine import GameEngine
     from entities import BaseEntity
     from entities.combatant import Combatant
-    from entities.mover import Mover
+    
 
 # actions return a boolean to determine if a turn was taken or not
 # the player shouldn't be penalized for attempting an impossible action
@@ -58,7 +59,7 @@ class DirectionalAction(Action):
     @property
     def target_entity(self) -> Optional[BaseEntity]:
         for e in self.engine.map.get_entities_at_location(*self.destination):
-            if isinstance(e, Combatant) and e.is_alive:
+            if isinstance(e, Mover) and e.is_alive:
                 return e
 
         return None

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Type
+from typing import Type, List, Optional
 
 from decimal import Decimal
 
@@ -8,14 +8,15 @@ from enum import auto, StrEnum
 
 from random import randint
 
+from render_order import RenderOrder
 from items.base_weapon import BaseWeapon
 
 from actions import ActionResult
 
-from .combatant import Combatant
+from .mover import Mover
 from items.melee_weapon import MeleeWeapon
 from items.ranged_weapon import RangedWeapon
-from items import WeaponType, AmmunitionType
+from items import WeaponType, AmmunitionType, ArmorType
 
 from die_rollers import player_attack_roll
 
@@ -24,6 +25,7 @@ from die_rollers import player_attack_roll
 from items.inventory import Inventory
 from items.magazine import Magazine
 from items.shield_generator import ShieldGenerator
+from items.base_armor import BaseArmor
 
 import color
 
@@ -31,15 +33,29 @@ class Skill(StrEnum):
     DUALWIELD = "dual-wielding"
 
 # Player - the player character, moved by the player, etc.
-class Player(Combatant):
+class Player(Mover):
 
     def __init__(self, **kwargs):
-        super().__init__(name = "Player", blocks_movement = True, **kwargs)
+        
+        self.render_order = RenderOrder.COMBATANT
+
         # the player's inventory - handles things held by the player
         # things equipped by the player are different
         self.inventory = Inventory()
 
+        # the player's magazine is where their ammo is stored/created/etc.
         self.magazine = Magazine()
+
+        # shield generator controls shield stuff
+        self.shield_generator = ShieldGenerator()
+
+        # these five represent all the player's armor
+        self.helmet = BaseArmor(armor_type = ArmorType.HELMET)
+        self.chest = BaseArmor(armor_type = ArmorType.TORSO)
+        self.arms = BaseArmor(armor_type = ArmorType.ARMS)
+        self.legs = BaseArmor(armor_type = ArmorType.LEGS)
+        self.backpack = BaseArmor(armor_type = ArmorType.BACKPACK)
+
 
         # weapons held by the player, in hands/on shoulders
         # some weapons take up both hands - those are considered to be in the
@@ -48,10 +64,6 @@ class Player(Combatant):
         self.left_hand = None
         self.right_shoulder = None
         self.left_shoulder = None
-
-        # later we're gonna calculate shields based on player equipment
-
-        self.shield_generator = ShieldGenerator()
 
         # ammunition is a dictionary representing the four ammunition types
         # ammunition is stored as a number from 0 to the player's max ammo
@@ -73,9 +85,32 @@ class Player(Combatant):
             Skill.DUALWIELD: 10
         }
 
+        self.armor_points = self.max_armor
+
+        super().__init__(name = "Player", blocks_movement = True, **kwargs)
+
+
+    @property
+    def max_armor(self) -> int:
+        return sum([a.max_armor_points for a in self.armor])
+
+    # @max_armor.setter
+    # def max_armor(self, value) -> None:
+    #     self.max_armor = sum([a.max_armor_points for a in self.armor])
+
+    @property
+    def armor(self) -> List[BaseArmor]:
+        return [self.helmet, self.chest, self.arms, self.legs, self.backpack]
+
     @property
     def hp(self) -> int:
-        return self._hp
+        return self.armor_points
+
+    @hp.setter
+    def hp(self, value: int) -> None:
+        self.armor_points -= value
+        if self.armor_points <= 0:
+            self.die()
 
     @property
     def shield(self) -> int:
@@ -83,7 +118,7 @@ class Player(Combatant):
 
     @property
     def is_alive(self) -> bool:
-        return self._hp > 0
+        return self.armor_points > 0
 
     @property
     def barehanded(self) -> bool:
@@ -96,6 +131,14 @@ class Player(Combatant):
         else:
             return self.right_hand.hands == 2
 
+    @property
+    def equipped_weapons(self) -> List[Optional[BaseWeapon]]:
+        return [self.right_hand, self.left_hand, self.right_shoulder, self.left_shoulder]
+
+    @property
+    def defense(self) -> int:
+        return sum([a.damage_resist for a in self.armor])
+
     # the player's HP setter is a bit messier than normal - players have
     # shields, then armor, then a few states before death
     def take_damage(self, value: int) -> None:
@@ -103,8 +146,8 @@ class Player(Combatant):
         remaining_damage = self.shield_generator.take_damage(value)
         if remaining_damage > 0:
             print(f"player taking {value} damage")
-            self._hp -= value
-            if self._hp <= 0:
+            self.armor_points -= value
+            if self.armor_points <= 0:
                 print("player died")
                 # self.engine.switch_handler(EndgameEventHandler)
                 self.die()

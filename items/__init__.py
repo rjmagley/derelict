@@ -16,6 +16,13 @@ class WeaponType(StrEnum):
     BLUNT = "blunt"
     SHIELD = "shield"
 
+class ArmorType(StrEnum):
+    HELMET = "helmet"
+    TORSO = "torso"
+    ARMS = "arms"
+    LEGS = "legs"
+    BACKPACK = "backpack"
+
 class AmmunitionType(StrEnum):
     LIGHT = "light"
     HEAVY = "heavy"

@@ -47,13 +47,17 @@ class BasicHostile(BasicAI):
         self.path: List[Tuple[int, int]] = []
 
     def perform(self) -> ActionResult:
+        
         target = self.entity.engine.player
+        print(f"{self.entity.name} performing action")
         destination_x = target.x - self.entity.x
         destination_y = target.y - self.entity.y
         distance = max(abs(destination_x), abs(destination_y))
 
         if self.entity.map.visible[self.entity.x, self.entity.y]:
+            print(f"{self.entity.name} has a visible target")
             if distance <= 1:
+                print(f"{self.entity.name} attacking target")
                 return MeleeAction(self.entity, destination_x, destination_y).perform()
 
             self.path = self.get_path_to(target.x, target.y)

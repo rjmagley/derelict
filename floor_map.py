@@ -33,7 +33,7 @@ class FloorMap():
 
     @property
     def living_entities(self) -> Generator[BaseEntity]:
-        yield from (e for e in self.entities if isinstance(e, Combatant) and e.is_alive and e != self.engine.player)
+        yield from (e for e in self.entities if isinstance(e, Mover) and e.is_alive and e != self.engine.player)
 
     @property
     def awake_entities(self) -> List[Mover]:

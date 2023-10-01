@@ -47,6 +47,7 @@ class Combatant(Mover):
     # will eventually need to also return time taken
     # may need to just return the ActionResult itself
     def attack(self, target: Combatant) -> str:
+        print("attempting attack")
         damage = self.power - target.defense
         print(f"{self.name} attacking {target.name} - damage is {damage}")
         

@@ -15,7 +15,7 @@ def main():
     context = tcod.context.new(columns=screen_width, rows=screen_height, tileset=tileset, title="Derelict", vsync=False)
 
     root_console = tcod.console.Console(screen_width, screen_height, order="F")
-    player = Player(x=40, y=12, char='@', hp=10, defense=5, power=5)
+    player = Player(x=40, y=12, char='@')
     player.delay = 0
     
     starting_weapon = place_random_ranged_weapon(x=40, y=12)
