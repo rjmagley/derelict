@@ -1,40 +1,59 @@
 from __future__ import annotations
 
-from typing import Optional, TYPE_CHECKING, Tuple
+from typing import Optional, TYPE_CHECKING, Tuple, Any, Dict
 
 import random
 
 import color
 from actions import ActionResult
 from .base_weapon import BaseWeapon
-from . import WeaponType, AmmunitionType, ReloadType
+from . import WeaponType, AmmunitionType, ReloadType, RangedWeaponProperty
 
 
 if TYPE_CHECKING:
     from entities.player import Player
     from magazine import Magazine
+    from entities.enemy import Enemy
 
 class RangedWeapon(BaseWeapon):
-    def __init__(self, magazine_size: int = 6, burst_count: int = 1, ammunition_size: int = 10, ammunition_type: AmmunitionType = AmmunitionType.LIGHT, reload_type: ReloadType = ReloadType.STANDARD, **kwargs):
+    def __init__(self, magazine_size: int = 6, burst_count: int = 1, ammunition_size: int = 10, ammunition_type: AmmunitionType = AmmunitionType.LIGHT, reload_type: ReloadType = ReloadType.STANDARD, properties: Dict[RangedWeaponProperty, Any] = {}, owner: Optional[Enemy | Player] = None, **kwargs):
         super().__init__(**kwargs)
-        self.magazine_size = magazine_size
         self.burst_count = burst_count
-        self.loaded_ammo = magazine_size
         self.ammunition_type = ammunition_type
         self.ammunition_size = ammunition_size
         self.char = '{'
         self.reload_type = reload_type
         match reload_type:
             case ReloadType.STANDARD:
+                self.magazine_size = magazine_size
+                self.loaded_ammo = magazine_size
                 self.reload = self.standard_reload
             case ReloadType.SINGLE:
+                self.magazine_size = magazine_size
+                self.loaded_ammo = magazine_size
                 self.reload = self.single_reload
+            case ReloadType.BELT:
+                self.fire = self.belt_fire
+                self.magazine_size = 0
+                self.loaded_ammo = 0
+                self.reload = self.belt_reload
+
+        self.properties = properties
+
+        self.owner = owner
+
+        
 
     # returns true if the weapon can fire and false if it can't (empty,
     # disabled, etc)
     @property
     def can_fire(self) -> bool:
+        if self.reload_type == ReloadType.BELT:
+            return (self.owner.magazine.get_current_ammo(self.ammunition_type) >
+            self.ammunition_size * self.burst_count)
         return self.loaded_ammo != 0
+        
+
 
     @property
     def status_string(self) -> str:
@@ -43,6 +62,8 @@ class RangedWeapon(BaseWeapon):
 
     @property
     def ammo_status(self) -> str:
+        if self.reload_type == ReloadType.BELT:
+            return f"{self.owner.magazine.get_percentage(self.ammunition_type)}%"
         return f"{self.loaded_ammo}/{self.magazine_size}"
 
     def fire(self) -> int:
@@ -53,15 +74,22 @@ class RangedWeapon(BaseWeapon):
         self.loaded_ammo -= burst
         return total_damage
 
+    def belt_fire(self) -> int:
+        total_damage = 0
+        for x in range(0, self.burst_count):
+            total_damage += self.roll_damage()
+        self.owner.magazine.spend_ammo(self.ammunition_type, self.ammunition_size * self.burst_count)
+        return total_damage
+
     # considered doing subclasses for the reload types but am not sure something
     # can dynamically subclass
     # instead, all ranged weapons have all the reload methods - the one used is
     # selected by the reload_type
 
     # standard magazine reload - player reloads entire weapon in one go
-    def standard_reload(self, player: Player) -> ActionResult:
+    def standard_reload(self, owner: Enemy | Player) -> ActionResult:
 
-        magazine: Magazine = player.magazine
+        magazine: Magazine = owner.magazine
 
         # no need to reload if full
         if self.loaded_ammo >= self.magazine_size:
@@ -77,7 +105,10 @@ class RangedWeapon(BaseWeapon):
         if magazine.get_current_ammo(self.ammunition_type) >= ammunition_needed:
             magazine.spend_ammo(self.ammunition_type, ammunition_needed)
             self.loaded_ammo = self.magazine_size
-            return ActionResult(True, "You fully load your weapon.", color.white, 10)
+            if isinstance(owner, Player):
+                return ActionResult(True, "You fully load your weapon.", color.white, 10)
+            else:
+                return ActionResult(True, f"The {owner.name} loads its weapon.", color.white, 10)
 
         # player cannot fully reload - need to do a partial
         else:
@@ -86,12 +117,15 @@ class RangedWeapon(BaseWeapon):
             ammunition_used = ammunition_available // self.ammunition_size
             self.loaded_ammo += ammunition_used
             magazine.spend_ammo(self.ammunition_type, ammunition_used * self.ammunition_size)
-            return ActionResult(True, "You load as much ammo as you have.", color.white, 10)
+            if isinstance(owner, Player):
+                return ActionResult(True, "You load as much ammo as you have.", color.white, 10)
+            else:
+                return ActionResult(True, f"The {owner.name} loads as much ammo as it has.", color.white, 10)
 
     # single reload - player reloads one round at a time
-    def single_reload(self, player: Player) -> ActionResult:
+    def single_reload(self, owner: Enemy | Player) -> ActionResult:
 
-        magazine: Magazine = player.magazine
+        magazine: Magazine = owner.magazine
 
         # no need to reload if full
         if self.loaded_ammo >= self.magazine_size:
@@ -104,6 +138,10 @@ class RangedWeapon(BaseWeapon):
             magazine.spend_ammo(self.ammunition_type, self.ammunition_size)
             self.loaded_ammo += 1
             return ActionResult(True, f"You load a round into the {self.name}.", color.white, 5)
+
+    def belt_reload(self, owner: Enemy | Player) -> ActionResult:
+
+        return ActionResult(False, "This weapon automatically loads.", color.light_gray)
 
 
 def place_random_ranged_weapon(x: int, y: int, map = None) -> RangedWeapon:
@@ -118,3 +156,6 @@ def place_random_ranged_weapon(x: int, y: int, map = None) -> RangedWeapon:
     weapon_stats = random.choice(weapon_choices)
 
     return RangedWeapon(x=x, y=y, map=map, **weapon_stats)
+
+def get_test_belt_weapon(x: int, y: int, map = None):
+    return RangedWeapon(x=x, y=y, map=map, **{'damage_die': 5, 'die_count': 4, 'magazine_size': 10, 'burst_count': 2, 'weapon_types': [WeaponType.RIFLE], 'name': 'Heavy Autogun', 'hands': 1, 'ammunition_size': 10, 'ammunition_type': AmmunitionType.LIGHT, 'reload_type': ReloadType.BELT, 'properties': {}})

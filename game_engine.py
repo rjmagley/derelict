@@ -93,6 +93,8 @@ class GameEngine():
                     action_result = e.ai.perform()
                     if action_result.time_passed:
                         e.delay += action_result.time_taken
+                    if action_result.message:
+                        self.add_message(action_result.message, action_result.message_color)
                 else:
                     e.delay -= 1
         self.player.delay -= 1

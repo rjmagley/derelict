@@ -14,6 +14,7 @@ from items.base_weapon import BaseWeapon
 from actions import ActionResult
 
 from .mover import Mover
+from .combatant import Combatant
 from items.melee_weapon import MeleeWeapon
 from items.ranged_weapon import RangedWeapon
 from items import WeaponType, AmmunitionType, ArmorType, ArmorProperty
@@ -28,11 +29,11 @@ from items.base_armor import BaseArmor
 
 import color
 
-class Skill(StrEnum):
+class PlayerSkill(StrEnum):
     DUALWIELD = "dual-wielding"
 
 # Player - the player character, moved by the player, etc.
-class Player(Mover):
+class Player(Combatant):
 
     def __init__(self, **kwargs):
         
@@ -50,7 +51,7 @@ class Player(Mover):
 
         # these six represent all the player's armor
         self.helmet = BaseArmor(armor_type = ArmorType.HELMET, properties = {ArmorProperty.BASE_ARMOR: 10})
-        self.chest = BaseArmor(armor_type = ArmorType.TORSO, damage_resist = 3, properties = {ArmorProperty.BASE_ARMOR: 10})
+        self.chest = BaseArmor(armor_type = ArmorType.TORSO, properties = {ArmorProperty.BASE_ARMOR: 10, ArmorProperty.DAMAGE_RESISTANCE: 3})
         self.arms = BaseArmor(armor_type = ArmorType.ARMS, properties = {ArmorProperty.BASE_ARMOR: 10})
         self.legs = BaseArmor(armor_type = ArmorType.LEGS, properties = {ArmorProperty.BASE_ARMOR: 10})
         self.backpack = BaseArmor(armor_type = ArmorType.BACKPACK, properties = {ArmorProperty.BASE_ARMOR: 10, ArmorProperty.ENERGY_CAPACITY: 50, ArmorProperty.ENERGY_REGENERATION: Decimal(10.0)})
@@ -82,7 +83,7 @@ class Player(Mover):
             WeaponType.POLEARM: 14,
             WeaponType.BLUNT: 14,
             WeaponType.SHIELD: 14,
-            Skill.DUALWIELD: 14
+            PlayerSkill.DUALWIELD: 14
         }
 
         self.armor_points = self.max_armor
@@ -112,10 +113,10 @@ class Player(Mover):
     # key is an ArmorProperty, value is... an int, I think? for now?
     # that might change
     def get_armor_properties(self, armor_property: ArmorProperty) -> List[int]:
-        return [a.properties[armor_property] for a in self.armor if armor_property in a.properties]
+        return [a.properties[armor_property] for a in self.equipped_armor if armor_property in a.properties]
 
     @property
-    def armor(self) -> List[BaseArmor]:
+    def equipped_armor(self) -> List[BaseArmor]:
         return [self.helmet, self.chest, self.arms, self.legs, self.backpack, self.shield_generator]
 
     @property
@@ -149,21 +150,22 @@ class Player(Mover):
 
     @property
     def defense(self) -> int:
-        return sum([a.damage_resist for a in self.armor])
+        return sum([a.damage_resist for a in self.equipped_armor])
 
     # the player's HP setter is a bit messier than normal - players have
     # shields, then armor, then a few states before death
     def take_damage(self, value: int) -> None:
-        remaining_damage = self.take_shield_damage(value)
+        remaining_damage = self.take_shield_damage(value) - sum(self.get_armor_properties(ArmorProperty.DAMAGE_RESISTANCE))
         if remaining_damage > 0:
-            print(f"player taking {value} damage")
-            self.armor_points -= value
+            self.armor_points -= remaining_damage
             if self.armor_points <= 0:
                 print("player died")
                 # self.engine.switch_handler(EndgameEventHandler)
                 self.die()
 
     # depletes shield, returns any damage left to hit armor
+    # could also do some interesting stuff with this for directly targeting
+    # shields on the player
     def take_shield_damage(self, value: int) -> int:
         if value >= self.shield_points:
             remaining_damage = value - self.shield_points
@@ -201,32 +203,41 @@ class Player(Mover):
     def die(self) -> None:
         print("You died!")
 
-    def attack(self, target: Combatant):
-        damage = 0
-        if self.barehanded:
-            damage = self.power - target.defense
-            output_string = f"You attack {target.name} barehanded "
-            if damage > 0:
-                output_string += f"for {damage} damage."
-            else:
-                output_string += "for no damage."
-            self.engine.message_log.add_message(output_string)
-            target.hp -= damage
-        else:
-            # god this is gonna need a lot of logic to figure out melee vs.
-            # ranged - probably split into a few different functions
-            if self.right_hand:
-                damage = self.right_hand.roll_damage() - target.defense
-                output_string = f"You attack {target.name} with your {self.right_hand.name} "
-                if damage > 0:
-                    output_string += f"for {damage} damage."
-                else:
-                    output_string += "for no damage."
-                self.engine.message_log.add_message(output_string)
-                target.hp -= damage
+    # def attack(self, target: Combatant):
+    #     damage = 0
+    #     if self.barehanded:
+    #         damage = self.power - target.defense
+    #         output_string = f"You attack {target.name} barehanded "
+    #         if damage > 0:
+    #             output_string += f"for {damage} damage."
+    #         else:
+    #             output_string += "for no damage."
+    #         self.engine.message_log.add_message(output_string)
+    #         target.hp -= damage
+    #     else:
+    #         # god this is gonna need a lot of logic to figure out melee vs.
+    #         # ranged - probably split into a few different functions
+    #         if self.right_hand:
+    #             damage = self.right_hand.roll_damage() - target.defense
+    #             output_string = f"You attack {target.name} with your {self.right_hand.name} "
+    #             if damage > 0:
+    #                 output_string += f"for {damage} damage."
+    #             else:
+    #                 output_string += "for no damage."
+    #             self.engine.message_log.add_message(output_string)
+    #             target.hp -= damage
 
 
     def ranged_attack(self, target: Combatant, weapon: RangedWeapon) -> ActionResult:
+        damage = weapon.fire()
+        if player_attack_roll(weapon, self):
+            message = f"You hit the {target.name} for {damage} damage."
+            target.take_damage(damage)
+            return ActionResult(True, message, color.white, 10)
+        else:
+            return ActionResult(True, f"You miss the {target.name}.", color.light_gray, 10)
+
+    def melee_attack(self, target: Combatant, weapon: RangedWeapon) -> ActionResult:
         damage = weapon.fire()
         if player_attack_roll(weapon, self):
             message = f"You hit the {target.name} for {damage} damage."

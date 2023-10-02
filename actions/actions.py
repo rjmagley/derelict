@@ -100,7 +100,7 @@ class MeleeAction(DirectionalAction):
         if not target:
             return ActionResult()
 
-        message = self.entity.attack(target)
+        message = self.entity.melee_attack(target)
         return ActionResult(True, message, color.white, 10)
 
 
@@ -127,17 +127,16 @@ class PickupItemAction(Action):
 
 
 class PlayerFireAction(Action):
-
-    def __init__(self, player, target, weapon) -> None:
-        super().__init__(player)
-        self.player = player
+    def __init__(self, entity, target, weapon) -> None:
+        super().__init__(entity)
+        self.player = entity
         self.target = target
         self.weapon = weapon
 
     # for now, weapons don't overpenetrate, a burst can't hit another target,
     # etc. - will need more work
     def perform(self) -> ActionResult:
-        return self.player.ranged_attack(self.target, self.weapon)
+        return self.entity.ranged_attack(self.target, self.weapon)
 
 class PlayerReloadAction(Action):
 

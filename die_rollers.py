@@ -8,6 +8,13 @@ if TYPE_CHECKING:
     from items.base_weapon import BaseWeapon
     from entities.player import Player
 
+# standard roll does 3d6, returns True if result is under target
+def standard_roll_target(target: int) -> bool:
+    result = 0
+    for i in range(0, 3):
+        result += randint(1, 6)
+    return result <= target
+
 def roll_dice(number_sides: int, number_dice: int) -> int:
     result = 0
     for i in range(0, number_dice):
@@ -15,8 +22,6 @@ def roll_dice(number_sides: int, number_dice: int) -> int:
     return result
 
 def player_attack_roll(weapon: BaseWeapon, player: Player) -> bool:
-    print(weapon.weapon_type)
     target = player.player_stats[weapon.weapon_type]
-    print(target)
     roll = roll_dice(3, 6)
     return roll <= target

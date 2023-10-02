@@ -9,7 +9,7 @@ import color
 
 from render_order import RenderOrder
 
-# from entities.ai.basic_ai import BasicAI
+# 
 
 if TYPE_CHECKING:
     from entities.combatant import Combatant
@@ -19,25 +19,19 @@ if TYPE_CHECKING:
 # also something that has an AI - should that be split later?
 class Combatant(Mover):
 
-    def __init__(self, hp: int, defense: int, power: int, ai: Optional[BasicAI] = None, **kwargs):
+    def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.max_hp = hp
-        self._hp = hp
-        self.defense = defense
-        self.power = power
-        self.render_order = RenderOrder.COMBATANT
-        if ai != None:
-            self.ai = ai(self)
 
-    @property
-    def hp(self) -> int:
-        return self._hp
 
-    @hp.setter
-    def hp(self, value: int) -> None:
-        self._hp = max(0, min(value, self.max_hp))
-        if self._hp == 0 and self.ai:
-            self.die()
+    # @property
+    # def hp(self) -> int:
+    #     return self._hp
+
+    # @hp.setter
+    # def hp(self, value: int) -> None:
+    #     self._hp = max(0, min(value, self.max_hp))
+    #     if self._hp == 0 and self.ai:
+    #         self.die()
 
     @property
     def is_alive(self) -> bool:
@@ -46,28 +40,40 @@ class Combatant(Mover):
     # returning a string to pass to the ActionResult
     # will eventually need to also return time taken
     # may need to just return the ActionResult itself
-    def attack(self, target: Combatant) -> str:
-        print("attempting attack")
-        damage = self.power - target.defense
-        print(f"{self.name} attacking {target.name} - damage is {damage}")
+    def ranged_attack(self, target: Combatant) -> str:
+        raise NotImplementedError
+        # print("attempting attack")
+        # damage = self.power
+        # print(f"{self.name} attacking {target.name} - damage is {damage}")
         
-        output_string = f"{self.name} attacks {target.name} "
-        if damage > 0:
-            output_string += f"for {damage} damage."
-        else:
-            output_string += "for no damage."
-        self.engine.message_log.add_message(output_string)
-        target.take_damage(damage)
+        # output_string = f"{self.name} attacks {target.name} "
+        # if damage > 0:
+        #     output_string += f"for {damage} damage."
+        # else:
+        #     output_string += "for no damage."
+        # self.engine.message_log.add_message(output_string)
+        # target.take_damage(damage)
         
+    def melee_attack(self, target: Combatant) -> str:
+        raise NotImplementedError
 
     def die(self) -> None:
-        self.engine.message_log.add_message(f"{self.name} dies!", color.red)
-        self.char = "%"
-        self.color = color.red
-        self.blocks_movement = False
-        self.ai = None
-        self.name = f"remains of {self.name}"
-        self.render_order = RenderOrder.CORPSE
+        raise NotImplementedError
+
+    # def die(self) -> None:
+    #     self.engine.message_log.add_message(f"{self.name} dies!", color.red)
+    #     self.char = "%"
+    #     self.color = color.red
+    #     self.blocks_movement = False
+    #     self.ai = None
+    #     self.name = f"remains of {self.name}"
+    #     self.render_order = RenderOrder.CORPSE
+
+    # def take_damage(self, damage: int) -> None:
+    #     self.hp -= max(0, damage - self.defense)
 
     def take_damage(self, damage: int) -> None:
-        self.hp -= max(0, damage - self.defense)
+        raise NotImplementedError
+
+    def periodic_refresh(self):
+        pass

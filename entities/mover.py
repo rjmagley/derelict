@@ -1,10 +1,17 @@
-from typing import TYPE_CHECKING
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Optional
+
+from render_order import RenderOrder
 
 from .base_entity import BaseEntity
 
+if TYPE_CHECKING:
+    from entities.ai.basic_ai import BasicAI
+
 # Mover - an entity that can move
 class Mover(BaseEntity):
-    def __init__(self, move_speed: int = 10, **kwargs):
+    def __init__(self, move_speed: int = 10, ai: Optional[BasicAI] = None, **kwargs):
         super().__init__(**kwargs)
         # delay is a measure of how many auts until something can act again
         # when a creature's delay is 0 or less, it acts
@@ -13,6 +20,9 @@ class Mover(BaseEntity):
         # of the checks that have to be made later
         self.awake = False
         self.move_speed = move_speed
+        self.render_order = RenderOrder.COMBATANT
+        if ai != None:
+            self.ai = ai(self)
 
     @property
     def is_alive(self) -> bool:

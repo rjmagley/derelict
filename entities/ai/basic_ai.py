@@ -4,16 +4,16 @@ from typing import List, Tuple
 
 import tcod
 import numpy
+from random import randint
 
-from entities.base_entity import BaseEntity
-from actions.actions import MeleeAction, MovementAction, WaitAction
+from entities.mover import Mover
+from actions.actions import MeleeAction, MovementAction, WaitAction, PlayerFireAction
 
 class BasicAI():
     
-    entity: BaseEntity
+    entity: Mover
 
-    def __init__(self, entity: Combatant):
-        super().__init__()
+    def __init__(self, entity: Mover):
         self.entity = entity
         self.path: List[Tuple[int, int]] = []
 
@@ -41,7 +41,7 @@ class BasicAI():
 # BasicHostile - a hostile AI that wants to close to melee range and attack
 class BasicHostile(BasicAI):
 
-    def __init__(self, entity: Combatant):
+    def __init__(self, entity: Enemy):
         super().__init__(entity)
         self.entity = entity
         self.path: List[Tuple[int, int]] = []
@@ -49,16 +49,16 @@ class BasicHostile(BasicAI):
     def perform(self) -> ActionResult:
         
         target = self.entity.engine.player
-        print(f"{self.entity.name} performing action")
+        # print(f"{self.entity.name} performing action")
         destination_x = target.x - self.entity.x
         destination_y = target.y - self.entity.y
         distance = max(abs(destination_x), abs(destination_y))
 
         if self.entity.map.visible[self.entity.x, self.entity.y]:
             print(f"{self.entity.name} has a visible target")
-            if distance <= 1:
+            if distance <= 10 and randint(1,10) > 5:
                 print(f"{self.entity.name} attacking target")
-                return MeleeAction(self.entity, destination_x, destination_y).perform()
+                return PlayerFireAction(self.entity, target, self.entity.ranged_weapons[0]).perform()
 
             self.path = self.get_path_to(target.x, target.y)
 
