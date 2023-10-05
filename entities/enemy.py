@@ -11,6 +11,7 @@ from items.magazine import Magazine
 from actions import ActionResult
 
 from die_rollers import standard_roll_target
+from render_order import RenderOrder
 import color
 
 # the Enemy class represents anything that the player is expected to fight/kill
@@ -25,7 +26,7 @@ class Enemy(Combatant):
         # 'level' is a rough evaluation of how challenging the enemy is
         #going to be used, to determine spawning, encounter difficulty, etc.
         self.level = level
-        self._hp = hp
+        self.hp = hp
         self.defense = defense
         self.weapons = weapons
         for weapon in weapons:
@@ -58,3 +59,20 @@ class Enemy(Combatant):
             return ActionResult(True, message, color.white, 10)
         else:
             return ActionResult(True, f"The {self.name} misses the {target.name}.", color.light_gray, 10)
+
+    # needs a take damage method
+    def take_damage(self, value: int) -> None:
+        damage = value - self.defense
+        if damage >= 0:
+            self.hp -= damage
+            if self.hp <= 0:
+                self.engine.add_message(f"The {self.name} dies!", color.red)
+                self.die()
+
+    def die(self) -> None:
+        self.char = "%"
+        self.color = color.red
+        self.blocks_movement = False
+        self.ai = None
+        self.name = f"remains of {self.name}"
+        self.render_order = RenderOrder.CORPSE

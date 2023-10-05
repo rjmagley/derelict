@@ -63,10 +63,6 @@ class GameEngine():
     def change_map(self, map) -> None:
         self.map = map
         self.map_console = Console(map.width, map.height, order="F")
-
-    # after adding shields this is a lil bugged - it's getting way too many
-    # inputs, so the shield regenerates super quick
-    # instantly if you mouse over ther window lmao
     
     def handle_turns(self) -> None:
         if self.player.delay % 10 == 0:

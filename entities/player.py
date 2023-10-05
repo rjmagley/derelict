@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Type, List, Optional, Any
+from typing import Type, List, Optional, Any, TYPE_CHECKING
 
 from decimal import Decimal
 
@@ -16,7 +16,7 @@ from actions import ActionResult
 from .mover import Mover
 from .combatant import Combatant
 from items.melee_weapon import MeleeWeapon
-from items.ranged_weapon import RangedWeapon
+
 from items import WeaponType, AmmunitionType, ArmorType, ArmorProperty
 
 from die_rollers import player_attack_roll
@@ -28,6 +28,9 @@ from items.magazine import Magazine
 from items.base_armor import BaseArmor
 
 import color
+
+if TYPE_CHECKING:
+    from items.ranged_weapon import RangedWeapon
 
 class PlayerSkill(StrEnum):
     DUALWIELD = "dual-wielding"
