@@ -93,7 +93,6 @@ class GameEngine():
                         e.delay += action_result.time_taken
                     if action_result.message:
                         self.add_message(action_result.message, action_result.message_color)
-                        time.sleep(1.1)
                 else:
                     e.delay -= 1
         self.player.delay -= 1
@@ -135,7 +134,7 @@ class GameEngine():
                 render_targeting_information(self.root_console, self.bottom_console, self.event_handler.weapon, self, self.map)
 
             case HandlerType.CHARACTER_PROFILE:
-                self.render_character_profile(self.root_console)
+                render_character_profile(self.root_console, self.player)
 
         self.context.present(self.root_console)
         self.root_console.clear()
