@@ -52,8 +52,8 @@ class Enemy(Combatant):
 
     # melee attacks probably do not work yet
     def melee_attack(self, target: Combatant, weapon: MeleeWeapon) -> ActionResult:
-        damage = weapon.swing()
-        if standard_roll_target(self.ranged_skill):
+        damage = weapon.roll_damage()
+        if standard_roll_target(self.melee_skill):
             message = f"The {self.name} hits the {target.name} for {damage} damage."
             target.take_damage(damage)
             return ActionResult(True, message, color.white, 10)
