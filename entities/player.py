@@ -19,7 +19,7 @@ from items.melee_weapon import MeleeWeapon
 
 from items import WeaponType, AmmunitionType, ArmorType, ArmorProperty
 
-from die_rollers import player_attack_roll
+from die_rollers import player_attack_roll, standard_roll_target, roll_dice
 
 # from input_handlers.endgame_event_handler import EndgameEventHandler
 
@@ -40,8 +40,6 @@ class Player(Combatant):
 
     def __init__(self, **kwargs):
         
-        
-
         # the player's inventory - handles things held by the player
         # things equipped by the player are different
         self.inventory = Inventory()
@@ -206,31 +204,6 @@ class Player(Combatant):
     def die(self) -> None:
         print("You died!")
 
-    # def attack(self, target: Combatant):
-    #     damage = 0
-    #     if self.barehanded:
-    #         damage = self.power - target.defense
-    #         output_string = f"You attack {target.name} barehanded "
-    #         if damage > 0:
-    #             output_string += f"for {damage} damage."
-    #         else:
-    #             output_string += "for no damage."
-    #         self.engine.message_log.add_message(output_string)
-    #         target.hp -= damage
-    #     else:
-    #         # god this is gonna need a lot of logic to figure out melee vs.
-    #         # ranged - probably split into a few different functions
-    #         if self.right_hand:
-    #             damage = self.right_hand.roll_damage() - target.defense
-    #             output_string = f"You attack {target.name} with your {self.right_hand.name} "
-    #             if damage > 0:
-    #                 output_string += f"for {damage} damage."
-    #             else:
-    #                 output_string += "for no damage."
-    #             self.engine.message_log.add_message(output_string)
-    #             target.hp -= damage
-
-
     def ranged_attack(self, target: Combatant, weapon: RangedWeapon) -> ActionResult:
         damage = weapon.fire()
         if player_attack_roll(weapon, self):
@@ -240,14 +213,32 @@ class Player(Combatant):
         else:
             return ActionResult(True, f"You miss the {target.name}.", color.light_gray, 10)
 
-    def melee_attack(self, target: Combatant, weapon: RangedWeapon) -> ActionResult:
-        damage = weapon.fire()
-        if player_attack_roll(weapon, self):
-            message = f"You hit the {target.name} for {damage} damage."
-            target.take_damage(damage)
-            return ActionResult(True, message, color.white, 10)
+    def melee_attack(self, target: Combatant) -> ActionResult:
+        weapon = None
+        if isinstance(self.right_hand, MeleeWeapon):
+            weapon = self.right_hand
+        elif isinstance(self.left_hand, MeleeWeapon):
+            weapon = self.left_hand
+        
+        if weapon != None:
+            if player_attack_roll(weapon, self):
+                damage = weapon.roll_damage()
+                message = f"You hit the {target.name} for {damage} damage."
+                target.take_damage(damage)
+                return ActionResult(True, message, color.white, 10)
+            else:
+                return ActionResult(True, f"You miss the {target.name}.", color.light_gray, 10)
+
+        # barehanded attacks are very ineffective; they should be avoided
         else:
-            return ActionResult(True, f"You miss the {target.name}.", color.light_gray, 10)
+            if standard_roll_target(14):
+                damage = roll_dice(2, 4)
+                message = f"You hit the {target.name} barehanded for {damage} damage."
+                target.take_damage(damage)
+                return ActionResult(True, message, color.white, 10)
+            else:
+                return ActionResult(True, f"You miss the {target.name}.", color.light_gray, 10)
+
 
     def regenerate_energy(self) -> None:
         if self.energy_points < self.max_energy:

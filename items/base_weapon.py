@@ -9,10 +9,11 @@ from . import WeaponType
 
 class BaseWeapon(BaseItem):
 
-    def __init__(self, damage_die: int = 1, die_count: int = 1, hands: int = 1, is_shoulder: bool = False, weapon_types: List[WeaponType] = [], **kwargs):
+    def __init__(self, die_count: int = 1, damage_die: int = 1, hands: int = 1, is_shoulder: bool = False, weapon_types: List[WeaponType] = [], **kwargs):
         super().__init__(**kwargs)
-        self.damage_die = damage_die
+
         self.die_count = die_count
+        self.damage_die = damage_die
         self.hands = hands
         self.is_shoulder = is_shoulder
         self._weapon_types = weapon_types

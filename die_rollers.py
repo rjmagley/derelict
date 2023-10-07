@@ -15,7 +15,7 @@ def standard_roll_target(target: int) -> bool:
         result += randint(1, 6)
     return result <= target
 
-def roll_dice(number_sides: int, number_dice: int) -> int:
+def roll_dice(number_dice: int, number_sides: int) -> int:
     result = 0
     for i in range(0, number_dice):
         result += randint(1, number_sides)

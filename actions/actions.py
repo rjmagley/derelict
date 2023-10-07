@@ -100,8 +100,7 @@ class MeleeAction(DirectionalAction):
         if not target:
             return ActionResult()
 
-        message = self.entity.melee_attack(target)
-        return ActionResult(True, message, color.white, 10)
+        return self.entity.melee_attack(target)
 
 
 class PickupItemAction(Action):
