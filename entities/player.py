@@ -90,6 +90,7 @@ class Player(Combatant):
         self.armor_points = self.max_armor
         self.energy_points = self.max_energy
         self.shield_points = self.max_shield
+        self.psy_points = self.max_psy
         self.partial_energy = 0
         self.partial_shield = 0
         self.shield_reboot_time = 0
@@ -109,6 +110,12 @@ class Player(Combatant):
     @property
     def max_shield(self) -> int:
         return sum(self.get_armor_properties(ArmorProperty.BASE_SHIELD))
+
+    # players have 5 psy to start with
+    # this will need to be modified more once talents/leveling are added
+    @property
+    def max_psy(self) -> int:
+        return sum(self.get_armor_properties(ArmorProperty.BASE_PSY)) + 5
 
     # armor properties are in a dictionary
     # key is an ArmorProperty, value is... an int, I think? for now?
@@ -265,6 +272,9 @@ class Player(Combatant):
 
     def get_shield_status(self) -> str:
         return f"{self.shield_points}/{self.max_shield}"
+
+    def get_psy_status(self) -> str:
+        return f"{self.psy_points}/{self.max_psy}"
 
     # gonna call this every 10 auts to do things like player shield recharge,
     # ticking down status effects, etc. 

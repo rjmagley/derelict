@@ -51,6 +51,7 @@ class ArmorProperty(StrEnum):
     SHIELD_REBOOT_TIME = "shield reboot time"
     SHIELD_REGENERATION = "shield regeneration"
     DAMAGE_RESISTANCE = "damage resistance"
+    BASE_PSY = "base psy"
 
 class RangedWeaponProperty(StrEnum):
     SAMPLE = "sample"
