@@ -93,7 +93,10 @@ class Player(Combatant):
         self.psy_points = self.max_psy
         self.partial_energy = 0
         self.partial_shield = 0
+        self.partial_psy = 0
         self.shield_reboot_time = 0
+
+        self.powers = []
 
         super().__init__(name = "Player", blocks_movement = True, render_order = RenderOrder.COMBATANT, **kwargs)
 
@@ -281,4 +284,9 @@ class Player(Combatant):
     def periodic_refresh(self):
         self.regenerate_shield()
         self.regenerate_energy()
+        pass
+
+    # will call this when an enemy dies to the player to handle replenishing
+    # psy, and other things that may need to happen
+    def on_enemy_death(self):
         pass

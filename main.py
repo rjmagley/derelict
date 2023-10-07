@@ -8,6 +8,8 @@ from items.ranged_weapon import get_test_belt_weapon
 from items.ranged_energy_weapon import get_test_energy_weapon
 from floor_generation import generate_floor, generate_test_floor2
 
+from powers.base_power import BasePower
+
 def main():
     screen_width = 80
     screen_height = 24
@@ -35,6 +37,8 @@ def main():
     player.right_hand = starting_weapon
     # starting_weapon.map = map
     # starting_weapon.engine = engine
+
+    player.powers.append(BasePower(caster = player))
 
     engine.change_map(map)
     engine.message_log.add_message("hai2u")
