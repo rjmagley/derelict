@@ -7,6 +7,8 @@ from . import MOVE_KEYS, WAIT_KEYS, CURSOR_Y_KEYS, CONFIRM_KEYS, ESCAPE_KEYS
 
 import tcod
 
+from actions.actions import Action
+
 if TYPE_CHECKING:
     from game_engine import GameEngine
     

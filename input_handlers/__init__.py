@@ -57,6 +57,7 @@ from .message_history_handler import MessageHistoryHandler
 from .view_item_event_handler import ViewItemEventHandler
 from .targeting_handler import TargetingEventHandler
 from .character_profile_handler import CharacterProfileEventHandler
+from .power_list_handler import PowerListHandler
 from .handler_types import HandlerType
 
 def provide_handler(handler: HandlerType) -> type[EventHandler]:
@@ -77,3 +78,5 @@ def provide_handler(handler: HandlerType) -> type[EventHandler]:
             return TargetingEventHandler
         case HandlerType.CHARACTER_PROFILE:
             return CharacterProfileEventHandler
+        case HandlerType.POWER_LIST:
+            return PowerListHandler

@@ -7,3 +7,4 @@ from .render_targeting_information import render_targeting_information
 from .render_message_history import render_message_history
 from .render_messages_bottom import render_messages_bottom
 from .render_character_profile import render_character_profile
+from .render_power_list import render_power_list

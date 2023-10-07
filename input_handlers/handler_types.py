@@ -9,3 +9,4 @@ class HandlerType(Enum):
     MESSAGE_HISTORY = auto()
     TARGETING = auto()
     CHARACTER_PROFILE = auto()
+    POWER_LIST = auto()

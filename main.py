@@ -39,6 +39,7 @@ def main():
     # starting_weapon.engine = engine
 
     player.powers.append(BasePower(caster = player))
+    player.powers.append(BasePower(caster = player, power_cost = 99, name = "impossible"))
 
     engine.change_map(map)
     engine.message_log.add_message("hai2u")

@@ -17,7 +17,7 @@ from tcod.context import Context
 from tcod.console import Console
 from tcod.map import compute_fov
 
-from renderers import render_map_cursor, render_map, render_status_side, render_inventory, render_weapon_description, render_targeting_information, render_message_history, render_messages_bottom, render_character_profile
+from renderers import *
 
 from actions.actions import EscapeAction, MovementAction
 from entities.base_entity import BaseEntity
@@ -135,6 +135,11 @@ class GameEngine():
 
             case HandlerType.CHARACTER_PROFILE:
                 render_character_profile(self.root_console, self.player)
+
+            case HandlerType.POWER_LIST:
+                render_power_list(self.root_console, self.inventory_console, self.player)
+                render_status_side(self.root_console, self.side_console, self.player)
+
 
         self.context.present(self.root_console)
         self.root_console.clear()

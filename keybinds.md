@@ -6,6 +6,7 @@ x: examine/look
 f: fire weapon in main hand
 F: fire auxillary weapons or offhand weapon
 r: reload weapon in main hand
+c: cast a power
 
 %: player status screen
 

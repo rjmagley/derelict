@@ -56,6 +56,9 @@ class GameEventHandler(EventHandler):
                 weapon = player.right_hand
                 action = PlayerReloadAction(player, weapon).perform()
 
+            case tcod.event.KeySym.c:
+                self.engine.switch_handler(HandlerType.POWER_LIST)
+
             case tcod.event.KeySym.f:
                 if isinstance(player.right_hand, RangedWeapon) or isinstance(player.right_hand, RangedEnergyWeapon):
                     self.engine.switch_handler(HandlerType.TARGETING, weapon=player.right_hand)
