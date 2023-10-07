@@ -10,3 +10,4 @@ class HandlerType(Enum):
     TARGETING = auto()
     CHARACTER_PROFILE = auto()
     POWER_LIST = auto()
+    POWER_TARGETING = auto()

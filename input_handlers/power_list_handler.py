@@ -34,8 +34,8 @@ class PowerListHandler(EventHandler):
         power_keys = ascii_uppercase[0:len(self.power_list)]
         powers = {k: i for k, i in zip(power_keys, self.power_list)}
 
-        # if key.label in power_keys:
-        #     self.engine.switch_handler(HandlerType.ITEM_VIEW, item=inventory_items[key.label])
+        if key.label in power_keys:
+            self.engine.switch_handler(HandlerType.ITEM_VIEW, item=inventory_items[key.label])
 
         if key in ESCAPE_KEYS:
             self.engine.switch_handler(HandlerType.GAME)

@@ -18,7 +18,7 @@ if TYPE_CHECKING:
     from entities.enemy import Enemy
 
 class RangedWeapon(BaseWeapon):
-    def __init__(self, magazine_size: int = 6, burst_count: int = 1, ammunition_size: int = 10, ammunition_type: AmmunitionType = AmmunitionType.LIGHT, reload_type: ReloadType = ReloadType.STANDARD, properties: Dict[RangedWeaponProperty, Any] = {}, owner: Optional[Enemy | Player] = None, **kwargs):
+    def __init__(self, magazine_size: int = 6, burst_count: int = 1, ammunition_size: int = 10, ammunition_type: AmmunitionType = AmmunitionType.LIGHT, reload_type: ReloadType = ReloadType.STANDARD, properties: Dict[RangedWeaponProperty, Any] = {}, owner: Optional[Enemy | Player] = None,radius: int = 1, **kwargs):
         super().__init__(**kwargs)
         self.burst_count = burst_count
         self.ammunition_type = ammunition_type
@@ -43,7 +43,7 @@ class RangedWeapon(BaseWeapon):
         self.properties = properties
 
         self.owner = owner
-
+        self.radius = radius
         
 
     # returns true if the weapon can fire and false if it can't (empty,

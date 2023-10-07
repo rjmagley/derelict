@@ -15,6 +15,9 @@ class BasePower():
         self.power_cost = power_cost
         self.name = name
 
+        self.description = "no description"
+        self.radius = None
+
     @property
     def can_cast(self) -> bool:
         return self.caster.psy_points >= self.power_cost

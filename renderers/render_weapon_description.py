@@ -31,7 +31,7 @@ def render_weapon_description(root_console: Console, inventory_console: Console,
     if player.has_equipped(item):
         inventory_console.print(5, y_offset, string=f"{item.name} is in your hand{'s' if item.hands == 2 else ''}")
     else:
-        self.inventory_console.print(5, y_offset, string=f"Press 'e' to equip the {item.name}")
+        inventory_console.print(5, y_offset, string=f"Press 'e' to equip the {item.name}")
     
 
     inventory_console.blit(dest = root_console, dest_x = 0, dest_y = 0, width = 59, height = 24)

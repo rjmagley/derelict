@@ -31,7 +31,7 @@ def main():
     # map = generate_test_floor(160, 20, engine)
     player.map = map
     player.engine = engine
-    starting_weapon = place_random_melee_weapon(40, 12, map)
+    starting_weapon = get_test_belt_weapon(40, 12, map)
     starting_weapon.owner = player
     player.inventory.items.append(starting_weapon)
     player.right_hand = starting_weapon

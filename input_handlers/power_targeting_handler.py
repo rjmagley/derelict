@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
-from . import MOVE_KEYS, WAIT_KEYS, CURSOR_Y_KEYS, CONFIRM_KEYS, ESCAPE_KEYS
+from . import MOVE_KEYS, CONFIRM_KEYS, ESCAPE_KEYS
 
 import tcod
 
@@ -12,13 +12,14 @@ from actions import ActionResult
 if TYPE_CHECKING:
     from game_engine import GameEngine
     from items.ranged_weapon import RangedWeapon
+    from powers.base_power import BasePower
     
 from .look_event_handler import LookEventHandler
 from input_handlers.handler_types import HandlerType
 
-class TargetingEventHandler(LookEventHandler):
+class PowerTargetingEventHandler(LookEventHandler):
 
-    def __init__(self, engine: GameEngine, weapon: RangedWeapon):
+    def __init__(self, engine: GameEngine, power: BasePower):
         super().__init__(engine)
         self.player = self.engine.player
         self.targets = self.engine.map.living_entities_by_distance()
@@ -26,11 +27,11 @@ class TargetingEventHandler(LookEventHandler):
         self.x = self.targets[self.target_index].x if self.targets else self.player.x
         self.y = self.targets[self.target_index].y if self.targets else self.player.y
         self.handler_type = HandlerType.TARGETING
-        self.weapon = weapon
-        self.radius = weapon.radius if hasattr(weapon, 'radius') else 1
+        self.power = power
+        self.radius = power.radius if hasattr(power, 'radius') else 1
         
 
-    def ev_keydown(self, event: tcod.event.KeyDown) -> ActionResult:
+    def ev_keydown(self, event: tcod.event.KeyDown) -> Optional[ActionResult]:
         key = event.sym
 
         print("targeting keydown")
