@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from input_handlers.handler_types import HandlerType
+
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -9,14 +11,14 @@ if TYPE_CHECKING:
 # for now, only the player has access to these
 class BasePower():
 
-    def __init__(self, caster: Player, power_cost: int = 1, name: str = "<unnamed power>"):
+    def __init__(self, caster: Player):
 
         self.caster = caster
-        self.power_cost = power_cost
-        self.name = name
-
+        self.power_cost = 1
+        self.name = "<unnamed power>"
+        self.handler_type = HandlerType.POWER_TARGETING
         self.description = "no description"
-        self.radius = None
+        self.radius = 1
 
     @property
     def can_cast(self) -> bool:

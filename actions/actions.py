@@ -147,6 +147,17 @@ class PlayerReloadAction(Action):
     def perform(self) -> ActionResult:
         return self.weapon.reload(self.player)
 
+class PlayerCastPowerAction(Action):
+    def __init__(self, player, power, target) -> None:
+        super().__init__(player)
+        self.player = player
+        self.power = power
+        self.target = target
+
+    def perform(self) -> ActionResult:
+        self.power.cast(self.target)
+        return ActionResult(True, time_taken = 10)
+
 
 class WaitAction(Action):
     def perform(self) -> ActionResult:

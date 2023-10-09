@@ -133,6 +133,12 @@ class GameEngine():
                 render_status_side(self.root_console, self.side_console, self.player)
                 render_targeting_information(self.root_console, self.bottom_console, self.event_handler.weapon, self, self.map)
 
+            case HandlerType.POWER_TARGETING:
+                render_map(self.root_console, self.center_console, self.player, self.map)
+                render_map_cursor(self.root_console, self.center_console, self.map, self.event_handler, self.player)
+                render_status_side(self.root_console, self.side_console, self.player)
+                render_targeting_information(self.root_console, self.bottom_console, self.event_handler.power, self, self.map)
+
             case HandlerType.CHARACTER_PROFILE:
                 render_character_profile(self.root_console, self.player)
 

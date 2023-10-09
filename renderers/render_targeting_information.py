@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Union
 
 from tcod.console import Console
 from items.ranged_weapon import RangedWeapon
+from powers.base_power import BasePower
 from entities.player import Player
 from floor_map import FloorMap
 import color
@@ -11,8 +12,11 @@ import color
 if TYPE_CHECKING:
     from game_engine import GameEngine
 
-def render_targeting_information(root_console: Console, bottom_console: Console,weapon: RangedWeapon, engine: GameEngine, map: FloorMap) -> None:
-    bottom_console.print(x=0, y=0, fg=color.white, string=f"Targeting with your {weapon.name}")
+def render_targeting_information(root_console: Console, bottom_console: Console,targeter: RangedWeapon | BasePower, engine: GameEngine, map: FloorMap) -> None:
+    if isinstance(targeter, RangedWeapon):
+        bottom_console.print(x=0, y=0, fg=color.white, string=f"Targeting with your {targeter.name}")
+    elif isinstance(targeter, BasePower):
+        bottom_console.print(x=0, y=0, fg=color.white, string=f"Targeting your {targeter.name} power")
     target = map.get_blocking_entity_at_location(engine.event_handler.x, engine.event_handler.y)
     if target:
         bottom_console.print(x=0, y=1, fg=color.white, string=f"Aiming at {target.name}")

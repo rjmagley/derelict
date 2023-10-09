@@ -33,7 +33,7 @@ class FloorMap():
 
     @property
     def living_entities(self) -> Generator[BaseEntity]:
-        yield from (e for e in self.entities if isinstance(e, Mover) and e.is_alive and e != self.engine.player)
+        yield from (e for e in self.entities if isinstance(e, Mover) and e.is_alive)
 
     @property
     def awake_entities(self) -> List[Mover]:
@@ -51,6 +51,16 @@ class FloorMap():
         
         for e in self.entities:
             if e.x == x and e.y == y:
+                results.append(e)
+
+        return sorted(results, key = lambda x: x.render_order.value)
+
+    def get_living_entities_in_radius(self, x: int, y: int, radius: int) -> List[BaseEntity]:
+        
+        results = []
+        
+        for e in self.living_entities:
+            if e.x in range(x - radius + 1, x + radius) and e.y in range(y - radius + 1, y + radius):
                 results.append(e)
 
         return sorted(results, key = lambda x: x.render_order.value)
