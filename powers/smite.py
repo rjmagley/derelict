@@ -29,9 +29,12 @@ class Smite(BasePower):
         self.handler_type = HandlerType.POWER_TARGETING
 
     def cast(self, target: Enemy):
-        targets = target.map.get_living_entities_in_radius(target.x, target.y, self.radius)
-        print(targets)
+        self.caster.psy_points -= self.power_cost
+        original_target = target
         for i in range(0, 3):
+            targets = target.map.get_living_entities_in_radius(original_target.x, original_target.y, self.radius)
+            if len(targets) == 0:
+                break
             target = random.choice(targets)
             damage = die_rollers.roll_dice(3, 4)
             target.take_damage(damage)

@@ -54,6 +54,7 @@ class GameEngine():
         self.side_console = Console(20, 20, order="F")
         self.root_console = root_console
         self.context = context
+        self.dying_entities = []
 
     def switch_handler(self, handler, **kwargs) -> None:
         print(f"switching handler to {handler}")
@@ -98,6 +99,7 @@ class GameEngine():
         self.player.delay -= 1
         
         self.update_fov()
+        self.handle_deaths()
 
 
     def render(self) -> None:
@@ -163,3 +165,11 @@ class GameEngine():
                 e.awake = True
 
         self.map.explored |= self.map.visible
+
+    def handle_deaths(self) -> None:
+        for e in self.dying_entities:
+            if e.is_alive:
+                self.player.on_enemy_death(e)
+                e.die()
+
+        self.dying_entities = []

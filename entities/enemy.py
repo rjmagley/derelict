@@ -66,10 +66,10 @@ class Enemy(Combatant):
         if damage >= 0:
             self.hp -= damage
             if self.hp <= 0:
-                self.engine.add_message(f"The {self.name} dies!", color.red)
-                self.die()
+                self.engine.dying_entities.append(self)
 
     def die(self) -> None:
+        self.engine.add_message(f"The {self.name} dies!", color.red)
         self.char = "%"
         self.color = color.red
         self.blocks_movement = False

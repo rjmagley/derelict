@@ -31,6 +31,7 @@ import color
 
 if TYPE_CHECKING:
     from items.ranged_weapon import RangedWeapon
+    from entities.enemy import Enemy
 
 class PlayerSkill(StrEnum):
     DUALWIELD = "dual-wielding"
@@ -288,5 +289,10 @@ class Player(Combatant):
 
     # will call this when an enemy dies to the player to handle replenishing
     # psy, and other things that may need to happen
-    def on_enemy_death(self):
+    def on_enemy_death(self, enemy: Enemy):
+        if self.psy_points < self.max_psy:
+                self.partial_psy += randint(1, enemy.level) * 10
+                if self.partial_psy >= 100:
+                    self.partial_psy -= 100
+                    self.psy_points += 1
         pass

@@ -8,6 +8,7 @@ from . import ESCAPE_KEYS
 import tcod
 
 from actions.actions import Action
+from actions import ActionResult
 
 from .event_handler import EventHandler
 
@@ -35,6 +36,8 @@ class PowerListHandler(EventHandler):
         powers = {k: i for k, i in zip(power_keys, self.power_list)}
 
         if key.label in power_keys:
+            if not powers[key.label].can_cast:
+                return ActionResult(False, "You lack the psy points to cast this.")
             self.engine.switch_handler(powers[key.label].handler_type, power=powers[key.label])
 
         if key in ESCAPE_KEYS:
