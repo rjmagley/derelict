@@ -1,0 +1,148 @@
+from __future__ import annotations
+
+from typing import Tuple, Iterator, List, TYPE_CHECKING
+
+import numpy
+
+if TYPE_CHECKING:
+    from game_engine import GameEngine
+
+import math
+import random
+
+import tcod
+
+from floor_map import FloorMap
+from entities.player import Player
+import tile_types
+from entities import monsters
+from items.ranged_weapon import place_random_ranged_weapon
+
+from .vault_loader import VaultLoader
+
+# right now I'm following the tutorial's general implementation of this stuff
+# later I'd rather do something vault-based, like DCSS does
+
+# Room - generic room class, keeps track of the center of the room
+class Room():
+    def __init__(self, x: int, y: int, width: int, height: int, tile_data: List[List[str]]):
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.tiles = numpy.full((width, height), fill_value=tile_types.wall, order="F")
+        for y in range(0, height):
+            for x in range(0, width):
+
+                match tile_data[y][x]:
+                    case '#':
+                        self.tiles[x, y] = tile_types.wall
+                    case '.':
+                        self.tiles[x, y] = tile_types.floor
+
+    @property
+    def center(self) -> Tuple[int, int]:
+        return math.floor(self.x + self.width/2), math.floor(self.y + self.height/2)
+
+    def place_to_floor(self, floor: FloorMap) -> None:
+        floor.tiles[slice(self.x, self.x + self.width), slice(self.y, self.y+self.height)] = self.tiles
+
+
+# RectangularRoom - rooms that are a rectangle
+class RectangularRoom(Room):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+
+def generate_floor(width: int, height: int, engine: GameEngine) -> FloorMap:
+
+    vault_loader = VaultLoader()
+
+    player = engine.player
+    floor = FloorMap(engine, width, height, entities={player})
+
+    rooms: List[Room] = []
+
+    # place entry and exit areas
+    entry_data = vault_loader.get_entry_vault()
+    entry_room = RectangularRoom(x=0, y=0, width=entry_data['width'], height=entry_data['height'], tile_data=entry_data['map'])
+    entry_room.place_to_floor(floor)
+
+    
+    player.x, player.y = entry_room.center
+
+    rooms.append(entry_room)
+    
+
+    x_offset = 10
+
+    while x_offset < width - 10:
+        new_data = vault_loader.get_vault()
+        while new_data['width'] > width-x_offset:
+            new_data = vault_loader.get_vault()
+        new_room = RectangularRoom(x=x_offset, y=random.randint(0, 20-new_data['height']), width=new_data['width'], height=new_data['height'], tile_data=new_data['map'])
+        rooms.append(new_room)
+        new_room.place_to_floor(floor)
+        place_enemies(new_room, floor)
+        x_offset += new_room.width
+
+    exit_room = RectangularRoom(x=width-entry_data['width'], y=height-entry_data['height'], width=entry_data['width'], height=entry_data['height'], tile_data=entry_data['map'])
+
+    exit_room.place_to_floor(floor)
+    rooms.append(exit_room)
+
+    return floor
+
+def place_enemies(room: Room, floor: FloorMap) -> None:
+
+    number_mobs = random.randint(2, 5)
+    for i in range(number_mobs):
+        x = random.randint(room.x, room.width + room.x - 1)
+        y = random.randint(room.y, room.height + room.y - 1)
+        print(f"attempting placement at {x} {y}")
+        if floor.tiles[x, y] == tile_types.floor:
+            if not any (e.x == x and e.y == y for e in floor.entities):
+                if random.random() > .5: 
+                    floor.entities.add(monsters.create_goblin(x=x, y=y, map=floor))
+                else:
+                    floor.entities.add(monsters.create_slow_goblin(x=x, y=y, map=floor))
+            else:
+                print(f"failed placement at {x} {y} - entity already present")
+        else:
+            print(f"failed placement at {x} {y} - placement not floor")
+
+
+def place_items(room: Room, map: FloorMap) -> None:
+
+    x = random.randint(room.x1 + 1, room.x2 - 1)
+    y = random.randint(room.y1 + 1, room.y2 - 1)
+    map.entities.add(place_random_ranged_weapon(x, y))
+
+def generate_test_floor(width: int, height: int, engine: GameEngine) -> FloorMap:
+
+    player = engine.player
+    player.x, player.y = 5, 5
+    floor = FloorMap(engine, width, height, entities={player})
+
+    floor.tiles[1:159, 1:19] = tile_types.floor
+
+    floor.tiles[10:20, 5:15] = tile_types.wall
+    floor.tiles[40:50, 10:25] = tile_types.wall
+    floor.tiles[70:100, 5:25] = tile_types.wall
+    floor.tiles[3:113, 2:4] = tile_types.wall
+
+    print(floor)
+
+    floor.entities.add(monsters.create_dummy(x=6, y=6, map=floor))
+    floor.entities.add(monsters.create_dummy(x=66, y=6, map=floor))
+
+    return floor
+
+def generate_test_floor2(width: int, height: int, engine: GameEngine) -> FloorMap:
+
+
+    floor = generate_floor(160, 20, engine)
+    # floor.tiles[1:20, 1:19] = tile_types.floor
+    # floor.tiles[139:159, 1:19] = tile_types.floor
+
+    return floor

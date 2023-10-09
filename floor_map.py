@@ -89,15 +89,3 @@ class FloorMap():
         results = sorted(entities, key=lambda e:  e.distance(self.engine.player))
 
         return results
-
-    # original render function 
-    # def render(self, console: Console) -> None:
-    #     console.rgb[0:self.width, 0:self.height] = numpy.select(
-    #         condlist=[self.visible, self.explored],
-    #         choicelist=[self.tiles['light'], self.tiles['dark']],
-    #         default=tile_types.unseen
-    #     )
-    #     for e in (entity for entity in self.entities if self.visible[entity.x, entity.y]):
-    #         console.print(x=e.x, y=e.y, fg=e.color, string=e.char)
-
-    

@@ -6,7 +6,7 @@ from game_engine import GameEngine
 from items.melee_weapon import place_random_melee_weapon
 from items.ranged_weapon import get_test_belt_weapon
 from items.ranged_energy_weapon import get_test_energy_weapon
-from floor_generation import generate_floor, generate_test_floor2
+from floor_generation.floor_generation import generate_floor, generate_test_floor2
 
 from powers.smite import Smite
 
