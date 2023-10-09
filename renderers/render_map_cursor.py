@@ -20,8 +20,8 @@ def render_map_cursor(root_console: Console, center_console: Console, map: Floor
         print(f"radius: {handler.radius}")
         for x in range(handler.x - handler.radius + 1, handler.x+handler.radius):
             for y in range(handler.y - handler.radius + 1, handler.y+handler.radius):
-                print(x, y)
-                center_console.bg[x, y] = color.red
+                if map.in_bounds(x, y):
+                    center_console.bg[x, y] = color.red
     center_console.blit(dest = root_console, src_x = player_map_offset(player, map), width = 60, height = 20)
     
     center_console.clear()

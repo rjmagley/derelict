@@ -36,7 +36,7 @@ class PowerTargetingEventHandler(LookEventHandler):
 
         print("targeting keydown")
         match key:
-            case key if key in MOVE_KEYS and self.engine.map.in_bounds(self.x, self.y):
+            case key if key in MOVE_KEYS and self.engine.map.in_bounds(self.x + MOVE_KEYS[key][0], self.y + MOVE_KEYS[key][1]):
                 self.x += MOVE_KEYS[key][0]
                 self.y += MOVE_KEYS[key][1]
 
