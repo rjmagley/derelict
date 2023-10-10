@@ -16,7 +16,7 @@ from floor_map import FloorMap
 from entities.player import Player
 import tile_types
 from entities import monsters
-from items.ranged_weapon import place_random_ranged_weapon
+from items.random_weapon import place_random_ranged_weapon
 
 from .vault_loader import VaultLoader
 

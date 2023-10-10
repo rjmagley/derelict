@@ -49,7 +49,12 @@ def render_map(root_console: Console, center_console: Console, player: Player, m
         default=tile_types.unseen
     )
 
-    sorted_entities = sorted((entity for entity in map.entities if map.visible[entity.x, entity.y]), key = lambda x: x.render_order.value)
+    # entities = [entity for entity in map.entities]
+
+    # for e in entities:
+    #     print(f"{e.name} - {e.x} {e.y}")
+
+    sorted_entities = sorted([entity for entity in map.entities if map.visible[entity.x, entity.y]], key = lambda x: x.render_order.value)
 
     for e in sorted_entities:
         center_console.print(x=e.x, y=e.y, fg=e.color, string=e.char)

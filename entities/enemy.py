@@ -10,7 +10,7 @@ from items.magazine import Magazine
 
 from actions import ActionResult
 
-from die_rollers import standard_roll_target
+from die_rollers import standard_roll_target, enemy_attack_roll
 from render_order import RenderOrder
 import color
 
@@ -43,7 +43,7 @@ class Enemy(Combatant):
 
     def ranged_attack(self, target: Combatant, weapon: RangedWeapon) -> ActionResult:
         damage = weapon.fire()
-        if standard_roll_target(self.ranged_skill):
+        if enemy_attack_roll(self.ranged_skill, weapon.calculate_distance_modifier(self, target)):
             message = f"The {self.name} hits the {target.name} for {damage} damage."
             target.take_damage(damage)
             return ActionResult(True, message, color.white, 10)

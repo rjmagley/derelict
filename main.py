@@ -4,8 +4,7 @@ from entities.player import Player
 from actions.actions import *
 from game_engine import GameEngine
 from items.melee_weapon import place_random_melee_weapon
-from items.ranged_weapon import get_test_belt_weapon
-from items.ranged_energy_weapon import get_test_energy_weapon
+from items.random_weapon import place_random_ranged_weapon
 from floor_generation.floor_generation import generate_floor, generate_test_floor2
 
 from powers.smite import Smite
@@ -31,7 +30,7 @@ def main():
     # map = generate_test_floor(160, 20, engine)
     player.map = map
     player.engine = engine
-    starting_weapon = get_test_belt_weapon(40, 12, map)
+    starting_weapon = place_random_ranged_weapon(None, None)
     starting_weapon.owner = player
     player.inventory.items.append(starting_weapon)
     player.right_hand = starting_weapon
