@@ -42,5 +42,18 @@ def render_status_side(root_console: Console, side_console: Console, player: Pla
             side_console.print(x = 0, y = 9, string=player.left_hand.status_string, fg = color.white)
             side_console.print(x = 0, y = 10, string=player.left_hand.ammo_status, fg = color.white)
 
+    side_console.print(x = 0, y = 12, string="Shoulders:", fg = color.white)
+    if player.right_shoulder == None:
+        side_console.print(x = 0, y = 13, string="-----", fg = color.white)
+    else:
+        side_console.print(x = 0, y = 13, string=player.right_shoulder.status_string, fg = color.white)
+        side_console.print(x = 0, y = 14, string=player.right_shoulder.ammo_status, fg = color.white)
+
+    if player.left_shoulder == None:
+        side_console.print(x = 0, y = 15, string="-----", fg = color.white)
+    else:
+        side_console.print(x = 0, y = 15, string=player.left_shoulder.status_string, fg = color.white)
+        side_console.print(x = 0, y = 16, string=player.left_shoulder.ammo_status, fg = color.white)
+
     side_console.blit(dest = root_console, dest_x = 60, dest_y = 0, width = 20, height = 20)
     side_console.clear()
