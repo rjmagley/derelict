@@ -30,14 +30,12 @@ class GameEventHandler(EventHandler):
 
         key, mod = event.sym, event.mod
 
-        print(key.label)
 
         match key:
             case key if key in MOVE_KEYS:
                 dx, dy = MOVE_KEYS[key]
                 action = BumpAction(player, dx, dy).perform()
             case key if key in WAIT_KEYS:
-                print("waiting")
                 action = WaitAction(player).perform()
 
             case key if key in ESCAPE_KEYS:
@@ -73,25 +71,4 @@ class GameEventHandler(EventHandler):
                 self.engine.switch_handler(HandlerType.MESSAGE_HISTORY)
                 
 
-        # key = event.sym
-
-        # if key in MOVE_KEYS:
-        #     dx, dy = MOVE_KEYS[key]
-        #     action = BumpAction(player, dx, dy)
-
-        # elif key in WAIT_KEYS:
-        #     print("waiting")
-        #     action = WaitAction(player)
-
-        # elif key in ESCAPE_KEYS:
-        #     action = EscapeAction(player)
-
-        # elif key == tcod.event.KeySym.g:
-        #     action = PickupItemAction(player)
-
-        # elif event.mod & tcod.event.KMOD_CTRL and key == tcod.event.KeySym.p:
-        #     self.engine.switch_handler(message_history_handler.MessageHistoryHandler)
-
-        # No valid key was pressed
-        print(action)
         return action

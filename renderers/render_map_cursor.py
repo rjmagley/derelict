@@ -17,7 +17,6 @@ def render_map_cursor(root_console: Console, center_console: Console, map: Floor
 
     center_console.print(x = handler.x, y = handler.y, fg = color.white, string='X')
     if hasattr(handler, 'radius'):
-        print(f"radius: {handler.radius}")
         for x in range(handler.x - handler.radius + 1, handler.x+handler.radius):
             for y in range(handler.y - handler.radius + 1, handler.y+handler.radius):
                 if map.in_bounds(x, y):

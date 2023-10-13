@@ -88,7 +88,6 @@ class GameEngine():
             if e.ai:
                 # print(f"{e.name} - {e.delay}")
                 if e.delay <= 0:
-                    print(f"{e.name} has a turn")
                     action_result = e.ai.perform()
                     if action_result.time_passed:
                         e.delay += action_result.time_taken

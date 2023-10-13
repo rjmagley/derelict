@@ -217,7 +217,6 @@ class Player(Combatant):
 
     def ranged_attack(self, target: Combatant, weapon: RangedWeapon) -> ActionResult:
         distance_modifier = weapon.calculate_distance_modifier(self, target)
-        print(distance_modifier)
         damage = weapon.fire()
         if player_attack_roll(weapon, self, distance_modifier):
             message = f"You hit the {target.name} for {damage} damage."

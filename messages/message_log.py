@@ -13,7 +13,6 @@ class MessageLog:
         self.messages: List[Message] = []
 
     def add_message(self, text: str, fg: Tuple[int, int, int] = color.white) -> None:
-        print(f"adding message: {text}")
         self.messages.append(Message(text, fg))
         if len(self.messages) > 200:
             self.messages.pop(0)

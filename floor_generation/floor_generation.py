@@ -99,17 +99,12 @@ def place_enemies(room: Room, floor: FloorMap) -> None:
     for i in range(number_mobs):
         x = random.randint(room.x, room.width + room.x - 1)
         y = random.randint(room.y, room.height + room.y - 1)
-        print(f"attempting placement at {x} {y}")
         if floor.tiles[x, y] == tile_types.floor:
             if not any (e.x == x and e.y == y for e in floor.entities):
                 if random.random() > .5: 
                     floor.entities.add(monsters.create_goblin(x=x, y=y, map=floor))
                 else:
                     floor.entities.add(monsters.create_slow_goblin(x=x, y=y, map=floor))
-            else:
-                print(f"failed placement at {x} {y} - entity already present")
-        else:
-            print(f"failed placement at {x} {y} - placement not floor")
 
 
 def place_items(room: Room, map: FloorMap) -> None:
@@ -131,7 +126,6 @@ def generate_test_floor(width: int, height: int, engine: GameEngine) -> FloorMap
     floor.tiles[70:100, 5:25] = tile_types.wall
     floor.tiles[3:113, 2:4] = tile_types.wall
 
-    print(floor)
 
     floor.entities.add(monsters.create_dummy(x=6, y=6, map=floor))
     floor.entities.add(monsters.create_dummy(x=66, y=6, map=floor))

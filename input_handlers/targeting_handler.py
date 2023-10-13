@@ -33,7 +33,6 @@ class TargetingEventHandler(LookEventHandler):
     def ev_keydown(self, event: tcod.event.KeyDown) -> ActionResult:
         key = event.sym
 
-        print("targeting keydown")
         match key:
             case key if key in MOVE_KEYS and self.engine.map.in_bounds(self.x, self.y):
                 self.x += MOVE_KEYS[key][0]
@@ -48,10 +47,8 @@ class TargetingEventHandler(LookEventHandler):
                 target = self.engine.map.get_blocking_entity_at_location(self.x, self.y)
                 if not target:
                     # handle this differently later when things like AoEs are implemented
-                    print("no target here")
                     return ActionResult(False, "There's nothing to shoot there.")
                 if not self.weapon.can_fire:
-                    print("can't fire")
                     return ActionResult(False, "Your weapon is empty.")
                 action = PlayerFireAction(self.player, target, self.weapon).perform()
                 self.engine.switch_handler(HandlerType.GAME)
