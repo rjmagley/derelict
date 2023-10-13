@@ -57,8 +57,14 @@ class GameEventHandler(EventHandler):
             case tcod.event.KeySym.c:
                 self.engine.switch_handler(HandlerType.POWER_LIST)
 
+            # shift-t to bring up the offhand/shoulder weapon targeter
+            case tcod.event.KeySym.t if event.mod & tcod.event.KMOD_SHIFT:
+                if player.left_hand == None and player.right_shoulder == None and player.left_shoulder == None:
+                    return ActionResult(False, "You have no auxillary weapons to fire.")
+                self.engine.switch_handler(HandlerType.WEAPON_SELECT)
+
             case tcod.event.KeySym.f:
-                if isinstance(player.right_hand, RangedWeapon) or isinstance(player.right_hand, RangedEnergyWeapon):
+                if isinstance(player.right_hand, RangedWeapon):
                     self.engine.switch_handler(HandlerType.TARGETING, weapon=player.right_hand)
                 else:
                     return ActionResult(False, "You don't have a ranged weapon in hand.")

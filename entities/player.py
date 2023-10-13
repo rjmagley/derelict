@@ -212,6 +212,14 @@ class Player(Combatant):
         else:
             return ActionResult(False, f"The {weapon.name} is too big for your offhand.", color.light_gray)
 
+    def equip_right_shoulder(self, weapon: BaseWeapon) -> ActionResult:
+        self.right_shoulder = weapon
+        return ActionResult(True, f"You equip the {weapon.name} on your right shoulder.", color.white, 10)
+
+    def equip_left_shoulder(self, weapon: BaseWeapon) -> ActionResult:
+        self.left_shoulder = weapon
+        return ActionResult(True, f"You equip the {weapon.name} on your left shoulder.", color.white, 10)
+
     def die(self) -> None:
         print("You died!")
 

@@ -11,3 +11,4 @@ class HandlerType(Enum):
     CHARACTER_PROFILE = auto()
     POWER_LIST = auto()
     POWER_TARGETING = auto()
+    WEAPON_SELECT = auto()

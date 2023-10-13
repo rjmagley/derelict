@@ -27,14 +27,25 @@ class ViewItemEventHandler(EventHandler):
         key = event.sym
 
         if not player.has_equipped(self.item):
-            if key == tcod.event.KeySym.e:
-                action_result = player.equip_right_hand(self.item)
-                self.engine.switch_handler(HandlerType.INVENTORY_VIEW)
-                return action_result
-            if key == tcod.event.KeySym.f and self.item.hands == 1:
-                action_result = player.equip_left_hand(self.item)
-                self.engine.switch_handler(HandlerType.INVENTORY_VIEW)
-                return action_result
+            # needs to be split based on if weapon is shoulder-mounted
+            if not self.item.is_shoulder:
+                if key == tcod.event.KeySym.e:
+                    action_result = player.equip_right_hand(self.item)
+                    self.engine.switch_handler(HandlerType.INVENTORY_VIEW)
+                    return action_result
+                if key == tcod.event.KeySym.f and self.item.hands == 1:
+                    action_result = player.equip_left_hand(self.item)
+                    self.engine.switch_handler(HandlerType.INVENTORY_VIEW)
+                    return action_result
+            else:
+                if key == tcod.event.KeySym.e:
+                    action_result = player.equip_right_shoulder(self.item)
+                    self.engine.switch_handler(HandlerType.INVENTORY_VIEW)
+                    return action_result
+                if key == tcod.event.KeySym.f and self.item.hands == 1:
+                    action_result = player.equip_left_shoulder(self.item)
+                    self.engine.switch_handler(HandlerType.INVENTORY_VIEW)
+                    return action_result
 
         if key in ESCAPE_KEYS:
             self.engine.switch_handler(HandlerType.INVENTORY_VIEW)

@@ -9,13 +9,12 @@ from . import WeaponType
 
 class BaseWeapon(BaseItem):
 
-    def __init__(self, die_count: int = 1, damage_die: int = 1, hands: int = 1, is_shoulder: bool = False, weapon_types: List[WeaponType] = [], **kwargs):
+    def __init__(self, die_count: int = 1, damage_die: int = 1, hands: int = 1, weapon_types: List[WeaponType] = [], **kwargs):
         super().__init__(**kwargs)
 
         self.die_count = die_count
         self.damage_die = damage_die
         self.hands = hands
-        self.is_shoulder = is_shoulder
         self._weapon_types = weapon_types
 
     # if weapon only has one type, return that type
@@ -28,6 +27,8 @@ class BaseWeapon(BaseItem):
             # if there's more than one type
             # really weapons should have a max of like two types
             # but who knows what horrible thing the future holds
+
+
             player = self.engine.player
             stats = [(t, player.player_stats[t]) for t in self._weapon_types]
             # gross lambda to sort by the player stat

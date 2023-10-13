@@ -8,6 +8,7 @@ class MeleeWeapon(BaseWeapon):
     def __init__(self, **kwargs):
         super().__init__(char='/', **kwargs)
         self.owner = None
+        self.is_shoulder = False
 
 def place_random_melee_weapon(x: int, y: int, map = None) -> MeleeWeapon:
     weapon_choices = [

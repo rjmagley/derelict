@@ -19,13 +19,14 @@ if TYPE_CHECKING:
     from entities.base_entity import BaseEntity
 
 class RangedWeapon(BaseWeapon):
-    def __init__(self, burst_count: int = 1, properties: Dict[RangedWeaponProperty, Any] = {}, owner: Optional[Enemy | Player] = None,radius: int = 1, optimal_range: int = 7, range_interval: int = 7, **kwargs):
+    def __init__(self, burst_count: int = 1, properties: Dict[RangedWeaponProperty, Any] = {}, owner: Optional[Enemy | Player] = None,radius: int = 1, optimal_range: int = 7, range_interval: int = 7, is_shoulder: bool = False, **kwargs):
         super().__init__(**kwargs)
         self.burst_count = burst_count
         self.char = '{'
         self.properties = properties
         self.owner = owner
         self.radius = radius
+        self.is_shoulder = is_shoulder
 
         # the optimal range is the range at which the weapon has no penalties -
         # from optimal range to optimal range * 2

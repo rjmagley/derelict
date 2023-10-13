@@ -60,6 +60,7 @@ from .character_profile_handler import CharacterProfileEventHandler
 from .power_list_handler import PowerListHandler
 from .handler_types import HandlerType
 from .power_targeting_handler import PowerTargetingEventHandler
+from .weapon_select_handler import WeaponSelectEventHandler
 
 def provide_handler(handler: HandlerType) -> type[EventHandler]:
     match handler:
@@ -83,3 +84,5 @@ def provide_handler(handler: HandlerType) -> type[EventHandler]:
             return PowerListHandler
         case HandlerType.POWER_TARGETING:
             return PowerTargetingEventHandler
+        case HandlerType.WEAPON_SELECT:
+            return WeaponSelectEventHandler

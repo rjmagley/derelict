@@ -147,6 +147,12 @@ class GameEngine():
                 render_power_list(self.root_console, self.inventory_console, self.player)
                 render_status_side(self.root_console, self.side_console, self.player)
 
+            case HandlerType.WEAPON_SELECT:
+                render_weapon_selector(self.root_console, self.bottom_console, self.player)
+                render_map(self.root_console, self.center_console, self.player, self.map)
+                render_status_side(self.root_console, self.side_console, self.player)
+
+
 
         self.context.present(self.root_console)
         self.root_console.clear()
