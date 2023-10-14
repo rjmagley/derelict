@@ -37,7 +37,7 @@ def render_status_side(root_console: Console, side_console: Console, player: Pla
 
     if not player.twohanded_weapon:
         if player.left_hand == None:
-            side_console.print(x = 0, y = 9, string="Unarmed", fg = color.white)
+            side_console.print(x = 0, y = 9, string="-----", fg = color.white)
         else:
             side_console.print(x = 0, y = 9, string=player.left_hand.status_string, fg = color.white)
             side_console.print(x = 0, y = 10, string=player.left_hand.ammo_status, fg = color.white)

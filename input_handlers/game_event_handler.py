@@ -54,6 +54,10 @@ class GameEventHandler(EventHandler):
                 weapon = player.right_hand
                 action = PlayerReloadAction(player, weapon).perform()
 
+            # shift-r to bring up aux weapon reloader?
+            # or do we want that for special weapon reloads - in which case, we
+            # should use ctrl-r
+
             case tcod.event.KeySym.c:
                 self.engine.switch_handler(HandlerType.POWER_LIST)
 
