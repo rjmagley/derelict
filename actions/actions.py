@@ -19,8 +19,6 @@ if TYPE_CHECKING:
 
 # actions return a boolean to determine if a turn was taken or not
 # the player shouldn't be penalized for attempting an impossible action
-# when actions are set up to take time to perform into account, this
-# may need to change
 
 class Action():
 
