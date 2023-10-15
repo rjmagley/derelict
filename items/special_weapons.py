@@ -15,8 +15,9 @@ if TYPE_CHECKING:
     from magazine import Magazine
     from entities.enemy import Enemy
     from floor_map import FloorMap
+    from entities.player import Player
 
-def test_fire(self, target: Enemy, floor: FloorMap, **kwargs) -> None:
+def test_fire(self, target: Enemy | Player, floor: FloorMap, **kwargs) -> None:
     hit_enemies = [target]
     self.owner.energy_points -= self.charge_needed
     if player_attack_roll(self, self.engine.player, self.calculate_distance_modifier(self.engine.player, target)):
