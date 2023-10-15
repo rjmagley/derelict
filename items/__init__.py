@@ -57,6 +57,7 @@ class RangedWeaponProperty(StrEnum):
     SAMPLE = "sample"
 
 class WeaponName(StrEnum):
+    # common weapons start here
     BURST_PISTOL = "burst pistol"
     LIGHT_SMG = "light smg"
     HEAVY_REPEATER = "heavy repeater"
@@ -64,4 +65,8 @@ class WeaponName(StrEnum):
     HEAVY_AUTOGUN = "heavy autogun"
     LIGHT_AUTOCANNON = "light autocannon"
     ENERGY_RIFLE = "energy rifle"
-    LIGHTNING_CANNON = "Lightning Cannon"
+    LONGSWORD = "long sword"
+    # special weapons start here
+
+    # exotic weapons start here
+    THIRD_RAIL = "The Third Rail"

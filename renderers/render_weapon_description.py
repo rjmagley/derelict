@@ -1,6 +1,7 @@
 from tcod.console import Console
 from items.base_item import BaseItem
 from items.ranged_weapon import RangedWeapon
+from items.ranged_physical_weapon import RangedPhysicalWeapon
 from entities.player import Player
 
 # am I really going to write a method for each one of these?
@@ -24,7 +25,7 @@ def render_weapon_description(root_console: Console, inventory_console: Console,
         inventory_console.print(5, y_offset, string=item.description)
         y_offset += 1
 
-    if isinstance(item, RangedWeapon):
+    if isinstance(item, RangedPhysicalWeapon):
         inventory_console.print(5, y_offset, string=f"{item.loaded_ammo} of {item.magazine_size} in magazine")
         y_offset += 1
 

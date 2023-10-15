@@ -3,9 +3,7 @@ import tcod
 from entities.player import Player
 from actions.actions import *
 from game_engine import GameEngine
-from items.melee_weapon import place_random_melee_weapon
-from items.random_weapon import place_random_ranged_weapon, place_random_shoulder_weapon
-from items.special_weapons import special_test
+from items.weapon_generator import place_random_common_weapon
 from floor_generation.floor_generation import generate_floor, generate_test_floor2
 
 from powers.smite import Smite
@@ -31,15 +29,11 @@ def main():
     # map = generate_test_floor(160, 20, engine)
     player.map = map
     player.engine = engine
-    starting_weapon = special_test
+    starting_weapon = place_random_common_weapon(player.x, player.y, map)
     starting_weapon.owner = player
     starting_weapon.engine = engine
-    starting_shoulder = place_random_shoulder_weapon(None, None)
-    starting_shoulder.owner = player
-    starting_shoulder.engine = engine
     player.inventory.items.append(starting_weapon)
     player.right_hand = starting_weapon
-    player.right_shoulder = starting_shoulder
     # starting_weapon.map = map
     # starting_weapon.engine = engine
 

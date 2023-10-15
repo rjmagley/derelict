@@ -41,7 +41,7 @@ def test_fire(self, target: Enemy | Player, floor: FloorMap, **kwargs) -> None:
     else:
         self.engine.message_log.add_message(f"You miss the {target.name}.", color.light_gray)
 
-special_test = RangedEnergyWeapon(charge_needed = 12, die_count=3, damage_die=4, burst_count = 1, name="Lightning Cannon", hands = 2, optimal_range = 5, range_interval = 2, radius = 3, is_special = True)
+special_test = RangedEnergyWeapon(charge_needed = 12, die_count=3, damage_die=4, burst_count = 1, name="The Third Rail", hands = 2, optimal_range = 5, range_interval = 2, radius = 3, is_special = True)
 
 special_test.fire = types.MethodType(test_fire, special_test)
 

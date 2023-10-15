@@ -16,7 +16,7 @@ from floor_map import FloorMap
 from entities.player import Player
 import tile_types
 from entities import monsters
-from items.random_weapon import place_random_ranged_weapon
+from items.weapon_generator import place_random_common_weapon
 
 from .vault_loader import VaultLoader
 
@@ -84,6 +84,7 @@ def generate_floor(width: int, height: int, engine: GameEngine) -> FloorMap:
         rooms.append(new_room)
         new_room.place_to_floor(floor)
         place_enemies(new_room, floor)
+        place_items(new_room, floor)
         x_offset += new_room.width
 
     exit_room = RectangularRoom(x=width-entry_data['width'], y=height-entry_data['height'], width=entry_data['width'], height=entry_data['height'], tile_data=entry_data['map'])
@@ -109,9 +110,10 @@ def place_enemies(room: Room, floor: FloorMap) -> None:
 
 def place_items(room: Room, map: FloorMap) -> None:
 
-    x = random.randint(room.x1 + 1, room.x2 - 1)
-    y = random.randint(room.y1 + 1, room.y2 - 1)
-    map.entities.add(place_random_ranged_weapon(x, y))
+    x = random.randint(room.x+1, room.x+room.width-2)
+    y = random.randint(room.y+1, room.y+room.height-2)
+    if map.tiles['walkable'][x, y]:
+        map.entities.add(place_random_common_weapon(x, y, map))
 
 def generate_test_floor(width: int, height: int, engine: GameEngine) -> FloorMap:
 
