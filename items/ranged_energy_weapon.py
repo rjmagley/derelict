@@ -37,7 +37,7 @@ class RangedEnergyWeapon(RangedWeapon):
     def can_fire(self) -> bool:
         return self.owner.energy_points >= self.charge_needed
 
-    def fire(self) -> int:
+    def fire(self, **kwargs) -> int:
         total_damage = 0
         for x in range(0, self.burst_count):
             total_damage += self.roll_damage()

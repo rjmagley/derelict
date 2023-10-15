@@ -49,7 +49,7 @@ class RangedWeapon(BaseWeapon):
     def ammo_status(self) -> str:
         raise NotImplementedError
 
-    def fire(self) -> int:
+    def fire(self, **kwargs) -> int:
         raise NotImplementedError
 
     def belt_fire(self) -> int:

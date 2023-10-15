@@ -69,7 +69,7 @@ class RangedPhysicalWeapon(RangedWeapon):
             return f"{self.owner.magazine.get_percentage(self.ammunition_type)}%"
         return f"{self.loaded_ammo}/{self.magazine_size}"
 
-    def fire(self) -> int:
+    def fire(self, **kwargs) -> int:
         total_damage = 0
         burst = min(self.burst_count, self.loaded_ammo)
         for x in range(0, burst):

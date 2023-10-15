@@ -55,3 +55,13 @@ class ArmorProperty(StrEnum):
 
 class RangedWeaponProperty(StrEnum):
     SAMPLE = "sample"
+
+class WeaponName(StrEnum):
+    BURST_PISTOL = "burst pistol"
+    LIGHT_SMG = "light smg"
+    HEAVY_REPEATER = "heavy repeater"
+    SHOTGUN = "shotgun"
+    HEAVY_AUTOGUN = "heavy autogun"
+    LIGHT_AUTOCANNON = "light autocannon"
+    ENERGY_RIFLE = "energy rifle"
+    LIGHTNING_CANNON = "Lightning Cannon"

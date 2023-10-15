@@ -224,14 +224,18 @@ class Player(Combatant):
         print("You died!")
 
     def ranged_attack(self, target: Combatant, weapon: RangedWeapon) -> ActionResult:
-        distance_modifier = weapon.calculate_distance_modifier(self, target)
-        damage = weapon.fire()
-        if player_attack_roll(weapon, self, distance_modifier):
-            message = f"You hit the {target.name} for {damage} damage."
-            target.take_damage(damage)
-            return ActionResult(True, message, color.white, 10)
+        if not weapon.is_special:
+            distance_modifier = weapon.calculate_distance_modifier(self, target)
+            damage = weapon.fire()
+            if player_attack_roll(weapon, self, distance_modifier):
+                message = f"You hit the {target.name} for {damage} damage."
+                target.take_damage(damage)
+                return ActionResult(True, message, color.white, 10)
+            else:
+                return ActionResult(True, f"You miss the {target.name}.", color.light_gray, 10)
         else:
-            return ActionResult(True, f"You miss the {target.name}.", color.light_gray, 10)
+            weapon.fire(target = target, floor = self.engine.map)
+            return ActionResult(True, time_taken = 10)
 
     def melee_attack(self, target: Combatant) -> ActionResult:
         weapon = None
