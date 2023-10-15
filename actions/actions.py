@@ -8,6 +8,7 @@ from entities.combatant import Combatant
 from entities.mover import Mover
 from . import ActionResult
 import color
+from entities.player import Player
 
 if TYPE_CHECKING:
     from game_engine import GameEngine
@@ -74,10 +75,26 @@ class BumpAction(DirectionalAction):
         if isinstance(self.blocking_entity, Combatant) and self.blocking_entity.is_alive:
             return MeleeAction(self.entity, *self.direction).perform()
         else:
-            return MovementAction(self.entity, *self.direction).perform()
-
+            if isinstance(self.entity, Player):
+                return PlayerMovementAction(self.entity, *self.direction).perform()
+            else:
+                return MovementAction(self.entity, *self.direction).perform()
 
 class MovementAction(DirectionalAction):
+
+    def perform(self) -> ActionResult:
+        if not self.engine.map.in_bounds(*self.destination):
+            return ActionResult(False, time_taken = 10)
+        if not self.engine.map.tiles['walkable'][*self.destination]:
+            return ActionResult(False, time_taken = 10)
+        if self.engine.map.get_blocking_entity_at_location(*self.destination):
+            return ActionResult(False, time_taken = 10)
+
+        self.entity.move(*self.direction)
+        return ActionResult(True, time_taken = self.entity.move_speed)
+
+
+class PlayerMovementAction(DirectionalAction):
 
     def perform(self) -> ActionResult:
         if not self.engine.map.in_bounds(*self.destination):

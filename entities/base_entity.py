@@ -32,9 +32,13 @@ class BaseEntity():
             self.map = map
             map.entities.add(self)
             self.engine = map.engine
+        self.move_speed = 0
 
     def distance(self, target: BaseEntity):
         return math.sqrt(
             (target.x - self.x) ** 2 +
             (target.y - self.y) ** 2
         )
+
+    def move(self, x, y):
+        raise NotImplementedError
