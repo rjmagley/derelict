@@ -30,10 +30,7 @@ def main():
     player.map = map
     player.engine = engine
     starting_weapon = place_random_common_weapon(player.x, player.y, map)
-    starting_weapon.owner = player
     starting_weapon.engine = engine
-    player.inventory.items.append(starting_weapon)
-    player.right_hand = starting_weapon
     # starting_weapon.map = map
     # starting_weapon.engine = engine
 

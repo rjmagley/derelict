@@ -9,6 +9,7 @@ from entities.mover import Mover
 from . import ActionResult
 import color
 from entities.player import Player
+from items.ranged_weapon import RangedWeapon
 
 if TYPE_CHECKING:
     from game_engine import GameEngine
@@ -125,15 +126,18 @@ class PickupItemAction(Action):
     def perform(self) -> ActionResult:
         player = self.engine.player
         items = self.engine.map.get_items_at_location(self.entity.x, self.entity.y)
+        # needs to handle picking up multiple items
         if len(items) == 1:
             target_item = items[0]
             if player.inventory.space_remaining:
                 self.engine.map.entities.remove(target_item)
                 player.inventory.items.append(target_item)
+                if isinstance(target_item, RangedWeapon):
+                    target_item.owner = player
                 # probably need to fix this when weapons aren't the only items
                 # that exist
                 if player.right_hand == None:
-                    player.right_hand = target_item
+                    player.equip_right_hand(target_item)
 
                 return ActionResult(True, f"You grab the {target_item.name}.", color.light_gray, 10)
             else:
