@@ -8,6 +8,8 @@ import tcod.event
 
 from actions import ActionResult
 from actions.actions import Action, EscapeAction, BumpAction, WaitAction, PickupItemAction, PlayerReloadAction
+import tile_types
+import color
 
 if TYPE_CHECKING:
     from game_engine import GameEngine
@@ -29,6 +31,8 @@ class GameEventHandler(EventHandler):
         player = self.engine.player
 
         key, mod = event.sym, event.mod
+
+        print(key, mod)
 
 
         match key:
@@ -79,6 +83,15 @@ class GameEventHandler(EventHandler):
 
             case tcod.event.KeySym.p if event.mod & tcod.event.KMOD_CTRL:
                 self.engine.switch_handler(HandlerType.MESSAGE_HISTORY)
+
+            case tcod.event.KeySym.PERIOD if event.mod & tcod.event.KMOD_SHIFT:
+                if self.engine.map.tiles[player.x, player.y] == tile_types.down_stairs:
+                    self.engine.advance_map()
+                    return ActionResult(False, "You descend...", color.yellow)
+                else:
+                    return ActionResult(False, "There's no place to go down here.")
+
+                
                 
 
         return action

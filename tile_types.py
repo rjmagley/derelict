@@ -25,7 +25,7 @@ tile_dt = numpy.dtype(
 
 
 def new_tile(
-    *,  # Enforce the use of keywords, so that parameter order doesn't matter.
+    *,
     walkable: int,
     blocking: int,
     transparent: int,
@@ -51,4 +51,12 @@ wall = new_tile(
     transparent=False,
     dark=(ord('#'), color.dark_gray, color.black),
     light=(ord('#'), color.white, color.black),
+)
+
+down_stairs = new_tile(
+    walkable=True,
+    blocking=False,
+    transparent=True,
+    dark=(ord('>'), color.dark_gray, color.black),
+    light=(ord('>'), color.white, color.black),
 )

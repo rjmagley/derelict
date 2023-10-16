@@ -174,7 +174,12 @@ class Player(Combatant):
     # the player's HP setter is a bit messier than normal - players have
     # shields, then armor, then a few states before death
     def take_damage(self, value: int) -> None:
-        remaining_damage = self.take_shield_damage(value) - sum(self.get_armor_properties(ArmorProperty.DAMAGE_RESISTANCE))
+        print(self.shield_points)
+        if self.shield_points != 0:
+            remaining_damage = self.take_shield_damage(value) - sum(self.get_armor_properties(ArmorProperty.DAMAGE_RESISTANCE))
+        else:
+            remaining_damage = value - sum(self.get_armor_properties(ArmorProperty.DAMAGE_RESISTANCE))
+        print(f"receiving {value} damage, reduced to {remaining_damage}")
         if remaining_damage > 0:
             self.armor_points -= remaining_damage
             if self.armor_points <= 0:

@@ -56,6 +56,8 @@ class BasicHostile(BasicAI):
 
         if self.entity.map.visible[self.entity.x, self.entity.y]:
             print(f"{self.entity.name} has a visible target")
+            if distance == 1 and randint(1,10) > 5:
+                return MeleeAction(self.entity, target.x, target.y).perform()
             if distance <= 10 and randint(1,10) > 5:
                 print(f"{self.entity.name} attacking target")
                 return PlayerFireAction(self.entity, target, self.entity.ranged_weapons[0]).perform()

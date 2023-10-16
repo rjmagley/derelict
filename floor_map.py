@@ -25,6 +25,7 @@ class FloorMap():
         self.width = width
         self.height = height
         self.entities = entities
+        self.downstairs = [0, 0]
         self.tiles = numpy.full((width, height), fill_value=tile_types.wall, order="F")
 
         self.visible = numpy.full((width, height), fill_value=False, order='F')

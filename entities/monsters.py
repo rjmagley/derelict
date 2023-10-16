@@ -4,9 +4,11 @@ from floor_map import FloorMap
 from .ai.basic_ai import BasicAI, BasicHostile
 import color
 from items.ranged_physical_weapon import RangedPhysicalWeapon
+from items.melee_weapon import MeleeWeapon
 
 goblin_test_weapons = [
-    RangedPhysicalWeapon(damage_die=3, die_count=2, magazine_size=10, burst_count=2, name='goblin test gun')
+    RangedPhysicalWeapon(damage_die=5, die_count=2, magazine_size=10, burst_count=2, name='goblin test gun'),
+    MeleeWeapon(damage_die=4, die_count=3, name='goblin test fist')
 ]
 
 def create_goblin(x: int, y: int, map: FloorMap) -> Enemy:

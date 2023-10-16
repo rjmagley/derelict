@@ -27,7 +27,6 @@ MOVE_KEYS = {
 }
 
 WAIT_KEYS = {
-    tcod.event.KeySym.PERIOD,
     tcod.event.KeySym.KP_5,
     tcod.event.KeySym.CLEAR,
 }

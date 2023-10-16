@@ -27,6 +27,7 @@ from items import AmmunitionType
 from items.base_weapon import BaseWeapon
 from items.ranged_weapon import RangedWeapon
 from input_handlers.game_event_handler import GameEventHandler
+from floor_generation.floor_generation import generate_floor
 
 from floor_map import FloorMap
 from messages import MessageLog
@@ -55,6 +56,7 @@ class GameEngine():
         self.root_console = root_console
         self.context = context
         self.dying_entities = []
+        self.difficulty_level = 1
 
     def switch_handler(self, handler, **kwargs) -> None:
         print(f"switching handler to {handler}")
@@ -178,3 +180,8 @@ class GameEngine():
                 e.die()
 
         self.dying_entities = []
+
+    def advance_map(self) -> None:
+        self.difficulty_level += 1
+        self.map = generate_floor(160, 20, self, self.difficulty_level)
+        self.message_log.add_message(f"Welcome... to level {self.difficulty_level}!", color.magenta)

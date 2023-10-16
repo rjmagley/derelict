@@ -54,7 +54,7 @@ class RectangularRoom(Room):
         super().__init__(**kwargs)
 
 
-def generate_floor(width: int, height: int, engine: GameEngine) -> FloorMap:
+def generate_floor(width: int, height: int, engine: GameEngine, difficulty: int = 1) -> FloorMap:
 
     vault_loader = VaultLoader()
 
@@ -91,6 +91,17 @@ def generate_floor(width: int, height: int, engine: GameEngine) -> FloorMap:
 
     exit_room.place_to_floor(floor)
     rooms.append(exit_room)
+
+    # placing downstairs
+
+    
+    downstairs_location = random.choice([x for x in range(0, 20) if floor.tiles['walkable'][-1, x]])
+
+    floor.downstairs = [width-1, downstairs_location]
+
+    print(floor.downstairs)
+
+    floor.tiles[-1, downstairs_location] = tile_types.down_stairs
 
     return floor
 
