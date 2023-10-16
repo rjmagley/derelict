@@ -109,10 +109,16 @@ class PlayerMovementAction(DirectionalAction):
 
 
 class MeleeAction(DirectionalAction):
-    
+
+    def __init__(self, entity, target) -> None:
+        super().__init__(entity, target.x, target.y)
+        self.entity = entity
+        self.target = target
+
+
     def perform(self) -> ActionResult:
 
-        target = self.target_entity
+        target = self.target
         if not target:
             return ActionResult()
 

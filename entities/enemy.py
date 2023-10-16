@@ -53,6 +53,7 @@ class Enemy(Combatant):
     # melee attacks probably do not work yet
     def melee_attack(self, target: Combatant) -> ActionResult:
         damage = self.melee_weapons[0].roll_damage()
+        print(f"attempting melee attack for {damage}")
         if standard_roll_target(self.melee_skill):
             message = f"The {self.name} hits the {target.name} for {damage} damage."
             target.take_damage(damage)

@@ -47,6 +47,7 @@ class BaseWeapon(BaseItem):
 
     def roll_damage(self):
         damage = 0
+        print(f"rolling damage with {self.name}")
         for i in range(0, self.die_count):
             damage += random.randint(1, self.damage_die)
 

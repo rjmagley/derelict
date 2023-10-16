@@ -8,7 +8,7 @@ from items.melee_weapon import MeleeWeapon
 
 goblin_test_weapons = [
     RangedPhysicalWeapon(damage_die=5, die_count=2, magazine_size=10, burst_count=2, name='goblin test gun'),
-    MeleeWeapon(damage_die=4, die_count=3, name='goblin test fist')
+    MeleeWeapon(damage_die=4, die_count=7, name='goblin test fist')
 ]
 
 def create_goblin(x: int, y: int, map: FloorMap) -> Enemy:
