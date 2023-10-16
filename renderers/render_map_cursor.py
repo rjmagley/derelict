@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Type
 
 import color
+import math
 
 from .player_map_offset import player_map_offset
 
@@ -14,6 +15,34 @@ if TYPE_CHECKING:
 
 def render_map_cursor(root_console: Console, center_console: Console, map: FloorMap, handler: EventHandler, player: Player) -> None:
 
+    # draw line from player to target
+    # determine slope
+    try:
+        m = (handler.y - player.y)/(handler.x - player.x)
+    except ZeroDivisionError:
+        m = 0
+
+    # determine y-intercept
+    # y = mx + b
+    # y - b = mx
+    # -b = mx - y
+    # b = -(mx - y)
+
+    points = []
+
+    if m != 0:
+        b = -1 * ((m * player.x) - player.y)
+
+        
+        for x in range(player.x+1, handler.x):
+            points.append([x, round((m*x)+b)])
+
+    else:
+        for y in range(player.y+1, handler.y):
+            points.append([player.x, y])
+
+    for p in points:
+        center_console.print(x = p[0], y = p[1], fg = color.white, string='-')
 
     center_console.print(x = handler.x, y = handler.y, fg = color.white, string='X')
     if hasattr(handler, 'radius'):
