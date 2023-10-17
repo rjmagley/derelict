@@ -97,6 +97,8 @@ class GameEngine():
                         self.add_message(action_result.message, action_result.message_color)
                 else:
                     e.delay -= 1
+                if e.delay % 10 == 0:
+                    e.periodic_refresh()
         self.player.delay -= 1
         
         self.update_fov()

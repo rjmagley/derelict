@@ -10,11 +10,12 @@ from actions import ActionResult
 from .base_weapon import BaseWeapon
 from . import WeaponType, AmmunitionType, ReloadType, RangedWeaponProperty
 
-from entities.player import Player
+
 
 
 if TYPE_CHECKING:
     from magazine import Magazine
+    from entities.player import Player
     from entities.enemy import Enemy
     from entities.base_entity import BaseEntity
 

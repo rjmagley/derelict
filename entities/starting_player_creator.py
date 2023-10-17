@@ -7,6 +7,7 @@ from decimal import Decimal
 from .player import Player
 from items.base_armor import BaseArmor
 from items.ranged_energy_weapon import RangedEnergyWeapon
+from items.ranged_recharge_weapon import RangedRechargeWeapon
 from items.ranged_physical_weapon import RangedPhysicalWeapon
 from items.melee_weapon import MeleeWeapon
 
@@ -61,8 +62,10 @@ def generate_player(class_name: str):
 
         case 'ranger':
             player.class_name = 'Ranger'
-            starting_rifle = None
+            starting_rifle = RangedRechargeWeapon(damage_die=8, die_count=3, burst_count=1, weapon_types=[WeaponType.RIFLE], name='recharge rifle', hands=2, optimal_range=10, range_interval=5)
             starting_pistol = RangedPhysicalWeapon(damage_die=6, die_count=2, magazine_size=8, burst_count=1, weapon_types=[WeaponType.PISTOL], name='heavy pistol', hands=1, ammunition_size=12, ammunition_type=AmmunitionType.LIGHT, optimal_range=8, range_interval=3)
             starting_axe = MeleeWeapon(die_count=4, damage_die=5, weapon_types=[WeaponType.AXE], name='war axe', hands=1)
+
+            player.equip_right_hand(starting_rifle)
 
     return player

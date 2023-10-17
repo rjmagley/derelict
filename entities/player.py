@@ -16,6 +16,7 @@ from actions import ActionResult
 from .mover import Mover
 from .combatant import Combatant
 from items.melee_weapon import MeleeWeapon
+from items.ranged_recharge_weapon import RangedRechargeWeapon
 
 from items import WeaponType, AmmunitionType, ArmorType, ArmorProperty
 
@@ -318,6 +319,9 @@ class Player(Combatant):
     def periodic_refresh(self):
         self.regenerate_shield()
         self.regenerate_energy()
+        for w in self.equipped_weapons:
+            if isinstance(w, RangedRechargeWeapon):
+                w.recharge()
         pass
 
     # will call this when an enemy dies to the player to handle replenishing
