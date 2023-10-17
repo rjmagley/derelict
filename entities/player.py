@@ -73,21 +73,22 @@ class Player(Combatant):
         # (starts at 1000) and rendered as a percentage on the UI
         
         self.player_stats = {
-            WeaponType.PISTOL: 14,
-            WeaponType.RIFLE: 18,
-            WeaponType.SMG: 14,
-            WeaponType.SHOTGUN: 14,
-            WeaponType.LAUNCHER: 14,
-            WeaponType.HEAVY: 14,
-            WeaponType.ENERGY: 14,
-            WeaponType.SWORD: 14,
-            WeaponType.AXE: 14,
-            WeaponType.POLEARM: 14,
-            WeaponType.BLUNT: 14,
-            WeaponType.SHIELD: 14,
-            PlayerSkill.DUALWIELD: 14
+            WeaponType.PISTOL: 10,
+            WeaponType.RIFLE: 10,
+            WeaponType.SMG: 10,
+            WeaponType.SHOTGUN: 10,
+            WeaponType.LAUNCHER: 10,
+            WeaponType.HEAVY: 10,
+            WeaponType.ENERGY: 10,
+            WeaponType.SWORD: 10,
+            WeaponType.AXE: 10,
+            WeaponType.POLEARM: 10,
+            WeaponType.BLUNT: 10,
+            WeaponType.SHIELD: 10,
+            PlayerSkill.DUALWIELD: 10
         }
 
+        self.base_psy = 5
         self.armor_points = self.max_armor
         self.energy_points = self.max_energy
         self.shield_points = self.max_shield
@@ -97,7 +98,11 @@ class Player(Combatant):
         self.partial_psy = 0
         self.shield_reboot_time = 0
 
+        
+
         self.powers = []
+
+        self.class_name = ""
 
         super().__init__(name = "Player", blocks_movement = True, render_order = RenderOrder.COMBATANT, **kwargs)
 
@@ -119,7 +124,7 @@ class Player(Combatant):
     # this will need to be modified more once talents/leveling are added
     @property
     def max_psy(self) -> int:
-        return sum(self.get_armor_properties(ArmorProperty.BASE_PSY)) + 5
+        return sum(self.get_armor_properties(ArmorProperty.BASE_PSY)) + self.base_psy
 
     # armor properties are in a dictionary
     # key is an ArmorProperty, value is... an int, I think? for now?
@@ -212,6 +217,7 @@ class Player(Combatant):
         else:
             self.left_hand = None
             self.right_hand = weapon
+        weapon.owner = self
         return ActionResult(True, f"You equip the {weapon.name}.", color.white, 10)
 
     # eventually this should probably become "equip_offhand" or something
@@ -226,10 +232,12 @@ class Player(Combatant):
 
     def equip_right_shoulder(self, weapon: BaseWeapon) -> ActionResult:
         self.right_shoulder = weapon
+        weapon.owner = self
         return ActionResult(True, f"You equip the {weapon.name} on your right shoulder.", color.white, 10)
 
     def equip_left_shoulder(self, weapon: BaseWeapon) -> ActionResult:
         self.left_shoulder = weapon
+        weapon.owner = self
         return ActionResult(True, f"You equip the {weapon.name} on your left shoulder.", color.white, 10)
 
     def die(self) -> None:
