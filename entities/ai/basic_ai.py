@@ -45,6 +45,8 @@ class BasicHostile(BasicAI):
         super().__init__(entity)
         self.entity = entity
         self.path: List[Tuple[int, int]] = []
+        self.last_visible_x = None
+        self.last_visible_y = None
 
     def perform(self) -> ActionResult:
         
@@ -57,8 +59,14 @@ class BasicHostile(BasicAI):
         # enemies need to pursue players even if the player isn't visible
         # ideally going to the last known location rather than just innately
         # knowing where they are
+
+        # this implementation is not perfect - enemies will chase the player,
+        # but if the player is not visible when they reach the player's last
+        # known destination, they stop - might want backup options
         if self.entity.map.visible[self.entity.x, self.entity.y]:
-            # print(f"{self.entity.name} has a visible target")
+            print(f"{self.entity.name} has a visible target")
+            self.last_visible_x = target.x
+            self.last_visible_y = target.y
             print(f"distance to target: {distance}")
             if distance == 1 and randint(1,10) > 5:
                 print("performing melee")
@@ -69,7 +77,17 @@ class BasicHostile(BasicAI):
 
             self.path = self.get_path_to(target.x, target.y)
 
-        if self.path:
+        elif self.last_visible_x != None and self.last_visible_y != None:
+            print(f"{self.entity.name} has no visible target, pathing to last known")
+            if self.last_visible_x == self.entity.x and self.last_visible_y == self.entity.y:
+                print("lost player")
+                self.last_visible_x = None
+                self.last_visible_y = None
+                self.path = []
+            else:
+                self.path = self.get_path_to(self.last_visible_x, self.last_visible_y)
+
+        if len(self.path) > 0:
             destination_x, destination_y = self.path.pop(0)
             return MovementAction(self.entity,
                 destination_x - self.entity.x,
