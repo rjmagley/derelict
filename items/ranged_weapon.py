@@ -44,11 +44,15 @@ class RangedWeapon(BaseWeapon):
 
     @property
     def status_string(self) -> str:
-        raise NotImplementedError
+        return f"{self.ammo_status} - {self.die_string}"
+
+    @property
+    def die_string(self) -> str:
+        return f"{self.die_count}d{self.damage_die}{'x'+str(self.burst_count) if self.burst_count > 1 else ''}"
 
     @property
     def ammo_status(self) -> str:
-        raise NotImplementedError
+        return ""
 
     def fire(self, **kwargs) -> int:
         raise NotImplementedError

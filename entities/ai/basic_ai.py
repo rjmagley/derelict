@@ -54,6 +54,9 @@ class BasicHostile(BasicAI):
         destination_y = target.y - self.entity.y
         distance = max(abs(destination_x), abs(destination_y))
 
+        # enemies need to pursue players even if the player isn't visible
+        # ideally going to the last known location rather than just innately
+        # knowing where they are
         if self.entity.map.visible[self.entity.x, self.entity.y]:
             # print(f"{self.entity.name} has a visible target")
             print(f"distance to target: {distance}")

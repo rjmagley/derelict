@@ -44,7 +44,11 @@ class BaseWeapon(BaseItem):
 
     @property
     def status_string(self) -> str:
-        return f"{self.name} - {self.die_count}d{self.damage_die}"
+        return f"{self.die_string}"
+
+    @property
+    def die_string(self) -> str:
+        return f"{self.damage_die}d{self.die_count}"
 
     @property
     def ammo_status(self) -> str:

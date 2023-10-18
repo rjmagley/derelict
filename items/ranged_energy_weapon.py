@@ -24,13 +24,10 @@ class RangedEnergyWeapon(RangedWeapon):
         self.charge_needed = charge_needed
         self._weapon_types = [WeaponType.ENERGY]
 
-    @property
-    def status_string(self) -> str:
-        return f"{self.name} - {'Ready' if self.can_fire else 'Not Ready'}"
 
     @property
     def ammo_status(self) -> str:
-        return ""
+        return f"{self.name} - {'Ready' if self.can_fire else 'Not Ready'}"
 
 
     @property

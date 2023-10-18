@@ -59,11 +59,6 @@ class RangedPhysicalWeapon(RangedWeapon):
 
 
     @property
-    def status_string(self) -> str:
-        status = f"{self.name} - {self.die_count}d{self.damage_die}x{self.burst_count}"
-        return status
-
-    @property
     def ammo_status(self) -> str:
         if self.reload_type == ReloadType.BELT:
             return f"{self.owner.magazine.get_percentage(self.ammunition_type)}%"

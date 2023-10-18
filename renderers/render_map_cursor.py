@@ -17,11 +17,15 @@ if TYPE_CHECKING:
 
 def render_map_cursor(root_console: Console, center_console: Console, map: FloorMap, handler: EventHandler, player: Player) -> None:
 
+    # creates a Bresenham line to the target
+    # this currently will clip through a wall, even if the enemy is visible
+    # per the FOV (like around a corner) - may need to try to jiggle this 
+    # around to get around that? 
     points = bresenham((player.x, player.y), (handler.x, handler.y)).tolist()
 
 
     for p in points[1:-1]:
-        center_console.print(x = p[0], y = p[1], fg = color.white, string='-')
+        center_console.print(x = p[0], y = p[1], fg = color.green, string='*')
 
     center_console.print(x = handler.x, y = handler.y, fg = color.white, string='X')
     if hasattr(handler, 'radius'):
