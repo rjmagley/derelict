@@ -68,12 +68,14 @@ class BasicHostile(BasicAI):
             self.last_visible_x = target.x
             self.last_visible_y = target.y
             print(f"distance to target: {distance}")
+
             if distance == 1 and randint(1,10) > 5:
                 print("performing melee")
                 return MeleeAction(self.entity, target).perform()
-            if distance <= 10 and randint(1,10) > 5:
+            elif distance <= self.entity.ranged_weapons[0].optimal_range * 3 and randint(1,10) > 5:
                 # print(f"{self.entity.name} attacking target")
-                return PlayerFireAction(self.entity, target, self.entity.ranged_weapons[0]).perform()
+                if self.entity.ranged_weapons[0].can_fire:
+                    return PlayerFireAction(self.entity, target, self.entity.ranged_weapons[0]).perform()
 
             self.path = self.get_path_to(target.x, target.y)
 

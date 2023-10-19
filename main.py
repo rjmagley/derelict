@@ -87,8 +87,7 @@ def main():
     # map = generate_test_floor(160, 20, engine)
     player.map = map
     player.engine = engine
-    starting_weapon = place_random_common_weapon(player.x, player.y, map)
-    starting_weapon.engine = engine
+    player.right_hand.engine = engine
     # starting_weapon.map = map
     # starting_weapon.engine = engine
 

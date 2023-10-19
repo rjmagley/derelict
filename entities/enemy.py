@@ -6,7 +6,7 @@ from .combatant import Combatant
 from items.base_weapon import BaseWeapon
 from items.ranged_weapon import RangedWeapon
 from items.melee_weapon import MeleeWeapon
-from items.magazine import Magazine
+from items.ranged_recharge_weapon import RangedRechargeWeapon
 
 from actions import ActionResult
 
@@ -39,7 +39,6 @@ class Enemy(Combatant):
         # rather than give enemies a whole set of skills
         self.ranged_skill = ranged_skill
         self.melee_skill = melee_skill
-        self.magazine = Magazine()
 
     def ranged_attack(self, target: Combatant, weapon: RangedWeapon) -> ActionResult:
         damage = weapon.fire()
@@ -68,6 +67,11 @@ class Enemy(Combatant):
             self.hp -= damage
             if self.hp <= 0:
                 self.engine.dying_entities.append(self)
+
+    def periodic_refresh(self):
+        for w in self.weapons:
+            if isinstance(w, RangedRechargeWeapon):
+                w.recharge()
 
     def die(self) -> None:
         self.engine.add_message(f"The {self.name} dies!", color.red)

@@ -67,5 +67,8 @@ def generate_player(class_name: str):
             starting_axe = MeleeWeapon(die_count=4, damage_die=5, weapon_types=[WeaponType.AXE], name='war axe', hands=1)
 
             player.equip_right_hand(starting_rifle)
+            player.inventory.items.append(starting_pistol)
+            player.inventory.items.append(starting_axe)
+            
 
     return player

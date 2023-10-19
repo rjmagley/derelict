@@ -23,7 +23,7 @@ class RangedRechargeWeapon(RangedEnergyWeapon):
         self.charge_needed = charge_needed
         self.current_charge = max_charge
         self.recharge_rate = recharge_rate
-        # self._weapon_types.append(WeaponType.ENERGY)
+        self._weapon_types.append(WeaponType.ENERGY)
 
     @property
     def can_fire(self) -> bool:
