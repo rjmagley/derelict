@@ -39,7 +39,8 @@ class GameEventHandler(EventHandler):
             case key if key in MOVE_KEYS:
                 dx, dy = MOVE_KEYS[key]
                 action = BumpAction(player, dx, dy).perform()
-            case key if key in WAIT_KEYS:
+
+            case key if key in WAIT_KEYS and not event.mod:
                 action = WaitAction(player).perform()
 
             case key if key in ESCAPE_KEYS:

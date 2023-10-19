@@ -72,7 +72,7 @@ class BumpAction(DirectionalAction):
 
     def perform(self) -> ActionResult:
         if isinstance(self.blocking_entity, Combatant) and self.blocking_entity.is_alive:
-            return MeleeAction(self.entity, *self.direction).perform()
+            return MeleeAction(self.entity, self.blocking_entity).perform()
         else:
             if isinstance(self.entity, Player):
                 return PlayerMovementAction(self.entity, *self.direction).perform()
