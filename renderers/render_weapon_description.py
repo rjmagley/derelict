@@ -29,6 +29,11 @@ def render_weapon_description(root_console: Console, inventory_console: Console,
         inventory_console.print(5, y_offset, string=f"{item.loaded_ammo} of {item.magazine_size} in magazine")
         y_offset += 1
 
+    if len(item.properties) != 0:
+        inventory_console.print(5, y_offset+1, string=f"Properties:")
+        inventory_console.print(5, y_offset+2, string=f"{item.properties[0].name}")
+        inventory_console.print(5, y_offset+3, string=f"{item.properties[0].description}")
+
     if player.has_equipped(item):
         inventory_console.print(5, y_offset, string=f"{item.name} is in your hand{'s' if item.hands == 2 else ''}")
     else:
