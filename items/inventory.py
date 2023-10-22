@@ -1,9 +1,21 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+from .base_weapon import BaseWeapon
+
+if TYPE_CHECKING:
+    from .base_item import BaseItem
+
 class Inventory():
 
-    def __init__(self, size: int = 10):
-        self.items = []
-        self.size = size
+    def __init__(self):
+        self.weapons = []
+        self.armor = []
+        self.consumables = []
+        self.artifacts = []
 
-    @property
-    def space_remaining(self) -> bool:
-        return (self.size - len(self.items)) > 0
+    def insert_item(self, item: BaseItem):
+        if isinstance(item, BaseWeapon):
+            if len(self.weapons) < 5:
+                self.weapons.append(item)

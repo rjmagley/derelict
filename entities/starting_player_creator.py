@@ -41,7 +41,7 @@ def generate_player(class_name: str):
 
             player.equip_right_hand(starting_pistol)
             player.equip_left_hand(starting_sword)
-            player.inventory.items.append(starting_rifle)
+            player.inventory.insert_item(starting_rifle)
 
         case 'bulwark':
             player.class_name = 'Bulwark'
@@ -58,7 +58,7 @@ def generate_player(class_name: str):
             starting_shoulder = None
 
             player.equip_right_hand(starting_rifle)
-            player.inventory.items.append(starting_shotgun)
+            player.inventory.insert_item(starting_shotgun)
 
         case 'ranger':
             player.class_name = 'Ranger'
@@ -67,8 +67,8 @@ def generate_player(class_name: str):
             starting_axe = MeleeWeapon(die_count=4, damage_die=5, weapon_types=[WeaponType.AXE], name='war axe', hands=1)
 
             player.equip_right_hand(starting_rifle)
-            player.inventory.items.append(starting_pistol)
-            player.inventory.items.append(starting_axe)
+            player.inventory.insert_item(starting_pistol)
+            player.inventory.insert_item(starting_axe)
             
 
     return player
