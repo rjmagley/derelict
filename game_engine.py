@@ -119,7 +119,7 @@ class GameEngine():
 
             case HandlerType.INVENTORY_VIEW:
                 render_status_side(self.root_console, self.side_console, self.player)
-                render_inventory(self.root_console, self.inventory_console, self.player)
+                render_inventory(self.root_console, self.inventory_console, self.event_handler)
 
             case HandlerType.ITEM_VIEW:
                 if isinstance(self.event_handler.item, BaseWeapon):

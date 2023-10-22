@@ -23,16 +23,25 @@ class InventoryViewEventHandler(EventHandler):
     def __init__(self, engine: GameEngine):
         super().__init__(engine)
         self.handler_type = HandlerType.INVENTORY_VIEW
+        self.weapons_inventory = engine.player.inventory.weapons
+
+        self.all_keys = []
+
+        self.weapons_keys = ascii_uppercase[0:len(self.weapons_inventory)]
+        self.all_keys.extend(self.weapons_keys)
+        self.weapons_dictionary = {k: i for k, i in zip(self.weapons_keys, self.weapons_inventory)}
 
     def ev_keydown(self, event: tcod.event.KeyDown) -> Optional[Action]:
         player = self.engine.player
         key = event.sym
 
-        inventory_keys = ascii_uppercase[0:len(player.inventory.items)]
-        inventory_items = {k: i for k, i in zip(inventory_keys, player.inventory.items)}
-
-        if key.label in inventory_keys:
-            self.engine.switch_handler(HandlerType.ITEM_VIEW, item=inventory_items[key.label])
+        # this will be extended with armor, consumables, etc.
+        # at this point, the player's inventory doesn't Have any of that stuff
+        # we'll get bnack to this
+        if key.label in self.all_keys:
+            match key.label:
+                case key.label if key.label in self.weapons_dictionary.keys():
+                    self.engine.switch_handler(HandlerType.ITEM_VIEW, item=self.weapons_dictionary[key.label])
 
         if key in ESCAPE_KEYS:
             self.engine.switch_handler(HandlerType.GAME)
