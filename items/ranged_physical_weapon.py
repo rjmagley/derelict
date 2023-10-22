@@ -67,6 +67,7 @@ class RangedPhysicalWeapon(RangedWeapon):
             return f"{self.owner.magazine.get_percentage(self.ammunition_type)}%"
         return f"{self.loaded_ammo}/{self.magazine_size}"
 
+    # this really needs a system where part of a weapon burst can misslo
     def fire(self, **kwargs) -> int:
         total_damage = 0
         burst = min(self.burst_count, self.loaded_ammo)
@@ -143,3 +144,11 @@ class RangedPhysicalWeapon(RangedWeapon):
     def belt_reload(self, owner: Enemy | Player) -> ActionResult:
 
         return ActionResult(False, "This weapon automatically loads.", color.light_gray)
+
+    def apply_weapon_properties(self):
+        if len(self.properties) != 0:
+            for p in self.properties:
+                p.modify_weapon(self)
+
+        if self.reload_type != ReloadType.BELT:
+            self.loaded_ammo = self.magazine_size

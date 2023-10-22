@@ -58,6 +58,7 @@ class RangedWeaponProperty(StrEnum):
 
 # do I need these weapon enums? they're currently used by the random weapon
 # selector/generator
+# we'll just go with them for now, I have a feeling they aren't necessary
 class WeaponName(StrEnum):
     # common weapons start here
     BURST_PISTOL = "burst pistol"
@@ -69,6 +70,9 @@ class WeaponName(StrEnum):
     ENERGY_RIFLE = "energy rifle"
     LONGSWORD = "long sword"
     # rare weapons start here
+
+    MEDIUM_IRON = "Medium Iron"
+    HOLD_THAT_THOUGHT = "Hold That Thought"
 
     # exotic weapons start here
     THIRD_RAIL = "The Third Rail"
