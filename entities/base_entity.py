@@ -20,9 +20,8 @@ class BaseEntity():
 
     # char can be a single character, or a Unicode code point
     # https://python-tcod.readthedocs.io/en/latest/tcod/charmap-reference.html#code-page-437 for reference
-    def __init__(self, map = None, x: int = 0, y: int = 0, char: str=chr(0x2022), color: Tuple[int, int, int] = color.white, name: str="<unnamed>", blocks_movement: bool=False, render_order: RenderOrder = RenderOrder.CORPSE):
-        self.x = x
-        self.y = y
+    def __init__(self, map = None, x: int | None = None, y: int | None = None, char: str=chr(0x2022), color: Tuple[int, int, int] = color.white, name: str="<unnamed>", blocks_movement: bool=False, render_order: RenderOrder = RenderOrder.CORPSE):
+        
         self.char = char
         self.color = color
         self.name = name
@@ -32,6 +31,8 @@ class BaseEntity():
             self.map = map
             map.entities.add(self)
             self.engine = map.engine
+            self.x = x
+            self.y = y
         self.move_speed = 0
 
     def distance(self, target: BaseEntity):

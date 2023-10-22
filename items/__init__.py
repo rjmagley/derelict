@@ -56,6 +56,8 @@ class ArmorProperty(StrEnum):
 class RangedWeaponProperty(StrEnum):
     SAMPLE = "sample"
 
+# do I need these weapon enums? they're currently used by the random weapon
+# selector/generator
 class WeaponName(StrEnum):
     # common weapons start here
     BURST_PISTOL = "burst pistol"
@@ -66,7 +68,7 @@ class WeaponName(StrEnum):
     LIGHT_AUTOCANNON = "light autocannon"
     ENERGY_RIFLE = "energy rifle"
     LONGSWORD = "long sword"
-    # special weapons start here
+    # rare weapons start here
 
     # exotic weapons start here
     THIRD_RAIL = "The Third Rail"

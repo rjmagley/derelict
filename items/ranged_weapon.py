@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Optional, TYPE_CHECKING, Tuple, Any, Dict
+from typing import Optional, TYPE_CHECKING, Tuple, Any, Dict, List
 
 import random
 import math
@@ -8,7 +8,7 @@ import math
 import color
 from actions import ActionResult
 from .base_weapon import BaseWeapon
-from . import WeaponType, AmmunitionType, ReloadType, RangedWeaponProperty
+from . import WeaponType, AmmunitionType, ReloadType
 
 
 
@@ -18,9 +18,11 @@ if TYPE_CHECKING:
     from entities.player import Player
     from entities.enemy import Enemy
     from entities.base_entity import BaseEntity
+    from .weapon_properties import WeaponProperty
+
 
 class RangedWeapon(BaseWeapon):
-    def __init__(self, burst_count: int = 1, properties: Dict[RangedWeaponProperty, Any] = {},radius: int = 1, optimal_range: int = 7, range_interval: int = 7, is_shoulder: bool = False, **kwargs):
+    def __init__(self, burst_count: int = 1, properties: List[WeaponProperty] = [], radius: int = 1, optimal_range: int = 7, range_interval: int = 7, is_shoulder: bool = False, fire_time: int=10, accuracy_bonus: int=0, **kwargs):
         super().__init__(**kwargs)
         self.burst_count = burst_count
         self.char = '{'
@@ -33,10 +35,20 @@ class RangedWeapon(BaseWeapon):
         # from optimal range to optimal range * 2
         # if you're closer or further from the enemy, you get a -1 for each
         # range interval of distance between you (rounded up)
-        # essentially, the hither the range interval, the better the weapon
+        # essentially, the higher the range interval, the better the weapon
         # performs out-of-range
+        # 
+        # at some point I should change this to a minimum-maximum range rather
+        # than just multiplying the value by 2, but I got other things to do
         self.optimal_range = optimal_range
         self.range_interval = range_interval
+
+        self.fire_time = fire_time
+        self.accuracy_bonus = accuracy_bonus
+
+        # if properties != []:
+        #     for p in properties:
+        #         p.modify_weapon(self)
 
     @property
     def can_fire(self) -> bool:

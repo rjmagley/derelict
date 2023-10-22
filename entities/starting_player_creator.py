@@ -11,6 +11,8 @@ from items.ranged_recharge_weapon import RangedRechargeWeapon
 from items.ranged_physical_weapon import RangedPhysicalWeapon
 from items.melee_weapon import MeleeWeapon
 
+from items.rare_weapons import get_rare_weapon
+
 from items import WeaponType, AmmunitionType, ArmorType, ArmorProperty,ReloadType
 
 def generate_player(class_name: str):
@@ -55,10 +57,10 @@ def generate_player(class_name: str):
 
             starting_rifle = RangedPhysicalWeapon(die_count=3, damage_die=6, magazine_size=20, burst_count=2, weapon_types=[WeaponType.RIFLE], name='heavy burster', hands=2, ammunition_size=20, ammunition_type=AmmunitionType.HEAVY, optimal_range=8, range_interval=6)
             starting_shotgun = RangedPhysicalWeapon(die_count=7, damage_die=3, magazine_size=10, burst_count=1, weapon_types=[WeaponType.SHOTGUN], name='light shotgun', hands=2, ammunition_size=20, ammunition_type=AmmunitionType.LIGHT, optimal_range=6, range_interval=3, reload_type=ReloadType.SINGLE)
-            starting_shoulder = None
-
+            starting_shoulder = RangedEnergyWeapon(damage_die=4, die_count=6, charge_needed=10, burst_count=1, radius=1, optimal_range=4, range_interval=7, is_shoulder=True, weapon_types=[WeaponType.HEAVY, WeaponType.ENERGY], name='laser cannon')
             player.equip_right_hand(starting_rifle)
             player.inventory.insert_item(starting_shotgun)
+            player.equip_right_shoulder(starting_shoulder)
 
         case 'ranger':
             player.class_name = 'Ranger'
@@ -69,6 +71,20 @@ def generate_player(class_name: str):
             player.equip_right_hand(starting_rifle)
             player.inventory.insert_item(starting_pistol)
             player.inventory.insert_item(starting_axe)
+
+        case 'test':
+            player.class_name = 'Test'
+            player.player_stats[WeaponType.PISTOL] = 16
+            player.player_stats[WeaponType.RIFLE] = 16
+            player.player_stats[WeaponType.SMG] = 14
+            player.player_stats[WeaponType.SWORD] = 16
+            player.player_stats[WeaponType.AXE] = 14
+            player.player_stats[WeaponType.POLEARM] = 14
+            player.player_stats[WeaponType.BLUNT] = 14
+            player.player_stats[WeaponType.SHIELD] = 14
+            starting_pistol = get_rare_weapon()
+            player.equip_right_hand(starting_pistol)
+            player.inventory.insert_item(starting_pistol)
             
 
     return player

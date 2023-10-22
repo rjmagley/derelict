@@ -251,13 +251,14 @@ class Player(Combatant):
             if player_attack_roll(weapon, self, distance_modifier):
                 message = f"You hit the {target.name} for {damage} damage."
                 target.take_damage(damage)
-                return ActionResult(True, message, color.white, 10)
+                return ActionResult(True, message, color.white, weapon.fire_time)
             else:
-                return ActionResult(True, f"You miss the {target.name}.", color.light_gray, 10)
+                return ActionResult(True, f"You miss the {target.name}.", color.light_gray, weapon.fire_time)
         else:
             weapon.fire(target = target, floor = self.engine.map)
-            return ActionResult(True, time_taken = 10)
+            return ActionResult(True, time_taken = weapon.fire_time)
 
+    # no handling of dual attacks yet
     def melee_attack(self, target: Combatant) -> ActionResult:
         weapon = None
         if isinstance(self.right_hand, MeleeWeapon):

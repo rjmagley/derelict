@@ -18,7 +18,7 @@ if TYPE_CHECKING:
     from entities.enemy import Enemy
 
 class RangedPhysicalWeapon(RangedWeapon):
-    def __init__(self, magazine_size: int = 6, burst_count: int = 1, ammunition_size: int = 10, ammunition_type: AmmunitionType = AmmunitionType.LIGHT, reload_type: ReloadType = ReloadType.STANDARD, properties: Dict[RangedWeaponProperty, Any] = {}, owner: Optional[Enemy | Player] = None,radius: int = 1, **kwargs):
+    def __init__(self, magazine_size: int = 6, burst_count: int = 1, ammunition_size: int = 10, ammunition_type: AmmunitionType = AmmunitionType.LIGHT, reload_type: ReloadType = ReloadType.STANDARD, properties: Dict[RangedWeaponProperty, Any] = {}, owner: Optional[Enemy | Player] = None, radius: int = 1, reload_time: int=10, **kwargs):
         super().__init__(**kwargs)
         self.burst_count = burst_count
         self.ammunition_type = ammunition_type
@@ -26,6 +26,8 @@ class RangedPhysicalWeapon(RangedWeapon):
         
         self.char = '{'
         self.reload_type = reload_type
+        self.reload_time = reload_time
+
         match reload_type:
             case ReloadType.STANDARD:
                 self.magazine_size = magazine_size
@@ -45,6 +47,7 @@ class RangedPhysicalWeapon(RangedWeapon):
 
         self.owner = owner
         self.radius = radius
+
         
 
     # returns true if the weapon can fire and false if it can't (empty,
@@ -72,7 +75,7 @@ class RangedPhysicalWeapon(RangedWeapon):
         self.loaded_ammo -= burst
         return total_damage
 
-    def belt_fire(self) -> int:
+    def belt_fire(self, **kwargs) -> int:
         total_damage = 0
         for x in range(0, self.burst_count):
             total_damage += self.roll_damage()
@@ -104,9 +107,9 @@ class RangedPhysicalWeapon(RangedWeapon):
             magazine.spend_ammo(self.ammunition_type, ammunition_needed)
             self.loaded_ammo = self.magazine_size
             if isinstance(owner, Player):
-                return ActionResult(True, "You fully load your weapon.", color.white, 10)
+                return ActionResult(True, "You fully load your weapon.", color.white, self.reload_time)
             else:
-                return ActionResult(True, f"The {owner.name} loads its weapon.", color.white, 10)
+                return ActionResult(True, f"The {owner.name} loads its weapon.", color.white, self.reload_time)
 
         # player cannot fully reload - need to do a partial
         else:
@@ -116,9 +119,9 @@ class RangedPhysicalWeapon(RangedWeapon):
             self.loaded_ammo += ammunition_used
             magazine.spend_ammo(self.ammunition_type, ammunition_used * self.ammunition_size)
             if isinstance(owner, Player):
-                return ActionResult(True, "You load as much ammo as you have.", color.white, 10)
+                return ActionResult(True, "You load as much ammo as you have.", color.white, self.reload_time)
             else:
-                return ActionResult(True, f"The {owner.name} loads as much ammo as it has.", color.white, 10)
+                return ActionResult(True, f"The {owner.name} loads as much ammo as it has.", color.white, self.reload_time)
 
     # single reload - player reloads one round at a time
     def single_reload(self, owner: Enemy | Player) -> ActionResult:
@@ -135,7 +138,7 @@ class RangedPhysicalWeapon(RangedWeapon):
         else:
             magazine.spend_ammo(self.ammunition_type, self.ammunition_size)
             self.loaded_ammo += 1
-            return ActionResult(True, f"You load a round into the {self.name}.", color.white, 5)
+            return ActionResult(True, f"You load a round into the {self.name}.", color.white, self.reload_time)
 
     def belt_reload(self, owner: Enemy | Player) -> ActionResult:
 

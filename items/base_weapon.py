@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 class BaseWeapon(BaseItem):
 
-    def __init__(self, die_count: int = 1, damage_die: int = 1, hands: int = 1, weapon_types: List[WeaponType] = [],  is_special = False, owner: Optional[Enemy | Player] = None, **kwargs):
+    def __init__(self, die_count: int = 1, damage_die: int = 1, hands: int = 1, weapon_types: List[WeaponType] = [],  is_special = False, owner: Optional[Enemy | Player] = None,  properties: List[RangedWeaponProperty, Any] = [], **kwargs):
         super().__init__(**kwargs)
 
         self.die_count = die_count
@@ -22,6 +22,8 @@ class BaseWeapon(BaseItem):
         self._weapon_types = weapon_types
         self.is_special = is_special
         self.owner = owner
+        self.properties = properties
+
 
     # if weapon only has one type, return that type
     # otherwise, return the type that best matches the skill of the player
@@ -61,3 +63,8 @@ class BaseWeapon(BaseItem):
             damage += random.randint(1, self.damage_die)
 
         return damage
+
+    def apply_weapon_properties(self):
+        if len(self.properties) != 0:
+            for p in self.properties:
+                p.modify_weapon(self)

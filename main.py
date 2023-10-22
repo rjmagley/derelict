@@ -51,6 +51,9 @@ def main():
             case tcod.event.KeySym.c:
                 selected = 'ranger'
 
+            case tcod.event.KeySym.d:
+                selected = 'test'
+
             case tcod.event.KeySym.RETURN:
                 if selected != None:
                     continue_to_game = True
@@ -68,6 +71,10 @@ def main():
                 root_console.print(1, 8, string="Ranger", fg=color.white)
                 root_console.print(1, 9, string="The Ranger is skilled at distance combat, with small arms or psychic\npowers - although your heavier weapons are lacking.", fg=color.white)
                 root_console.print(1, 12, string="You will start with a sniper rifle, a heavy pistol, an axe,\n and a few useful utility powers.", fg=color.white)
+            case 'test':
+                root_console.print(1, 8, string="Test", fg=color.white)
+                root_console.print(1, 9, string="I'm here to test stuff!", fg=color.white)
+                root_console.print(1, 12, string="You will start with... whatever needs testing!", fg=color.white)
 
         if selected != None:
             root_console.print(1, 15, string="Press Enter to begin.", fg=color.white)

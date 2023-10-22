@@ -17,6 +17,11 @@ if TYPE_CHECKING:
     from floor_map import FloorMap
     from entities.player import Player
 
+# this file contains special weapons/functions relating to them - fire methods,
+# reloads, etc. that aren't present for most weapons. primarily these are for
+# exotic weapons, or special weapons modified by properties that do more than
+# change numeric stats
+
 def test_fire(self, target: Enemy | Player, floor: FloorMap, **kwargs) -> None:
     hit_enemies = [target]
     self.owner.energy_points -= self.charge_needed
@@ -41,7 +46,7 @@ def test_fire(self, target: Enemy | Player, floor: FloorMap, **kwargs) -> None:
     else:
         self.engine.message_log.add_message(f"You miss the {target.name}.", color.light_gray)
 
-special_test = RangedEnergyWeapon(charge_needed = 12, die_count=3, damage_die=4, burst_count = 1, name="The Third Rail", hands = 2, optimal_range = 5, range_interval = 2, radius = 3, is_special = True)
+special_test = RangedEnergyWeapon(charge_needed = 12, die_count=3, damage_die=4, burst_count = 1, name="The Third Rail", hands = 2, optimal_range = 5, range_interval = 2, radius = 3, is_special = True, color=color.bright_yellow)
 
 special_test.fire = types.MethodType(test_fire, special_test)
 
