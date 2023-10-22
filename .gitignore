@@ -1,6 +1,6 @@
 Pipfile.lock
 *.pyc
 **/__pycache__/
-main_build/
-main_dist/
+main.build/
+main.dist/
 main.bin
