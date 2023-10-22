@@ -63,6 +63,9 @@ class BasicHostile(BasicAI):
         # this implementation is not perfect - enemies will chase the player,
         # but if the player is not visible when they reach the player's last
         # known destination, they stop - might want backup options
+
+        # this currently relies on the player being in the enemy's FOV when the 
+        # enemy has a turn - enemies don't have their own FOV (yet?)
         if self.entity.map.visible[self.entity.x, self.entity.y]:
             print(f"{self.entity.name} has a visible target")
             self.last_visible_x = target.x
