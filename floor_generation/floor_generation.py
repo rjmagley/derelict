@@ -113,10 +113,11 @@ def place_enemies(room: Room, floor: FloorMap) -> None:
         y = random.randint(room.y, room.height + room.y - 1)
         if floor.tiles[x, y] == tile_types.floor:
             if not any (e.x == x and e.y == y for e in floor.entities):
-                if random.random() > .5: 
-                    floor.entities.add(monsters.create_goblin(x=x, y=y, map=floor))
-                else:
-                    floor.entities.add(monsters.create_slow_goblin(x=x, y=y, map=floor))
+                floor.entities.add(monsters.create_kobold(x=x, y=y, map=floor))
+                # if random.random() > .5: 
+                #     floor.entities.add(monsters.create_goblin(x=x, y=y, map=floor))
+                # else:
+                #     floor.entities.add(monsters.create_slow_goblin(x=x, y=y, map=floor))
 
 
 def place_items(room: Room, map: FloorMap) -> None:

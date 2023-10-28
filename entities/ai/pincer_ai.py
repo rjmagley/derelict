@@ -1,34 +1,54 @@
 from __future__ import annotations
 
-from typing import List, Tuple
+from typing import TYPE_CHECKING
 
 import tcod
 import numpy
 from random import randint
 
-from entities.mover import Mover
+import color
+
+from .basic_ai import BasicHostile
+
+import random
+
 from actions.actions import MeleeAction, MovementAction, WaitAction, PlayerFireAction
 
-class BasicAI():
-    
-    entity: Mover
+if TYPE_CHECKING:
+    from entities.mover import Mover
+
+# PincerAI - wants to surround the player in a pincer with other enemies
+# we do this by determining at creation if they want to be above or below
+# the player, then using that to modify the get_path_to function
+class PincerAI(BasicHostile):
 
     def __init__(self, entity: Mover):
-        self.entity = entity
-        self.path: List[Tuple[int, int]] = []
+        super().__init__(entity)
+        # 'heading' is the side of the player this enemy wants to be on
+        # 'north' is above, 'south' is below
+        if random.random() > .5:
+            self.heading = 'north'
+            entity.color = color.red # just testing
+        else:
+            self.heading = 'south'
 
     def get_path_to(self, x: int, y: int) -> List[Tuple[int, int]]:
 
+        target = self.entity.engine.player
         cost = numpy.array(self.entity.map.tiles['walkable'], dtype=numpy.int8)
 
-        # testing some stuff
-        # for l in cost:
-        #     print(str(cost))
-        
-        # delete this block later
+        # increasing the cost based on heading
+        if self.heading == 'north':
+            cost[target.x:21, 0:160] += 9
+        elif self.heading == 'south':
+            cost[0:target.x+1, 0:160] += 9
+
+
         for e in self.entity.map.entities:
             if e.blocks_movement and cost[e.x, e.y]:
-                cost[e.x, e.y] += 10
+                cost[e.x, e.y] += 100
+
+        cost = numpy.multiply(cost, self.entity.map.tiles['walkable'])
 
         graph = tcod.path.SimpleGraph(cost=cost, cardinal=2, diagonal=3)
         pathfinder = tcod.path.Pathfinder(graph)
@@ -37,21 +57,11 @@ class BasicAI():
 
         path: List[List[int]] = pathfinder.path_to((x, y))[1:].tolist()
 
+        # test
+        for index in path:
+            print(index[0], index[1])
+
         return [(index[0], index[1]) for index in path]
-
-    def perform(self) -> None:
-        pass
-
-
-# BasicHostile - a hostile AI that wants to close to melee range and attack
-class BasicHostile(BasicAI):
-
-    def __init__(self, entity: Enemy):
-        super().__init__(entity)
-        self.entity = entity
-        self.path: List[Tuple[int, int]] = []
-        self.last_visible_x = None
-        self.last_visible_y = None
 
     def perform(self) -> ActionResult:
         
@@ -80,10 +90,6 @@ class BasicHostile(BasicAI):
             if distance == 1 and randint(1,10) > 5:
                 print("performing melee")
                 return MeleeAction(self.entity, target).perform()
-            elif distance <= self.entity.ranged_weapons[0].optimal_range * 3 and randint(1,10) > 5:
-                # print(f"{self.entity.name} attacking target")
-                if self.entity.ranged_weapons[0].can_fire:
-                    return PlayerFireAction(self.entity, target, self.entity.ranged_weapons[0]).perform()
 
             self.path = self.get_path_to(target.x, target.y)
 
@@ -99,9 +105,9 @@ class BasicHostile(BasicAI):
 
         if len(self.path) > 0:
             destination_x, destination_y = self.path.pop(0)
+            print(f"attempting to move to {destination_x} {destination_y}")
             return MovementAction(self.entity,
                 destination_x - self.entity.x,
                 destination_y - self.entity.y).perform()
 
         return WaitAction(self.entity).perform()
-

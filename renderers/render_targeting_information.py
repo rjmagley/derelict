@@ -15,9 +15,9 @@ if TYPE_CHECKING:
 def render_targeting_information(root_console: Console, bottom_console: Console,targeter: RangedWeapon | BasePower, engine: GameEngine, map: FloorMap) -> None:
     target = map.get_blocking_entity_at_location(engine.event_handler.x, engine.event_handler.y)
     if target:
-        bottom_console.print(x=0, y=1, fg=color.white, string=f"Aiming at {target.name}")
+        bottom_console.print(x=0, y=1, fg=color.white, string=f"Aiming at {target.name} ({target.x}, {target.y})")
     else:
-        bottom_console.print(x=0, y=1, fg=color.light_gray, string=f"Nothing here.")
+        bottom_console.print(x=0, y=1, fg=color.light_gray, string=f"Nothing here. ({engine.event_handler.x} {engine.event_handler.y})")
     if isinstance(targeter, RangedWeapon):
         targeter_string=f"Targeting with your {targeter.name}"
         if target:

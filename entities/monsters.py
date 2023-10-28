@@ -2,6 +2,7 @@ import math
 from .enemy import Enemy
 from floor_map import FloorMap
 from .ai.basic_ai import BasicAI, BasicHostile
+from .ai.pincer_ai import PincerAI
 import color
 from items.ranged_recharge_weapon import RangedRechargeWeapon
 from items.melee_weapon import MeleeWeapon
@@ -16,6 +17,9 @@ def create_goblin(x: int, y: int, map: FloorMap) -> Enemy:
 
 def create_slow_goblin(x: int, y: int, map: FloorMap) -> Enemy:
     return Enemy(level=1, x=x, y=y, char='g', color=color.yellow, name='goblin', blocks_movement=True, hp=10, defense=2, ai=BasicHostile, map=map, move_speed=15, weapons=goblin_test_weapons)
+
+def create_kobold(x: int, y: int, map: FloorMap) -> Enemy:
+    return Enemy(level=1, x=x, y=y, char='k', color=color.yellow, name='kobold', blocks_movement=True, hp=7, defense=0, ai=PincerAI, map=map, move_speed=15, weapons=goblin_test_weapons)
 
 # def create_orc(x: int, y: int) -> Combatant:
 #     return Combatant(x=x, y=y, char='o', color=color.green, name='orc', blocks_movement=True, hp=10, defense=2, power=2, ai=BasicHostile, map=map)
