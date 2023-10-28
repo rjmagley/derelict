@@ -9,7 +9,11 @@ from items.melee_weapon import MeleeWeapon
 
 goblin_test_weapons = [
     RangedRechargeWeapon(damage_die=5, die_count=2, charge_needed=10, max_charge=10, recharge_rate=1, burst_count=2, optimal_range=7, range_interval=7, name='goblin test gun'),
-    MeleeWeapon(damage_die=4, die_count=7, name='goblin test fist')
+    MeleeWeapon(damage_die=3, die_count=4, name='goblin test fist')
+]
+
+kobold_weapons = [
+    MeleeWeapon(damage_die=3, die_count=3, name='kobold claws')
 ]
 
 def create_goblin(x: int, y: int, map: FloorMap) -> Enemy:

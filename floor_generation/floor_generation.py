@@ -107,17 +107,26 @@ def generate_floor(width: int, height: int, engine: GameEngine, difficulty: int 
 
 def place_enemies(room: Room, floor: FloorMap) -> None:
 
-    number_mobs = random.randint(2, 5)
+    number_mobs = random.randint(2+floor.engine.difficulty_level, 5+floor.engine.difficulty_level)
     for i in range(number_mobs):
         x = random.randint(room.x, room.width + room.x - 1)
         y = random.randint(room.y, room.height + room.y - 1)
         if floor.tiles[x, y] == tile_types.floor:
             if not any (e.x == x and e.y == y for e in floor.entities):
-                floor.entities.add(monsters.create_kobold(x=x, y=y, map=floor))
-                # if random.random() > .5: 
-                #     floor.entities.add(monsters.create_goblin(x=x, y=y, map=floor))
-                # else:
-                #     floor.entities.add(monsters.create_slow_goblin(x=x, y=y, map=floor))
+                monster_choice = random.randint(1, 10)
+                if monster_choice <= 2:
+                    # add multiple kobolds
+                    # this is super hacky; need a way to spawn multiple enemies
+                    # in an area
+                    floor.entities.add(monsters.create_kobold(x=x, y=y, map=floor))
+                    x = random.randint(room.x, room.width + room.x - 1)
+                    y = random.randint(room.y, room.height + room.y - 1)
+                    if not any (e.x == x and e.y == y for e in floor.entities):
+                        floor.entities.add(monsters.create_kobold(x=x, y=y, map=floor))
+                elif monster_choice <= 7:
+                    floor.entities.add(monsters.create_goblin(x=x, y=y, map=floor))
+                else:
+                    floor.entities.add(monsters.create_slow_goblin(x=x, y=y, map=floor))
 
 
 def place_items(room: Room, map: FloorMap) -> None:

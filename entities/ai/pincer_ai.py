@@ -20,6 +20,9 @@ if TYPE_CHECKING:
 # PincerAI - wants to surround the player in a pincer with other enemies
 # we do this by determining at creation if they want to be above or below
 # the player, then using that to modify the get_path_to function
+
+# this will probably be more interesting with enemies that can teleport themselves
+# around, or enemies that can spawn packs of these, etc.
 class PincerAI(BasicHostile):
 
     def __init__(self, entity: Mover):
@@ -28,7 +31,6 @@ class PincerAI(BasicHostile):
         # 'north' is above, 'south' is below
         if random.random() > .5:
             self.heading = 'north'
-            entity.color = color.red # just testing
         else:
             self.heading = 'south'
 
