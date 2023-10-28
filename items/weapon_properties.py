@@ -3,6 +3,16 @@ from typing import Dict, Callable
 from .base_weapon import BaseWeapon
 from . import ReloadType
 
+# this may be better off as an actual class, where we just have each instance of
+# it have its own modify_weapon function?
+# or have each weapon have "property" slots that are just names/descriptions that
+# we call a function on to overwrite/update
+# this is presuming that there's no, like, way to change the properties on a
+# weapon after generation
+# if there is than instead of updating the weapon's stats we have to make
+# them properties to calculate for every shot
+# seems iffy!
+# do want to rewrite this to be more wisely structured but don't want to for now
 @dataclass
 class WeaponProperty():
     name: str
