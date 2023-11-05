@@ -127,6 +127,11 @@ class Player(Combatant):
     def max_psy(self) -> int:
         return sum(self.get_armor_properties(ArmorProperty.BASE_PSY)) + self.base_psy
 
+    # this will be modified later based on armor, talents, etc.
+    @property
+    def vision_radius(self) -> int:
+        return 40
+
     # armor properties are in a dictionary
     # key is an ArmorProperty, value is... an int, I think? for now?
     # that might change

@@ -165,7 +165,7 @@ class GameEngine():
         self.map.visible[:] = compute_fov(
             self.map.tiles['transparent'],
             (self.player.x, self.player.y),
-            radius=50
+            radius=self.player.vision_radius
         )
 
         sleepers = self.map.asleep_entities
