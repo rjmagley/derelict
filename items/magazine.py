@@ -48,4 +48,4 @@ class Magazine(BaseItem):
         return True
 
     def add_ammo(self, pickup: AmmoPickup) -> None:
-        self.ammunition[pickup.ammo_type] = min(pickup.amount, self.maximum_ammunition[pickup.ammo_type])
+        self.ammunition[pickup.ammo_type] = min(self.ammunition[pickup.ammo_type] + pickup.amount, self.maximum_ammunition[pickup.ammo_type])
