@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Iterable, TYPE_CHECKING, List, Set, Generator, Optional
+from typing import Iterable, TYPE_CHECKING, List, Set, Generator, Optional, Tuple
 
 import numpy
 import tile_types
@@ -10,6 +10,9 @@ from tcod.console import Console
 from entities.combatant import Combatant
 from entities.mover import Mover
 from items.base_item import BaseItem
+from entities.pickups import BasePickup
+
+from random import choice
 
 if TYPE_CHECKING:
     from entities.base_entity import BaseEntity
@@ -24,6 +27,10 @@ class FloorMap():
         self.engine = engine
         self.width = width
         self.height = height
+        # at some point I'd like to refactor this so that there is not just one
+        # list, but several - movers, pickups, items and corpses\
+        # maybe even projectiles? if I ever want to implement like, slow moving
+        # or dodgable projectiles, like crawl's OODs
         self.entities = entities
         self.downstairs = [0, 0]
         self.tiles = numpy.full((width, height), fill_value=tile_types.wall, order="F")
@@ -46,6 +53,23 @@ class FloorMap():
         movers = [e for e in self.entities if isinstance(e, Mover) and e.awake == False and e.is_alive]
         return movers
 
+    # returns True if space is occupied and False otherwise
+    def entity_matching_type_at_location(self, entity: BaseEntity, x: int, y: int) -> bool:
+        entities = [e for e in self.entities if isinstance(e, type(entity))]
+        for e in entities:
+            if e.x == x and e.y == y:
+                return True
+
+        return False
+
+    def entities_matching_type(self, entity: BaseEntity) -> List[BaseEntity]:
+        movers = [e for e in self.entities if isinstance(e, type(entity))]
+        return movers
+
+    # a bunch of functions from here down need to be refactored into forms
+    # that look for all entities matching a specific type
+    # even better once things are refactored so that movers/pickups/items/etc.
+    # have their own lists stored in the map information
     def get_entities_at_location(self, x: int, y: int) -> List[BaseEntity]:
         
         results = []
@@ -74,19 +98,73 @@ class FloorMap():
 
         return None
 
+    def get_item_at_location(self, x: int, y: int) -> Optional[BaseItem | BasePickup]:
+        for e in [e for e in self.entities if (isinstance(e, BaseItem) or isinstance(e, BasePickup))]:
+            if e.x == x and e.y == y:
+                return e
+
+        return None
+
     def in_bounds(self, x: int, y: int) -> bool:
         return 0 <= x < self.width and 0 <= y < self.height
 
-    def get_items_at_location(self, x: int, y: int) -> List[BaseItem]:
-        results = []
-        for e in [e for e in self.entities if isinstance(e, BaseItem)]:
-            if e.x == x and e.y == y:
-                results.append(e)
 
-        return results
 
     def living_entities_by_distance(self) -> List[Combatant]:
         entities = [e for e in self.entities if isinstance(e, Combatant) and e.is_alive and e != self.engine.player and self.visible[e.x, e.y]]
-        results = sorted(entities, key=lambda e:  e.distance(self.engine.player))
+        results = sorted(entities, key=lambda e: e.distance(self.engine.player))
 
         return results
+
+    # tries to place entity on map - if an entity cannot be placed at the given
+    # location, tries to place it elsewhere on the map nearby
+    # this actually calls one of two functions to handle placement of items and
+    # enemies or other entities
+    # I might re-rig this for corpse placement too - currently enemies can die
+    # and their corpse gets dropped, which may be on top of another corpse,
+    # which may cause problems if corpses ever become anything other than
+    # decorative... (doom arch-vile noises in distance)
+    def place_entity_on_map(self, entity: BaseEntity, x: int, y: int) -> None:
+        print(f"trying to place {entity.name} at {x}, {y}")
+        result = self.get_valid_position_for_entity(entity, x, y)
+        if result == None:
+            # failed to place entity - silently, for now
+            print(f"failed to place {entity.name}")
+            pass
+
+        else:
+            entity.set_map(self, x, y)
+                
+
+    # used to assist placing entities - checks map for entities of a given type
+    # at that position and returns that position if valid
+    # otherwise iterates in widening radiuses around the position
+    def get_valid_position_for_entity(self, entity: BaseEntity, x: int,
+        y: int) -> Optional[Tuple[int, int]]:
+
+        # first see if the given position is clear
+        # if it is, no more work to do:
+        if not self.entity_matching_type_at_location(entity, x, y):
+            return x, y
+
+        else:
+            # horrible code incoming
+            # this will absolutely need refactoring later, the good solution
+            # just isn't coming to me - this is absolutely repetitive
+            other_entities = self.entities_matching_type(entity)
+            loop_iterations = 1
+
+            potential_locations = []
+            while True:
+
+                try:
+                    for x_position in [x for x in range(x-loop_iterations, x+loop_iterations+1)]:
+                        for y_position in [y for y in range(y-loop_iterations, y+loop_iterations+1)]:
+                            if self.tiles['walkable'][x_position][y_position] and self.entity_matching_type_at_location(entity, x_position, y_position):
+                                potential_locations += (x_position, y_position)
+                # catch this if we start going out of bounds, ending the loop
+                except:
+                    return None
+
+                if len(potential_locations) > 0:
+                    return choice(potential_locations)

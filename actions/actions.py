@@ -9,7 +9,10 @@ from entities.mover import Mover
 from . import ActionResult
 import color
 from entities.player import Player
+from entities.pickups import BasePickup
+from entities.pickups.ammo_pickup import AmmoPickup
 from items.ranged_weapon import RangedWeapon
+from items.base_item import BaseItem
 
 if TYPE_CHECKING:
     from game_engine import GameEngine
@@ -129,23 +132,32 @@ class PickupItemAction(Action):
 
     def perform(self) -> ActionResult:
         player = self.engine.player
-        items = self.engine.map.get_items_at_location(self.entity.x, self.entity.y)
-        # needs to handle picking up multiple items
-        if len(items) == 1:
-            target_item = items[0]
+        item = self.engine.map.get_item_at_location(self.entity.x, self.entity.y)
+
+        # the ActionResults here should eventually have their time_taken factor
+        # into the player's stats somehow - maybe like, a talent that both
+        # speeds up ammo reloading and item pickup speed?
+
+        if isinstance(item, BaseItem):
             if player.inventory.space_remaining:
-                self.engine.map.entities.remove(target_item)
-                player.inventory.items.append(target_item)
-                if isinstance(target_item, RangedWeapon):
-                    target_item.owner = player
+                self.engine.map.entities.remove(item)
+                player.inventory.items.append(item)
+                if isinstance(item, RangedWeapon):
+                    item.owner = player
                 # probably need to fix this when weapons aren't the only items
                 # that exist
                 if player.right_hand == None:
-                    player.equip_right_hand(target_item)
+                    player.equip_right_hand(item)
 
-                return ActionResult(True, f"You grab the {target_item.name}.", color.light_gray, 10)
+                return ActionResult(True, f"You grab the {item.name}.", color.light_gray, 10)
             else:
                 return ActionResult(False, "Your inventory is full.", color.light_gray)
+
+        elif isinstance(item, AmmoPickup):
+            player.magazine.add_ammo(item)
+            item.on_consume()
+            return ActionResult(True, f"You put the {item.name} into your magazine.", color.light_gray, 10)
+
         else:
             return ActionResult(False, "There's nothing to pick up.", color.light_gray)
 

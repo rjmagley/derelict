@@ -41,5 +41,15 @@ class BaseEntity():
             (target.y - self.y) ** 2
         )
 
+    # sets map and other appropriate data
+    # used in situations where an item may want to be generated without being
+    # placed on the map yet
+    def set_map(self, map, x: int, y: int) -> None:
+        self.map = map
+        map.entities.add(self)
+        self.engine = map.engine
+        self.x = x
+        self.y = y
+
     def move(self, x, y):
         raise NotImplementedError

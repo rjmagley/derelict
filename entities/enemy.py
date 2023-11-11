@@ -10,9 +10,18 @@ from items.ranged_recharge_weapon import RangedRechargeWeapon
 
 from actions import ActionResult
 
+from .pickups.ammo_pickup import AmmoPickup
+from .pickups import PickupType
+
 from die_rollers import standard_roll_target, enemy_attack_roll
 from render_order import RenderOrder
 import color
+
+import random
+
+if TYPE_CHECKING:
+    from .pickups import BasePickup
+    from floor_map import FloorMap
 
 # the Enemy class represents anything that the player is expected to fight/kill
 # - mobile enemies, turrets, etc.
@@ -20,8 +29,9 @@ import color
 # damage or damage others
 class Enemy(Combatant):
 
+    map: FloorMap
     
-    def __init__(self, level: int, hp: int, defense: int, weapons: List[BaseWeapon], ranged_skill: int = 12, melee_skill: int = 12, **kwargs):
+    def __init__(self, level: int, hp: int, defense: int, weapons: List[BaseWeapon], ranged_skill: int = 12, melee_skill: int = 12, pickup_table: List[Tuple[PickupType, int]] = [], **kwargs):
         super().__init__(**kwargs)
         # 'level' is a rough evaluation of how challenging the enemy is
         #going to be used, to determine spawning, encounter difficulty, etc.
@@ -39,6 +49,8 @@ class Enemy(Combatant):
         # rather than give enemies a whole set of skills
         self.ranged_skill = ranged_skill
         self.melee_skill = melee_skill
+
+        self.pickup_table = pickup_table
 
     def ranged_attack(self, target: Combatant, weapon: RangedWeapon) -> ActionResult:
         damage = weapon.fire()
@@ -74,6 +86,8 @@ class Enemy(Combatant):
                 w.recharge()
 
     def die(self) -> None:
+        # this eventually needs to become a different type of corpse-object
+        # rather than just becoming a different kind of 'enemy'
         self.engine.add_message(f"The {self.name} dies!", color.red)
         self.char = "%"
         self.color = color.red
@@ -81,3 +95,7 @@ class Enemy(Combatant):
         self.ai = None
         self.name = f"remains of {self.name}"
         self.render_order = RenderOrder.CORPSE
+
+        for p in [p for p in self.pickup_table if p != None]:
+            if random.randint(0, 100) > p[1]:
+                self.map.place_entity_on_map(AmmoPickup.generate_pickup(p[0], self.level + 10), self.x, self.y)

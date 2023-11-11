@@ -178,9 +178,9 @@ class Player(Combatant):
     def move(self, dx: int, dy: int) -> None:
         self.x += dx
         self.y += dy
-        item_names = ', '.join([i.name for i in self.engine.map.get_items_at_location(self.x, self.y)])
-        if item_names:
-            self.engine.message_log.add_message(f"On the ground here is: {item_names}.", color.light_gray)
+        item_present = self.engine.map.get_item_at_location(self.x, self.y)
+        if item_present:
+            self.engine.message_log.add_message(f"On the ground here is: {item_present.name}.", color.light_gray)
 
     # the player's HP setter is a bit messier than normal - players have
     # shields, then armor, then a few states before death

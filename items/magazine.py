@@ -4,6 +4,7 @@ from typing import Tuple
 
 from items import AmmunitionType
 from items.base_item import BaseItem
+from entities.pickups.ammo_pickup import AmmoPickup
 
 # the Magazine represents the player equipment for managing and
 # creating ammunition
@@ -18,16 +19,16 @@ class Magazine(BaseItem):
         super().__init__(name = "Basic Magazine", char = "$", **kwargs)
         self.maximum_ammunition = {
             AmmunitionType.LIGHT: max_ammo_count[0],
-            AmmunitionType.HEAVY: max_ammo_count[0],
-            AmmunitionType.EXPLOSIVE: max_ammo_count[0],
-            AmmunitionType.EXOTIC: max_ammo_count[0]
+            AmmunitionType.HEAVY: max_ammo_count[1],
+            AmmunitionType.EXPLOSIVE: max_ammo_count[2],
+            AmmunitionType.EXOTIC: max_ammo_count[3]
         }
 
         self.ammunition = {
             AmmunitionType.LIGHT: 0 if empty else max_ammo_count[0],
-            AmmunitionType.HEAVY: 0 if empty else max_ammo_count[0],
-            AmmunitionType.EXPLOSIVE: 0 if empty else max_ammo_count[0],
-            AmmunitionType.EXOTIC: 0 if empty else max_ammo_count[0]
+            AmmunitionType.HEAVY: 0 if empty else max_ammo_count[1],
+            AmmunitionType.EXPLOSIVE: 0 if empty else max_ammo_count[2],
+            AmmunitionType.EXOTIC: 0 if empty else max_ammo_count[3]
         }
 
     def get_max_ammo(self, ammo_type: AmmunitionType) -> int:
@@ -45,3 +46,6 @@ class Magazine(BaseItem):
             return False
         self.ammunition[ammo_type] -= amount
         return True
+
+    def add_ammo(self, pickup: AmmoPickup) -> None:
+        self.ammunition[pickup.ammo_type] = min(pickup.amount, self.maximum_ammunition[pickup.ammo_type])
