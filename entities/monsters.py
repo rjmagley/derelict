@@ -8,7 +8,7 @@ from items.ranged_recharge_weapon import RangedRechargeWeapon
 from items.melee_weapon import MeleeWeapon
 
 goblin_test_weapons = [
-    RangedRechargeWeapon(damage_die=5, die_count=2, charge_needed=10, max_charge=10, recharge_rate=1, burst_count=2, optimal_range=7, range_interval=7, name='goblin test gun'),
+    RangedRechargeWeapon(damage_die=5, die_count=2, charge_needed=10, max_charge=10, recharge_rate=1, burst_count=2, minimum_range=7, maximum_range=7, range_interval=7, name='goblin test gun'),
     MeleeWeapon(damage_die=3, die_count=4, name='goblin test fist')
 ]
 
@@ -23,7 +23,7 @@ def create_slow_goblin(x: int, y: int, map: FloorMap) -> Enemy:
     return Enemy(level=1, x=x, y=y, char='g', color=color.yellow, name='goblin', blocks_movement=True, hp=10, defense=2, ai=BasicHostile, map=map, move_speed=15, weapons=goblin_test_weapons)
 
 def create_kobold(x: int, y: int, map: FloorMap) -> Enemy:
-    return Enemy(level=1, x=x, y=y, char='k', color=color.yellow, name='kobold', blocks_movement=True, hp=7, defense=0, ai=PincerAI, map=map, move_speed=15, weapons=goblin_test_weapons)
+    return Enemy(level=1, x=x, y=y, char='k', color=color.yellow, name='kobold', blocks_movement=True, hp=7, defense=0, ai=PincerAI, map=map, move_speed=8, weapons=goblin_test_weapons)
 
 # def create_orc(x: int, y: int) -> Combatant:
 #     return Combatant(x=x, y=y, char='o', color=color.green, name='orc', blocks_movement=True, hp=10, defense=2, power=2, ai=BasicHostile, map=map)

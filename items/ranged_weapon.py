@@ -22,7 +22,7 @@ if TYPE_CHECKING:
 
 
 class RangedWeapon(BaseWeapon):
-    def __init__(self, burst_count: int = 1, properties: List[WeaponProperty] = [], radius: int = 1, optimal_range: int = 7, range_interval: int = 7, is_shoulder: bool = False, fire_time: int=10, accuracy_bonus: int=0, **kwargs):
+    def __init__(self, burst_count: int = 1, properties: List[WeaponProperty] = [], radius: int = 1, minimum_range: int = 7, maximum_range: int = 14, range_interval: int = 7, is_shoulder: bool = False, fire_time: int=10, accuracy_bonus: int=0, **kwargs):
         super().__init__(**kwargs)
         self.burst_count = burst_count
         self.char = '{'
@@ -31,16 +31,10 @@ class RangedWeapon(BaseWeapon):
         self.radius = radius
         self.is_shoulder = is_shoulder
 
-        # the optimal range is the range at which the weapon has no penalties -
-        # from optimal range to optimal range * 2
-        # if you're closer or further from the enemy, you get a -1 for each
-        # range interval of distance between you (rounded up)
-        # essentially, the higher the range interval, the better the weapon
-        # performs out-of-range
-        # 
-        # at some point I should change this to a minimum-maximum range rather
-        # than just multiplying the value by 2, but I got other things to do
-        self.optimal_range = optimal_range
+        # weapons have a minimum and maximum range where being outside of those
+        # ranges start giving you range interval penalties
+        self.minimum_range = minimum_range
+        self.maximum_range = maximum_range
         self.range_interval = range_interval
 
         self.fire_time = fire_time
@@ -77,9 +71,21 @@ class RangedWeapon(BaseWeapon):
 
     def calculate_distance_modifier(self, entity_a: BaseEntity, entity_b: BaseEntity) -> int:
         distance = math.ceil(entity_a.distance(entity_b))
-        if distance in range(self.optimal_range, (2*self.optimal_range)+1):
+        if distance in range(self.minimum_range, self.maximum_range+1):
             return 0
-        elif distance < self.optimal_range:
-            return  math.ceil((self.optimal_range - distance) // self.range_interval)
+        elif distance < self.minimum_range:
+            return  math.ceil((self.minimum_range - distance) // self.range_interval)
         else:
-            return  math.ceil((distance - self.optimal_range * 2) // self.range_interval)
+            return  math.ceil((distance - self.maximum_range) // self.range_interval)
+
+    # returns True if the target distance is within the weapon's range band
+    # and false otherwise
+    # permissable_error is an optional argument - if provided, the function
+    # will still return True if the distance modifier is less than the
+    # argument
+    # some enemies want to fire as much as possible, some want to make sure
+    # that they're at the appropriate range
+    def weapon_in_range(self, entity_a: BaseEntity, entity_b: BaseEntity, 
+        permissable_error: int = 0):
+
+        return self.calculate_distance_modifier(entity_a, entity_b) <= permissable_error

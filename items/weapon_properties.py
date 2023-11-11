@@ -24,7 +24,7 @@ class WeaponProperty():
     # to determine which operation to perform
     def modify_weapon(self, weapon: BaseWeapon) -> None:
         for k, v in self.attributes_to_modify.items():
-            if k in ['reload_time', 'optimal_range', 'damage_die',
+            if k in ['reload_time', 'maximum_range', 'damage_die',
             'accuracy_bonus', 'range_modifier']:
                 setattr(weapon, k, getattr(weapon, k) + v)
             elif k in ['ammunition_size', 'magazine_size', 'fire_time']:
@@ -39,10 +39,10 @@ class WeaponProperty():
         pass
 
 property_cqb = WeaponProperty("CQB Optimized",
-"Optimized for close-range fights. Quicker reloads,\nbut reduced optimal range.",
+"Optimized for close-range fights. Quicker reloads,\nbut reduced maximum range.",
 {
     'reload_time': -2,
-    'optimal_range': -2,
+    'maximum_range': -2
 })
 
 property_heavy_caliber = WeaponProperty("Heavy Caliber",

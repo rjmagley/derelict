@@ -80,7 +80,7 @@ class BasicHostile(BasicAI):
             if distance == 1 and randint(1,10) > 5:
                 print("performing melee")
                 return MeleeAction(self.entity, target).perform()
-            elif distance <= self.entity.ranged_weapons[0].optimal_range * 3 and randint(1,10) > 5:
+            elif self.entity.ranged_weapons[0].weapon_in_range(self.entity, target) and randint(1,10) > 5:
                 # print(f"{self.entity.name} attacking target")
                 if self.entity.ranged_weapons[0].can_fire:
                     return PlayerFireAction(self.entity, target, self.entity.ranged_weapons[0]).perform()
