@@ -6,6 +6,7 @@ import numpy
 import tile_types
 
 from tcod.console import Console
+from tcod.los import bresenham
 
 from entities.combatant import Combatant
 from entities.mover import Mover
@@ -168,3 +169,14 @@ class FloorMap():
 
                 if len(potential_locations) > 0:
                     return choice(potential_locations)
+    # returns True if there is a clear path from entity A to entity B - no
+    # map-based obstructions in the way
+    # this doesn't check to see if another entity is in the path!
+    def is_los_clear(self, entity_a: BaseEntity, entity_b: BaseEntity) -> bool:
+        points = bresenham((entity_a.x, entity_a.y), (entity_b.x, entity_b.y)).tolist()
+
+        for p in points:
+            if self.tiles['blocking'][p[0]][p[1]]:
+                return False
+
+        return True

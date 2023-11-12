@@ -72,17 +72,19 @@ class BasicHostile(BasicAI):
         # this currently relies on the player being in the enemy's FOV when the 
         # enemy has a turn - enemies don't have their own FOV (yet?)
         if self.entity.map.visible[self.entity.x, self.entity.y]:
-            print(f"{self.entity.name} has a visible target")
             self.last_visible_x = target.x
             self.last_visible_y = target.y
-            print(f"distance to target: {distance}")
+
 
             if distance == 1 and randint(1,10) > 5:
                 print("performing melee")
                 return MeleeAction(self.entity, target).perform()
-            elif self.entity.ranged_weapons[0].weapon_in_range(self.entity, target) and randint(1,10) > 5:
-                # print(f"{self.entity.name} attacking target")
-                if self.entity.ranged_weapons[0].can_fire:
+
+            # need to check if entity can actually be targeted
+
+            elif self.entity.map.is_los_clear(self.entity, target):
+                if self.entity.ranged_weapons[0].weapon_in_range(self.entity, target) and randint(1,10) > 5 and self.entity.ranged_weapons[0].can_fire:
+                    # print(f"{self.entity.name} attacking target")
                     return PlayerFireAction(self.entity, target, self.entity.ranged_weapons[0]).perform()
 
             self.path = self.get_path_to(target.x, target.y)

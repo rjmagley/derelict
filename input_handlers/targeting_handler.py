@@ -50,6 +50,8 @@ class TargetingEventHandler(LookEventHandler):
                     return ActionResult(False, "There's nothing to shoot there.")
                 if not self.weapon.can_fire:
                     return ActionResult(False, "Your weapon is empty.")
+                if not self.engine.map.is_los_clear(target, self.player):
+                    return ActionResult(False, "There's not a clear shot to the target.")
                 action = PlayerFireAction(self.player, target, self.weapon).perform()
                 self.engine.switch_handler(HandlerType.GAME)
                 return action
