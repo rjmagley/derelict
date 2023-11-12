@@ -10,6 +10,7 @@ from tcod.los import bresenham
 
 from entities.combatant import Combatant
 from entities.mover import Mover
+from entities.enemy import Enemy
 from items.base_item import BaseItem
 from entities.pickups import BasePickup
 
@@ -39,6 +40,9 @@ class FloorMap():
         self.explored = numpy.full((width, height), fill_value=False, order='F')
         # self.map_console = Console(width, height, order="F")
 
+    # a lot of things in here need to be heavily refactored - many of these
+    # functions could be compressed into one that accepts some arguments
+
     @property
     def living_entities(self) -> Generator[BaseEntity]:
         yield from (e for e in self.entities if isinstance(e, Combatant) and e.is_alive)
@@ -52,6 +56,11 @@ class FloorMap():
     def asleep_entities(self) -> List[Mover]:
         movers = [e for e in self.entities if isinstance(e, Mover) and e.awake == False and e.is_alive]
         return movers
+
+    @property
+    def visible_enemies(self) -> List[Enemy]:
+        enemies = [e for e in self.entities if isinstance(e, Enemy) and e.is_alive and self.visible[e.x, e.y]]
+        return enemies
 
     # returns True if space is occupied and False otherwise
     def entity_matching_type_at_location(self, entity: BaseEntity, x: int, y: int) -> bool:

@@ -18,10 +18,14 @@ from input_handlers.handler_types import HandlerType
 
 class TargetingEventHandler(LookEventHandler):
 
+    x: int
+    y: int
+
     def __init__(self, engine: GameEngine, weapon: RangedWeapon):
         super().__init__(engine)
         self.player = self.engine.player
-        self.targets = self.engine.map.living_entities_by_distance()
+        # self.targets = self.engine.map.living_entities_by_distance()
+        self.targets = sorted(self.engine.map.visible_enemies, key= lambda e: e.distance(self.player))
         self.target_index = 0
         self.x = self.targets[self.target_index].x if self.targets else self.player.x
         self.y = self.targets[self.target_index].y if self.targets else self.player.y
@@ -34,7 +38,7 @@ class TargetingEventHandler(LookEventHandler):
         key = event.sym
 
         match key:
-            case key if key in MOVE_KEYS and self.engine.map.in_bounds(self.x, self.y):
+            case key if key in MOVE_KEYS and self.engine.map.in_bounds(self.x + MOVE_KEYS[key][0], self.y + MOVE_KEYS[key][1]):
                 self.x += MOVE_KEYS[key][0]
                 self.y += MOVE_KEYS[key][1]
 
