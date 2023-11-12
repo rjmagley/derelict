@@ -76,3 +76,9 @@ class WeaponName(StrEnum):
 
     # exotic weapons start here
     THIRD_RAIL = "The Third Rail"
+
+class ArmorName(StrEnum):
+    # common armor starts here
+
+    # rare armor start here
+    TS_ONE = "Truesight One Monocular"

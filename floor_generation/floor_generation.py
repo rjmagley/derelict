@@ -17,6 +17,7 @@ from entities.player import Player
 import tile_types
 from entities import monsters
 from items.weapon_generator import place_random_common_weapon
+from items.rare_armor import get_rare_armor
 
 from .vault_loader import VaultLoader
 
@@ -92,7 +93,7 @@ def generate_floor(width: int, height: int, engine: GameEngine, difficulty: int 
         new_room = RectangularRoom(x=x_offset, y=random.randint(0, 20-new_data['height']), width=new_data['width'], height=new_data['height'], tile_data=new_data['map'])
         rooms.append(new_room)
         new_room.place_to_floor(floor)
-        place_enemies(new_room, floor)
+        # place_enemies(new_room, floor)
         place_items(new_room, floor)
         x_offset += new_room.width
 
@@ -150,6 +151,15 @@ def place_items(room: Room, map: FloorMap) -> None:
     y = random.randint(room.y+1, room.y+room.height-2)
     if map.tiles['walkable'][x, y]:
         map.entities.add(place_random_common_weapon(x, y, map))
+
+    # this is a hacky test to just get some armor in
+    # this will be revamped later
+    x = random.randint(room.x+1, room.x+room.width-2)
+    y = random.randint(room.y+1, room.y+room.height-2)
+    if map.tiles['walkable'][x, y]:
+        new_armor = get_rare_armor()
+        map.place_entity_on_map(new_armor, x, y)
+
 
 def generate_test_floor(width: int, height: int, engine: GameEngine) -> FloorMap:
 

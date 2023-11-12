@@ -138,25 +138,21 @@ class PickupItemAction(Action):
         # into the player's stats somehow - maybe like, a talent that both
         # speeds up ammo reloading and item pickup speed?
 
-        if isinstance(item, BaseItem):
-            if player.inventory.space_remaining:
+        if isinstance(item, AmmoPickup):
+            player.magazine.add_ammo(item)
+            item.on_consume()
+            return ActionResult(True, f"You put the {item.name} into your magazine.", color.light_gray, 10)
+
+        elif isinstance(item, BaseItem):
+            if player.inventory.space_remaining(item):
                 self.engine.map.entities.remove(item)
-                player.inventory.items.append(item)
+                player.inventory.insert_item(item)
                 if isinstance(item, RangedWeapon):
                     item.owner = player
-                # probably need to fix this when weapons aren't the only items
-                # that exist
-                if player.right_hand == None:
-                    player.equip_right_hand(item)
 
                 return ActionResult(True, f"You grab the {item.name}.", color.light_gray, 10)
             else:
                 return ActionResult(False, "Your inventory is full.", color.light_gray)
-
-        elif isinstance(item, AmmoPickup):
-            player.magazine.add_ammo(item)
-            item.on_consume()
-            return ActionResult(True, f"You put the {item.name} into your magazine.", color.light_gray, 10)
 
         else:
             return ActionResult(False, "There's nothing to pick up.", color.light_gray)

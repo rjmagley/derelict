@@ -85,6 +85,12 @@ class GameEventHandler(EventHandler):
             case tcod.event.KeySym.p if event.mod & tcod.event.KMOD_CTRL:
                 self.engine.switch_handler(HandlerType.MESSAGE_HISTORY)
 
+            # going down the stairs sends the player into an Intermission
+            # state, allowing for the changing of armor
+            # this also recharges the player's shields/psy, ends active buffs
+            # and debuffs (when implemented), reduces the character's wound
+            # state (when implemented), etc.
+
             case tcod.event.KeySym.PERIOD if event.mod & tcod.event.KMOD_SHIFT:
                 if self.engine.map.tiles[player.x, player.y] == tile_types.down_stairs:
                     self.engine.advance_map()

@@ -14,6 +14,7 @@ from input_handlers.handler_types import HandlerType
 
 
 
+# this really doesn't do much at the moment!
 
 class LookEventHandler(EventHandler):
 
