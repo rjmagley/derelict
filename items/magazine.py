@@ -47,5 +47,8 @@ class Magazine(BaseItem):
         self.ammunition[ammo_type] -= amount
         return True
 
+    # for right now, ammo is just instantly available
+    # it might be cool to add a system where whatever you pick up needs to
+    # first be "processed" over time
     def add_ammo(self, pickup: AmmoPickup) -> None:
         self.ammunition[pickup.ammo_type] = min(self.ammunition[pickup.ammo_type] + pickup.amount, self.maximum_ammunition[pickup.ammo_type])
