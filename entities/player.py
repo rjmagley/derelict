@@ -214,16 +214,26 @@ class Player(Combatant):
     def has_equipped(self, item: BaseWeapon):
         return item is self.right_hand or item is self.left_hand
 
-    # returns true if equipping was successful, false otherwise
-    # currently constantly returns True because there's no reason for equipping
-    # to fail, but there may be in the future
+    # equipping should fail if unequipping two weapons to equip a two-handed
+    # weapon would overflow the player's inventory
+    # for right now, it doesn't, because I have other things to do
     def equip_right_hand(self, weapon: BaseWeapon) -> ActionResult:
+        # store the old weapons
+        if self.twohanded_weapon:
+            old_weapons = [self.right_hand]
+        else:
+            old_weapons = [self.right_hand, self.left_hand]
+
+        for w in old_weapons:
+            self.inventory.insert_item(w)
+
         if weapon.hands == 1:
             self.right_hand = weapon
         else:
             self.left_hand = None
             self.right_hand = weapon
         weapon.owner = self
+        self.inventory.remove_item(weapon)
         return ActionResult(True, f"You equip the {weapon.name}.", color.white, 10)
 
     # eventually this should probably become "equip_offhand" or something
@@ -232,6 +242,8 @@ class Player(Combatant):
             return ActionResult(False, f"Both your hands are full.", color.light_gray)
         if weapon.hands == 1:
             self.left_hand = weapon
+            weapon.owner = self
+            self.inventory.remove_item(weapon)
             return ActionResult(True, f"You equip the {weapon.name} in your off hand.", color.white, 10)
         else:
             return ActionResult(False, f"The {weapon.name} is too big for your offhand.", color.light_gray)

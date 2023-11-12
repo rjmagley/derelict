@@ -39,3 +39,11 @@ class Inventory():
                 self.weapons.append(item)
             case BaseArmor():
                 self.weapons.append(item)
+
+    # "removing" an item may be equipping it, dropping it, using it, etc.
+    def remove_item(self, item: BaseItem) -> None:
+        match item:
+            case BaseWeapon():
+                self.weapons.remove(item)
+            case BaseArmor():
+                self.weapons.remove(item)

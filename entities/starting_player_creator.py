@@ -43,9 +43,13 @@ def generate_player(class_name: str):
             starting_rifle = RangedPhysicalWeapon(die_count=3, damage_die=5, magazine_size=36, burst_count=3, weapon_types=[WeaponType.RIFLE], name='burst rifle', hands=2, ammunition_size=15, ammunition_type=AmmunitionType.LIGHT, minimum_range=8,
             maximum_range=22, range_interval=5)
 
+            player.inventory.insert_item(starting_rifle)
+            player.inventory.insert_item(starting_pistol)
+            player.inventory.insert_item(starting_sword)
+
             player.equip_right_hand(starting_pistol)
             player.equip_left_hand(starting_sword)
-            player.inventory.insert_item(starting_rifle)
+            
 
         case 'bulwark':
             player.class_name = 'Bulwark'
@@ -63,8 +67,12 @@ def generate_player(class_name: str):
             maximum_range=11, range_interval=3, reload_type=ReloadType.SINGLE)
             starting_shoulder = RangedEnergyWeapon(damage_die=4, die_count=6, charge_needed=10, burst_count=1, radius=1, minimum_range=7,
             maximum_range=34, range_interval=7, is_shoulder=True, weapon_types=[WeaponType.HEAVY, WeaponType.ENERGY], name='laser cannon')
-            player.equip_right_hand(starting_rifle)
+
             player.inventory.insert_item(starting_shotgun)
+            player.inventory.insert_item(starting_rifle)
+            player.inventory.insert_item(starting_shoulder)
+
+            player.equip_right_hand(starting_rifle)
             player.equip_right_shoulder(starting_shoulder)
 
         case 'ranger':
@@ -76,6 +84,8 @@ def generate_player(class_name: str):
             starting_axe = MeleeWeapon(die_count=4, damage_die=5, weapon_types=[WeaponType.AXE], name='war axe', hands=1)
 
             player.equip_right_hand(starting_rifle)
+            player.equip_right_hand(starting_pistol)
+            player.equip_right_hand(starting_axe)
             player.inventory.insert_item(starting_pistol)
             player.inventory.insert_item(starting_axe)
 
