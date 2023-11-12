@@ -21,6 +21,12 @@ def render_map_cursor(root_console: Console, center_console: Console, map: Floor
     # this currently will clip through a wall, even if the enemy is visible
     # per the FOV (like around a corner) - may need to try to jiggle this 
     # around to get around that? 
+
+    # for now I'm going to change the FOV to make it so that an enemy just
+    # around a corner can't be seen - would like to restore that, though
+    # maybe the doomRL source has answers?
+    # or maybe I can implement a light "cover" system - if enemy is in FOV but
+    # a corner is in the way, allow the shot but with a penalty?
     points = bresenham((player.x, player.y), (handler.x, handler.y)).tolist()
 
     draw_color = color.green

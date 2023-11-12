@@ -16,6 +16,7 @@ import numpy
 from tcod.context import Context
 from tcod.console import Console
 from tcod.map import compute_fov
+from tcod import constants
 
 from renderers import *
 
@@ -160,12 +161,16 @@ class GameEngine():
 
         self.context.present(self.root_console)
         self.root_console.clear()
-                
+    
+    # changing the FOV code to be a little more restrictive so that enemies
+    # around corners aren't visible - also, should this even be in the engine?
+    # should it live in the map?
     def update_fov(self) -> None:
         self.map.visible[:] = compute_fov(
             self.map.tiles['transparent'],
             (self.player.x, self.player.y),
-            radius=self.player.vision_radius
+            radius=self.player.vision_radius,
+            algorithm=constants.FOV_SHADOW
         )
 
         sleepers = self.map.asleep_entities

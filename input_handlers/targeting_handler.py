@@ -45,6 +45,9 @@ class TargetingEventHandler(LookEventHandler):
 
             case tcod.event.KeySym.f:
                 target = self.engine.map.get_blocking_entity_at_location(self.x, self.y)
+                # for now, there's no blind-shooting
+                if not self.engine.map.visible[self.x, self.y]:
+                    return ActionResult(False, "You can't see there.")
                 if not target:
                     # handle this differently later when things like AoEs are implemented
                     return ActionResult(False, "There's nothing to shoot there.")
