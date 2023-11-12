@@ -20,15 +20,14 @@ if TYPE_CHECKING:
     
 
 # FloorMap - contains all the data for a given floor, including its layout
-# should also probably contain its entities if we want the player to be able to
-# go up and down floors at will
+
 class FloorMap():
     def __init__(self, engine: GameEngine, width: int, height: int, entities: Iterable[BaseEntity] = {}) -> None:
         self.engine = engine
         self.width = width
         self.height = height
         # at some point I'd like to refactor this so that there is not just one
-        # list, but several - movers, pickups, items and corpses\
+        # list, but several - movers, pickups, items and corpses
         # maybe even projectiles? if I ever want to implement like, slow moving
         # or dodgable projectiles, like crawl's OODs
         self.entities = entities
@@ -155,6 +154,9 @@ class FloorMap():
             potential_locations = []
             while True:
 
+                # yes this is repetitive, it re-scans a lot of areas on the map
+                # there's probably something interesting to be done with those
+                # ranges to skip the repeated sections
                 try:
                     for x_position in [x for x in range(x-loop_iterations, x+loop_iterations+1)]:
                         for y_position in [y for y in range(y-loop_iterations, y+loop_iterations+1)]:

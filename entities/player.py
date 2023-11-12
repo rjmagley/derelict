@@ -284,7 +284,7 @@ class Player(Combatant):
         else:
             if standard_roll_target(14):
                 damage = roll_dice(2, 4)
-                message = f"You hit the {target.name} barehanded for {damage} damage."
+                message = f"You hit the {target.name} with the butt of your weapon for {damage} damage."
                 target.take_damage(damage)
                 return ActionResult(True, message, color.white, 10)
             else:
@@ -332,6 +332,9 @@ class Player(Combatant):
 
     # will call this when an enemy dies to the player to handle replenishing
     # psy, and other things that may need to happen
+    # this has the side effect of the player regaining at most one point per
+    # enemy death, with the remaining points trickling in as the player gets
+    # more kills - this might need to be rolled into the periodic refresh code
     def on_enemy_death(self, enemy: Enemy):
         if self.psy_points < self.max_psy:
                 self.partial_psy += randint(1, enemy.level) * 10

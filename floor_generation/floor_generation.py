@@ -54,6 +54,8 @@ class RectangularRoom(Room):
         super().__init__(**kwargs)
 
 
+# at some point I need to just remove the height parameter - maps are twenty
+# units tall, all the time
 def generate_floor(width: int, height: int, engine: GameEngine, difficulty: int = 1) -> FloorMap:
 
     vault_loader = VaultLoader()
@@ -106,7 +108,12 @@ def generate_floor(width: int, height: int, engine: GameEngine, difficulty: int 
     return floor
 
 def place_enemies(room: Room, floor: FloorMap) -> None:
-
+    # this will require a grand refactor in the future - right now, as
+    # difficulty increases, the only real change is the number of enemies -
+    # eventually this needs to be set up to increase the variety of enemies,
+    # with stronger enemies on later floors - as well as things like replacing
+    # some enemies with "packs" of lower-level ones, to make things like AOE
+    # weapons useful
     number_mobs = random.randint(2+floor.engine.difficulty_level, 5+floor.engine.difficulty_level)
     for i in range(number_mobs):
         x = random.randint(room.x, room.width + room.x - 1)
@@ -130,7 +137,8 @@ def place_enemies(room: Room, floor: FloorMap) -> None:
 
 
 def place_items(room: Room, map: FloorMap) -> None:
-
+    # this also needs a revamp in the future - as difficulty increases, weapon
+    # rarity should increase as well
     x = random.randint(room.x+1, room.x+room.width-2)
     y = random.randint(room.y+1, room.y+room.height-2)
     if map.tiles['walkable'][x, y]:
