@@ -53,6 +53,22 @@ wall = new_tile(
     light=(ord('#'), color.white, color.black),
 )
 
+transparent_wall = new_tile(
+    walkable=False,
+    blocking=True,
+    transparent=True,
+    dark=(ord('▓'), color.dark_gray, color.black),
+    light=(ord('▓'), color.bright_blue, color.black),
+)
+
+chasm = new_tile(
+    walkable=False,
+    blocking=False,
+    transparent=True,
+    dark=(ord(' '), color.black, color.black),
+    light=(ord(' '), color.black, color.black),
+)
+
 down_stairs = new_tile(
     walkable=True,
     blocking=False,

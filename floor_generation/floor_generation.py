@@ -34,11 +34,18 @@ class Room():
         for y in range(0, height):
             for x in range(0, width):
 
+                # this just parses each charater from the vault data to turn
+                # into the appropriate tile entity
                 match tile_data[y][x]:
                     case '#':
                         self.tiles[x, y] = tile_types.wall
                     case '.':
                         self.tiles[x, y] = tile_types.floor
+                    case 'T':
+                        self.tiles[x, y] = tile_types.transparent_wall
+                    case 'C':
+                        self.tiles[x, y] = tile_types.chasm
+
 
     @property
     def center(self) -> Tuple[int, int]:
