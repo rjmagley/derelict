@@ -16,12 +16,12 @@ class Inventory():
         self.consumables = []
         self.artifacts = []
 
-    # @property
-    # def all_items(self):
-    #     all_items = []
-    #     for l in [self.weapons, self.armor, self.consumables, self.artifacts]:
-    #         all_items.extend(l)
-    #     return all_items
+    @property
+    def all_items(self):
+        all_items = []
+        for l in [self.weapons, self.armor, self.consumables, self.artifacts]:
+            all_items.extend(l)
+        return all_items
 
     # returns True if an item of this type can fit in the inventory,
     # False otherwise
@@ -38,7 +38,7 @@ class Inventory():
             case BaseWeapon():
                 self.weapons.append(item)
             case BaseArmor():
-                self.weapons.append(item)
+                self.armor.append(item)
 
     # "removing" an item may be equipping it, dropping it, using it, etc.
     def remove_item(self, item: BaseItem) -> None:
