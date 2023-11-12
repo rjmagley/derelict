@@ -125,15 +125,13 @@ class FloorMap():
     # which may cause problems if corpses ever become anything other than
     # decorative... (doom arch-vile noises in distance)
     def place_entity_on_map(self, entity: BaseEntity, x: int, y: int) -> None:
-        print(f"trying to place {entity.name} at {x}, {y}")
         result = self.get_valid_position_for_entity(entity, x, y)
         if result == None:
             # failed to place entity - silently, for now
-            print(f"failed to place {entity.name}")
             pass
 
         else:
-            entity.set_map(self, x, y)
+            entity.set_map(self, *result)
                 
 
     # used to assist placing entities - checks map for entities of a given type
@@ -160,8 +158,8 @@ class FloorMap():
                 try:
                     for x_position in [x for x in range(x-loop_iterations, x+loop_iterations+1)]:
                         for y_position in [y for y in range(y-loop_iterations, y+loop_iterations+1)]:
-                            if self.tiles['walkable'][x_position][y_position] and self.entity_matching_type_at_location(entity, x_position, y_position):
-                                potential_locations += (x_position, y_position)
+                            if self.tiles['walkable'][x_position][y_position] and not self.entity_matching_type_at_location(entity, x_position, y_position):
+                                potential_locations.append((x_position, y_position))
                 # catch this if we start going out of bounds, ending the loop
                 except:
                     return None
