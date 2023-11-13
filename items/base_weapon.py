@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 class BaseWeapon(BaseItem):
 
-    def __init__(self, die_count: int = 1, damage_die: int = 1, hands: int = 1, weapon_types: List[WeaponType] = [],  is_special = False, owner: Optional[Enemy | Player] = None,  properties: List[RangedWeaponProperty, Any] = [], **kwargs):
+    def __init__(self, die_count: int = 1, damage_die: int = 1, hands: int = 1, weapon_types: List[WeaponType] = [],  is_special = False, owner: Optional[Enemy | Player] = None,  properties: List[RangedWeaponProperty] = [], **kwargs):
         super().__init__(**kwargs)
 
         self.die_count = die_count

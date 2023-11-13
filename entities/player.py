@@ -130,11 +130,13 @@ class Player(Combatant):
     # this will be modified later based on armor, talents, etc.
     @property
     def vision_radius(self) -> int:
-        return 40
+        return sum(self.get_armor_properties(ArmorProperty.VISION_RANGE)) + 40
 
     # armor properties are in a dictionary
-    # key is an ArmorProperty, value is... an int, I think? for now?
-    # that might change
+    # key is an ArmorProperty, value is an int
+    # this is very different from how weapon properties are handled
+    # and at some point this needs to be refactored/unified so that they can
+    # be treated similarly, for ease of comprehension
     def get_armor_properties(self, armor_property: ArmorProperty) -> List[int]:
         return [a.properties[armor_property] for a in self.equipped_armor if armor_property in a.properties]
 

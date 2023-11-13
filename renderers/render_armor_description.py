@@ -24,8 +24,10 @@ def render_armor_description(root_console: Console, inventory_console: Console,
 
     if len(armor.properties) != 0:
         inventory_console.print(5, y_offset+1, string=f"Properties:")
-        inventory_console.print(5, y_offset+2, string=f"{armor.properties[0].name}")
-        inventory_console.print(5, y_offset+3, string=f"{armor.properties[0].description}")
+        for k, v in armor.properties.items():
+            y_offset += 1
+            inventory_console.print(5, y_offset+1, string=f"{k} - {'-' if v < 0 else ''}{v}")
+
 
     inventory_console.blit(dest = root_console, dest_x = 0, dest_y = 0, width = 59, height = 24)
     inventory_console.clear()

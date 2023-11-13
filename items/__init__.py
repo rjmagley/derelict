@@ -52,6 +52,7 @@ class ArmorProperty(StrEnum):
     SHIELD_REGENERATION = "shield regeneration"
     DAMAGE_RESISTANCE = "damage resistance"
     BASE_PSY = "base psy"
+    VISION_RANGE = "vision range"
 
 class RangedWeaponProperty(StrEnum):
     SAMPLE = "sample"
@@ -78,7 +79,7 @@ class WeaponName(StrEnum):
     THIRD_RAIL = "The Third Rail"
 
 class ArmorName(StrEnum):
-    # common armor starts here
-
     # rare armor start here
+    # there's no common armor before this because the player starts with the
+    # common armor they need - no more is randomly generated
     TS_ONE = "Truesight One Monocular"

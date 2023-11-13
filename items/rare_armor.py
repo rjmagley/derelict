@@ -36,7 +36,10 @@ def get_rare_armor(specific_armor: Optional[ArmorName] = None) -> BaseArmor:
                 armor_points=6,
                 damage_resist=0,
                 name="Truesight One Monocular",
-                color=color.blue
+                color=color.blue,
+                properties={
+                    ArmorProperty.VISION_RANGE: 5
+                }
             )
 
     return new_armor

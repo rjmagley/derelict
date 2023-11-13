@@ -83,11 +83,12 @@ def generate_player(class_name: str):
             maximum_range=14, range_interval=3)
             starting_axe = MeleeWeapon(die_count=4, damage_die=5, weapon_types=[WeaponType.AXE], name='war axe', hands=1)
 
-            player.equip_right_hand(starting_rifle)
-            player.equip_right_hand(starting_pistol)
-            player.equip_right_hand(starting_axe)
             player.inventory.insert_item(starting_pistol)
             player.inventory.insert_item(starting_axe)
+            player.inventory.insert_item(starting_rifle)
+
+            player.equip_right_hand(starting_rifle)
+            
 
         case 'test':
             player.class_name = 'Test'
@@ -99,9 +100,13 @@ def generate_player(class_name: str):
             player.player_stats[WeaponType.POLEARM] = 12
             player.player_stats[WeaponType.BLUNT] = 12
             player.player_stats[WeaponType.SHIELD] = 12
+            
             starting_pistol = get_rare_weapon()
-            player.equip_right_hand(starting_pistol)
             player.inventory.insert_item(starting_pistol)
+            player.equip_right_hand(starting_pistol)
+            
+
+            player.helmet.properties[ArmorProperty.BASE_SHIELD] = 500
             
 
     return player
