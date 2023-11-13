@@ -249,11 +249,15 @@ class Player(Combatant):
             return ActionResult(False, f"The {weapon.name} is too big for your offhand.", color.light_gray)
 
     def equip_right_shoulder(self, weapon: BaseWeapon) -> ActionResult:
+        self.inventory.insert_item(self.right_shoulder)
+        self.inventory.remove_item(weapon)
         self.right_shoulder = weapon
         weapon.owner = self
         return ActionResult(True, f"You equip the {weapon.name} on your right shoulder.", color.white, 10)
 
     def equip_left_shoulder(self, weapon: BaseWeapon) -> ActionResult:
+        self.inventory.insert_item(self.left_shoulder)
+        self.inventory.remove_item(weapon)
         self.left_shoulder = weapon
         weapon.owner = self
         return ActionResult(True, f"You equip the {weapon.name} on your left shoulder.", color.white, 10)

@@ -26,6 +26,10 @@ class ViewItemEventHandler(EventHandler):
         player = self.engine.player
         key = event.sym
 
+        if key in ESCAPE_KEYS:
+            self.engine.switch_handler(HandlerType.INVENTORY_VIEW)
+            return None
+
         if not player.has_equipped(self.item):
             # needs to be split based on if weapon is shoulder-mounted
             if not self.item.is_shoulder:
@@ -47,5 +51,4 @@ class ViewItemEventHandler(EventHandler):
                     self.engine.switch_handler(HandlerType.INVENTORY_VIEW)
                     return action_result
 
-        if key in ESCAPE_KEYS:
-            self.engine.switch_handler(HandlerType.INVENTORY_VIEW)
+        

@@ -29,6 +29,8 @@ def render_weapon_description(root_console: Console, inventory_console: Console,
         inventory_console.print(5, y_offset, string=f"{item.loaded_ammo} of {item.magazine_size} in magazine")
         y_offset += 1
 
+    # needs to display multiple properties nicely
+    # probably a for loop that increases the y-offset
     if len(item.properties) != 0:
         inventory_console.print(5, y_offset+1, string=f"Properties:")
         inventory_console.print(5, y_offset+2, string=f"{item.properties[0].name}")

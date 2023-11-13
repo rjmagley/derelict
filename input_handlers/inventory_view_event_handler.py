@@ -41,7 +41,6 @@ class InventoryViewEventHandler(EventHandler):
         self.armor_dictionary = {k: i for k, i in zip(self.armor_keys, self.armor_inventory)}
         self.characters_available = self.characters_available[len(self.armor_inventory)-1:-1]
 
-        
 
     def ev_keydown(self, event: tcod.event.KeyDown) -> Optional[Action]:
         player = self.engine.player
@@ -54,6 +53,9 @@ class InventoryViewEventHandler(EventHandler):
             match key.label:
                 case key.label if key.label in self.weapons_dictionary.keys():
                     self.engine.switch_handler(HandlerType.ITEM_VIEW, item=self.weapons_dictionary[key.label])
+
+                case key.label if key.label in self.armor_dictionary.keys():
+                    self.engine.switch_handler(HandlerType.ITEM_VIEW, item=self.armor_dictionary[key.label])
 
         if key in ESCAPE_KEYS:
             self.engine.switch_handler(HandlerType.GAME)
