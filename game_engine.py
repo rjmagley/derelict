@@ -150,7 +150,9 @@ class GameEngine():
                 render_targeting_information(self.root_console, self.bottom_console, self.event_handler.power, self, self.map)
 
             case HandlerType.CHARACTER_PROFILE:
-                render_character_profile(self.root_console, self.player)
+                render_character_profile(self.root_console, self.center_console, self.player)
+                render_status_side(self.root_console, self.side_console, self.player)
+                render_messages_bottom(self.root_console, self.bottom_console, self.message_log)
 
             case HandlerType.POWER_LIST:
                 render_power_list(self.root_console, self.inventory_console, self.player)
