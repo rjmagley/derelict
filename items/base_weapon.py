@@ -23,6 +23,7 @@ class BaseWeapon(BaseItem):
         self.is_special = is_special
         self.owner = owner
         self.properties = properties
+        self.is_shoulder = False
 
 
     # if weapon only has one type, return that type

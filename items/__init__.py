@@ -23,6 +23,7 @@ class ArmorType(StrEnum):
     LEGS = "legs"
     BACKPACK = "backpack"
     SHIELD_GENERATOR = "shield"
+    MAGAZINE = "magazine"
 
 class AmmunitionType(StrEnum):
     LIGHT = "light"

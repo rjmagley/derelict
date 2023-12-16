@@ -23,8 +23,13 @@ class InventoryViewEventHandler(EventHandler):
     def __init__(self, engine: GameEngine):
         super().__init__(engine)
         self.handler_type = HandlerType.INVENTORY_VIEW
-        self.weapons_inventory = engine.player.inventory.weapons
-        self.armor_inventory = engine.player.inventory.armor
+        self.refresh_inventory()
+
+    # split into its own function so this can be updated without recreating the
+    # whole handler - using it currently for the intermission stuff, but that may not be the best idea?
+    def refresh_inventory(self):
+        self.weapons_inventory = self.engine.player.inventory.weapons
+        self.armor_inventory = self.engine.player.inventory.armor
 
         self.characters_available = [c for c in ascii_uppercase]
         self.all_keys = []

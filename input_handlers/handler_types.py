@@ -12,3 +12,4 @@ class HandlerType(Enum):
     POWER_LIST = auto()
     POWER_TARGETING = auto()
     WEAPON_SELECT = auto()
+    INTERMISSION = auto()

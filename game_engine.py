@@ -109,6 +109,8 @@ class GameEngine():
 
     def render(self) -> None:
 
+        # starting to wonder if this bundle of switch/case statements wouldn't
+        # be better off just living in the handler classes themselves
         match self.event_handler.handler_type:
             case HandlerType.GAME:
                 self.update_fov()
@@ -162,6 +164,9 @@ class GameEngine():
                 render_weapon_selector(self.root_console, self.bottom_console, self.player)
                 render_map(self.root_console, self.center_console, self.player, self.map)
                 render_status_side(self.root_console, self.side_console, self.player)
+
+            case HandlerType.INTERMISSION:
+                render_intermission(self.root_console, self.event_handler)
 
 
 

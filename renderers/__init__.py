@@ -10,3 +10,4 @@ from .render_character_profile import render_character_profile
 from .render_power_list import render_power_list
 from .render_weapon_selector import render_weapon_selector
 from .render_armor_description import render_armor_description
+from .render_intermission import render_intermission

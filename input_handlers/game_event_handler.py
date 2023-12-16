@@ -92,11 +92,16 @@ class GameEventHandler(EventHandler):
             # state (when implemented), etc.
 
             case tcod.event.KeySym.PERIOD if event.mod & tcod.event.KMOD_SHIFT:
-                if self.engine.map.tiles[player.x, player.y] == tile_types.down_stairs:
-                    self.engine.advance_map()
-                    return ActionResult(False, "You descend...", color.yellow)
-                else:
-                    return ActionResult(False, "There's no place to go down here.")
+                # temporary change to let me advance floors quickly
+                self.engine.advance_map()
+                self.engine.switch_handler(HandlerType.INTERMISSION)
+                return ActionResult(False, "You descend...", color.yellow)
+                # if self.engine.map.tiles[player.x, player.y] == tile_types.down_stairs:
+                #     self.engine.advance_map()
+                #     self.engine.switch_handler(HandlerType.INTERMISSION)
+                #     return ActionResult(False, "You descend...", color.yellow)
+                # else:
+                #     return ActionResult(False, "There's no place to go down here.")
 
                 
                 

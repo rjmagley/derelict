@@ -20,6 +20,8 @@ class BaseArmor(BaseItem):
                     name = "Basic Greaves"
                 case ArmorType.BACKPACK:
                     name = "Basic Backpack"
+                case ArmorType.SHIELD_GENERATOR:
+                    name = "Basic Shield Generator"
         super().__init__(name=name, char="[", **kwargs)
         self.max_armor_points = armor_points
         self.damage_resist = damage_resist

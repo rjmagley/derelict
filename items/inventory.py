@@ -28,7 +28,6 @@ class Inventory():
     def space_remaining(self, item: BaseItem) -> bool:
         match item:
             case BaseWeapon():
-                print(len(self.weapons))
                 return len(self.weapons) <= 4
             case BaseArmor():
                 return len(self.armor) <= 4
@@ -46,4 +45,4 @@ class Inventory():
             case BaseWeapon():
                 self.weapons.remove(item)
             case BaseArmor():
-                self.weapons.remove(item)
+                self.armor.remove(item)

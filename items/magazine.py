@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Tuple
 
 from items import AmmunitionType
+from . import ArmorType
 from items.base_item import BaseItem
 from entities.pickups.ammo_pickup import AmmoPickup
 
@@ -30,6 +31,7 @@ class Magazine(BaseItem):
             AmmunitionType.EXPLOSIVE: 0 if empty else max_ammo_count[2],
             AmmunitionType.EXOTIC: 0 if empty else max_ammo_count[3]
         }
+        self.armor_type = ArmorType.MAGAZINE
 
     def get_max_ammo(self, ammo_type: AmmunitionType) -> int:
         return self.maximum_ammunition[ammo_type]

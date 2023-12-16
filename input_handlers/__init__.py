@@ -46,6 +46,19 @@ ESCAPE_KEYS = {
     tcod.event.KeySym.ESCAPE
 }
 
+# keys used for the intermission 
+INTERMISSION_KEYS = {
+    tcod.event.KeySym.l: 'left_shoulder',
+    tcod.event.KeySym.r: 'right_shoulder',
+    tcod.event.KeySym.m: 'magazine',
+    tcod.event.KeySym.h: 'helmet',
+    tcod.event.KeySym.c: 'chest',
+    tcod.event.KeySym.a: 'arms',
+    tcod.event.KeySym.e: 'legs',
+    tcod.event.KeySym.b: 'backpack',
+    tcod.event.KeySym.s: 'shield'
+}
+
 from typing import Set, Iterable, Any, TYPE_CHECKING, Tuple
 
 from .event_handler import EventHandler
@@ -61,6 +74,7 @@ from .power_list_handler import PowerListHandler
 from .handler_types import HandlerType
 from .power_targeting_handler import PowerTargetingEventHandler
 from .weapon_select_handler import WeaponSelectEventHandler
+from .intermission_handler import IntermissionEventHandler
 
 def provide_handler(handler: HandlerType) -> type[EventHandler]:
     match handler:
@@ -86,3 +100,5 @@ def provide_handler(handler: HandlerType) -> type[EventHandler]:
             return PowerTargetingEventHandler
         case HandlerType.WEAPON_SELECT:
             return WeaponSelectEventHandler
+        case HandlerType.INTERMISSION:
+            return IntermissionEventHandler
