@@ -17,6 +17,9 @@ from items import ArmorType
 # can't be switched during normal gameplay - armor and shoulder weapons
 # also lets you permanently discard weapons and armor so you can enter the next
 # map with a cleaner inventory
+
+# also after spending two hours writing this, it looks Awful!
+# heck! dang! beans!
 class IntermissionEventHandler(EventHandler):
 
     def __init__(self, engine: GameEngine):
