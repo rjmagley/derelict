@@ -250,19 +250,38 @@ class Player(Combatant):
         else:
             return ActionResult(False, f"The {weapon.name} is too big for your offhand.", color.light_gray)
 
+    # all these equip actions really should be generalized to one function
+    # that equips anything into any slot, maybe?
+    # that's how armor will work anyways
     def equip_right_shoulder(self, weapon: BaseWeapon) -> ActionResult:
-        self.inventory.insert_item(self.right_shoulder)
+        if self.right_shoulder != None:
+            self.inventory.insert_item(self.right_shoulder)
         self.inventory.remove_item(weapon)
         self.right_shoulder = weapon
         weapon.owner = self
         return ActionResult(True, f"You equip the {weapon.name} on your right shoulder.", color.white, 10)
 
     def equip_left_shoulder(self, weapon: BaseWeapon) -> ActionResult:
-        self.inventory.insert_item(self.left_shoulder)
+        if self.left_shoulder != None:
+            self.inventory.insert_item(self.left_shoulder)
         self.inventory.remove_item(weapon)
         self.left_shoulder = weapon
         weapon.owner = self
         return ActionResult(True, f"You equip the {weapon.name} on your left shoulder.", color.white, 10)
+    
+    # equip_armor returns no action result because it can't happen during normal
+    # gameplay - only during the intermission
+    def equip_armor(self, armor: BaseArmor) -> None:
+        print(f"Equipping: {armor.name}")
+        # magazine is going to have to be a special case because ammo needs
+        # to be transferred around - no free refills
+        match armor.armor_type:
+
+            case ArmorType.HELMET:
+                self.inventory.remove_item(armor)
+                self.inventory.insert_item(self.helmet)
+                self.helmet = armor
+                print(f"Now equipped: {self.helmet.name}")
 
     def die(self) -> None:
         print("You died!")

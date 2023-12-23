@@ -27,5 +27,10 @@ def render_character_profile(root_console: Console, center_console: Console, pla
         center_console.print(x=1, y=left_offset, string=f"{p.name} - {p.power_cost}", fg=color.white)
         left_offset += 1
 
+    # display equipped armor
+    center_console.print(x=20, y=3, string=f"Equipped Armor:", fg=color.white)
+    center_console.print(x=21, y=4, string=f"Helmet:", fg=color.white)
+    center_console.print(x=22, y=5, string=f"{player.helmet.name}", fg=color.white)
+
     center_console.blit(dest = root_console, dest_x = 0, dest_y = 0, width = 60, height = 20)
     center_console.clear()

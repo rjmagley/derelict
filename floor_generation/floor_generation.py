@@ -93,7 +93,7 @@ def generate_floor(width: int, height: int, engine: GameEngine, difficulty: int 
         new_room = RectangularRoom(x=x_offset, y=random.randint(0, 20-new_data['height']), width=new_data['width'], height=new_data['height'], tile_data=new_data['map'])
         rooms.append(new_room)
         new_room.place_to_floor(floor)
-        # place_enemies(new_room, floor)
+        place_enemies(new_room, floor)
         place_items(new_room, floor)
         x_offset += new_room.width
 

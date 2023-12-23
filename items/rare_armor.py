@@ -33,12 +33,13 @@ def get_rare_armor(specific_armor: Optional[ArmorName] = None) -> BaseArmor:
         case ArmorName.TS_ONE:
             new_armor = BaseArmor(
                 armor_type=ArmorType.HELMET,
-                armor_points=6,
+                armor_points=200,
                 damage_resist=0,
                 name="Truesight One Monocular",
                 color=color.blue,
                 properties={
-                    ArmorProperty.VISION_RANGE: 5
+                    ArmorProperty.VISION_RANGE: 5,
+                    ArmorProperty.BASE_ARMOR: 200
                 }
             )
 

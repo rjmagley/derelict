@@ -20,6 +20,8 @@ from items import ArmorType
 
 # also after spending two hours writing this, it looks Awful!
 # heck! dang! beans!
+# I want to rewrite this with a two column view - one that shows your inventory
+# and the other showing your equipment/status
 class IntermissionEventHandler(EventHandler):
 
     def __init__(self, engine: GameEngine):
@@ -109,3 +111,28 @@ class IntermissionEventHandler(EventHandler):
                     self.items_to_drop[inventory_dict_key].remove(chosen_item)
                 else:
                     self.items_to_drop[inventory_dict_key].append(chosen_item)
+
+        elif key in CONFIRM_KEYS:
+            # 
+            self.equip_chosen_items()
+            self.drop_selected_items()
+            self.engine.switch_handler(HandlerType.GAME)
+
+    def equip_chosen_items(self):
+
+        for k, v in self.chosen_items.items():
+            if v != None:
+                print(v.name)
+        # shoulders first
+        if self.chosen_items['left_shoulder'] != self.player.left_shoulder:
+            self.player.equip_left_shoulder(self.chosen_items['left_shoulder'])
+        if self.chosen_items['right_shoulder'] != self.player.right_shoulder:
+            self.player.equip_right_shoulder(self.chosen_items['right_shoulder'])
+        if self.chosen_items['helmet'] != self.player.helmet:
+            self.player.equip_armor(self.chosen_items['helmet'])
+            print(f"Equipped helmet is now: {self.player.helmet.name}")
+
+    def drop_selected_items(self):
+        for _, l in self.items_to_drop.items():
+            for i in l:
+                self.player.inventory.remove_item(i)
