@@ -20,7 +20,7 @@ def generate_player(class_name: str):
     player = Player(x=None, y=None, char='@')
 
     player.helmet = BaseArmor(armor_type = ArmorType.HELMET, properties = {ArmorProperty.BASE_ARMOR: 10})
-    player.chest = BaseArmor(armor_type = ArmorType.TORSO, properties = {ArmorProperty.BASE_ARMOR: 10, ArmorProperty.DAMAGE_RESISTANCE: 3})
+    player.chest = BaseArmor(armor_type = ArmorType.CHEST, properties = {ArmorProperty.BASE_ARMOR: 10, ArmorProperty.DAMAGE_RESISTANCE: 3})
     player.arms = BaseArmor(armor_type = ArmorType.ARMS, properties = {ArmorProperty.BASE_ARMOR: 10})
     player.legs = BaseArmor(armor_type = ArmorType.LEGS, properties = {ArmorProperty.BASE_ARMOR: 10})
     player.backpack = BaseArmor(armor_type = ArmorType.BACKPACK, properties = {ArmorProperty.BASE_ARMOR: 10, ArmorProperty.ENERGY_CAPACITY: 50, ArmorProperty.ENERGY_REGENERATION: Decimal(10.0)})
@@ -43,9 +43,13 @@ def generate_player(class_name: str):
             starting_rifle = RangedPhysicalWeapon(die_count=3, damage_die=5, magazine_size=36, burst_count=3, weapon_types=[WeaponType.RIFLE], name='burst rifle', hands=2, ammunition_size=15, ammunition_type=AmmunitionType.LIGHT, minimum_range=8,
             maximum_range=22, range_interval=5)
 
+            player.inventory.insert_item(starting_rifle)
+            player.inventory.insert_item(starting_pistol)
+            player.inventory.insert_item(starting_sword)
+
             player.equip_right_hand(starting_pistol)
             player.equip_left_hand(starting_sword)
-            player.inventory.insert_item(starting_rifle)
+            
 
         case 'bulwark':
             player.class_name = 'Bulwark'
@@ -63,8 +67,12 @@ def generate_player(class_name: str):
             maximum_range=11, range_interval=3, reload_type=ReloadType.SINGLE)
             starting_shoulder = RangedEnergyWeapon(damage_die=4, die_count=6, charge_needed=10, burst_count=1, radius=1, minimum_range=7,
             maximum_range=34, range_interval=7, is_shoulder=True, weapon_types=[WeaponType.HEAVY, WeaponType.ENERGY], name='laser cannon')
-            player.equip_right_hand(starting_rifle)
+
             player.inventory.insert_item(starting_shotgun)
+            player.inventory.insert_item(starting_rifle)
+            player.inventory.insert_item(starting_shoulder)
+
+            player.equip_right_hand(starting_rifle)
             player.equip_right_shoulder(starting_shoulder)
 
         case 'ranger':
@@ -75,9 +83,12 @@ def generate_player(class_name: str):
             maximum_range=14, range_interval=3)
             starting_axe = MeleeWeapon(die_count=4, damage_die=5, weapon_types=[WeaponType.AXE], name='war axe', hands=1)
 
-            player.equip_right_hand(starting_rifle)
             player.inventory.insert_item(starting_pistol)
             player.inventory.insert_item(starting_axe)
+            player.inventory.insert_item(starting_rifle)
+
+            player.equip_right_hand(starting_rifle)
+            
 
         case 'test':
             player.class_name = 'Test'
@@ -89,9 +100,13 @@ def generate_player(class_name: str):
             player.player_stats[WeaponType.POLEARM] = 12
             player.player_stats[WeaponType.BLUNT] = 12
             player.player_stats[WeaponType.SHIELD] = 12
+            
             starting_pistol = get_rare_weapon()
-            player.equip_right_hand(starting_pistol)
             player.inventory.insert_item(starting_pistol)
+            player.equip_right_hand(starting_pistol)
+            
+
+            player.helmet.properties[ArmorProperty.BASE_SHIELD] = 500
             
 
     return player

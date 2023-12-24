@@ -54,7 +54,7 @@ class Player(Combatant):
 
         # these six represent all the player's armor
         self.helmet = BaseArmor(armor_type = ArmorType.HELMET, properties = {ArmorProperty.BASE_ARMOR: 10})
-        self.chest = BaseArmor(armor_type = ArmorType.TORSO, properties = {ArmorProperty.BASE_ARMOR: 10, ArmorProperty.DAMAGE_RESISTANCE: 3})
+        self.chest = BaseArmor(armor_type = ArmorType.CHEST, properties = {ArmorProperty.BASE_ARMOR: 10, ArmorProperty.DAMAGE_RESISTANCE: 3})
         self.arms = BaseArmor(armor_type = ArmorType.ARMS, properties = {ArmorProperty.BASE_ARMOR: 10})
         self.legs = BaseArmor(armor_type = ArmorType.LEGS, properties = {ArmorProperty.BASE_ARMOR: 10})
         self.backpack = BaseArmor(armor_type = ArmorType.BACKPACK, properties = {ArmorProperty.BASE_ARMOR: 10, ArmorProperty.ENERGY_CAPACITY: 50, ArmorProperty.ENERGY_REGENERATION: Decimal(10.0)})
@@ -130,11 +130,13 @@ class Player(Combatant):
     # this will be modified later based on armor, talents, etc.
     @property
     def vision_radius(self) -> int:
-        return 40
+        return sum(self.get_armor_properties(ArmorProperty.VISION_RANGE)) + 40
 
     # armor properties are in a dictionary
-    # key is an ArmorProperty, value is... an int, I think? for now?
-    # that might change
+    # key is an ArmorProperty, value is an int
+    # this is very different from how weapon properties are handled
+    # and at some point this needs to be refactored/unified so that they can
+    # be treated similarly, for ease of comprehension
     def get_armor_properties(self, armor_property: ArmorProperty) -> List[int]:
         return [a.properties[armor_property] for a in self.equipped_armor if armor_property in a.properties]
 
@@ -214,16 +216,26 @@ class Player(Combatant):
     def has_equipped(self, item: BaseWeapon):
         return item is self.right_hand or item is self.left_hand
 
-    # returns true if equipping was successful, false otherwise
-    # currently constantly returns True because there's no reason for equipping
-    # to fail, but there may be in the future
+    # equipping should fail if unequipping two weapons to equip a two-handed
+    # weapon would overflow the player's inventory
+    # for right now, it doesn't, because I have other things to do
     def equip_right_hand(self, weapon: BaseWeapon) -> ActionResult:
+        # store the old weapons
+        if self.twohanded_weapon:
+            old_weapons = [self.right_hand]
+        else:
+            old_weapons = [self.right_hand, self.left_hand]
+
+        for w in old_weapons:
+            self.inventory.insert_item(w)
+
         if weapon.hands == 1:
             self.right_hand = weapon
         else:
             self.left_hand = None
             self.right_hand = weapon
         weapon.owner = self
+        self.inventory.remove_item(weapon)
         return ActionResult(True, f"You equip the {weapon.name}.", color.white, 10)
 
     # eventually this should probably become "equip_offhand" or something
@@ -232,19 +244,62 @@ class Player(Combatant):
             return ActionResult(False, f"Both your hands are full.", color.light_gray)
         if weapon.hands == 1:
             self.left_hand = weapon
+            weapon.owner = self
+            self.inventory.remove_item(weapon)
             return ActionResult(True, f"You equip the {weapon.name} in your off hand.", color.white, 10)
         else:
             return ActionResult(False, f"The {weapon.name} is too big for your offhand.", color.light_gray)
 
+    # all these equip actions really should be generalized to one function
+    # that equips anything into any slot, maybe?
+    # that's how armor will work anyways
     def equip_right_shoulder(self, weapon: BaseWeapon) -> ActionResult:
+        if self.right_shoulder != None:
+            self.inventory.insert_item(self.right_shoulder)
+        self.inventory.remove_item(weapon)
         self.right_shoulder = weapon
         weapon.owner = self
         return ActionResult(True, f"You equip the {weapon.name} on your right shoulder.", color.white, 10)
 
     def equip_left_shoulder(self, weapon: BaseWeapon) -> ActionResult:
+        if self.left_shoulder != None:
+            self.inventory.insert_item(self.left_shoulder)
+        self.inventory.remove_item(weapon)
         self.left_shoulder = weapon
         weapon.owner = self
         return ActionResult(True, f"You equip the {weapon.name} on your left shoulder.", color.white, 10)
+    
+    # equip_armor returns no action result because it can't happen during normal
+    # gameplay - only during the intermission
+    def equip_armor(self, armor: BaseArmor) -> None:
+        print(f"Equipping: {armor.name}")
+        # magazine is going to have to be a special case because ammo needs
+        # to be transferred around - no free refills
+        match armor.armor_type:
+            case ArmorType.HELMET:
+                self.inventory.remove_item(armor)
+                self.inventory.insert_item(self.helmet)
+                self.helmet = armor
+            case ArmorType.CHEST:
+                self.inventory.remove_item(armor)
+                self.inventory.insert_item(self.chest)
+                self.chest = armor
+            case ArmorType.ARMS:
+                self.inventory.remove_item(armor)
+                self.inventory.insert_item(self.arms)
+                self.arms = armor
+            case ArmorType.LEGS:
+                self.inventory.remove_item(armor)
+                self.inventory.insert_item(self.legs)
+                self.legs = armor
+            case ArmorType.BACKPACK:
+                self.inventory.remove_item(armor)
+                self.inventory.insert_item(self.backpack)
+                self.backpack = armor
+            case ArmorType.SHIELD_GENERATOR:
+                self.inventory.remove_item(armor)
+                self.inventory.insert_item(self.shield_generator)
+                self.shield_generator = armor
 
     def die(self) -> None:
         print("You died!")

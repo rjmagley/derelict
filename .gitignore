@@ -4,3 +4,4 @@ Pipfile.lock
 main.build/
 main.dist/
 main.bin
+launch.json

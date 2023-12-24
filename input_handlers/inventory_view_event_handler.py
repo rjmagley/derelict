@@ -23,13 +23,29 @@ class InventoryViewEventHandler(EventHandler):
     def __init__(self, engine: GameEngine):
         super().__init__(engine)
         self.handler_type = HandlerType.INVENTORY_VIEW
-        self.weapons_inventory = engine.player.inventory.weapons
+        self.refresh_inventory()
 
+    # split into its own function so this can be updated without recreating the
+    # whole handler - using it currently for the intermission stuff, but that may not be the best idea?
+    def refresh_inventory(self):
+        self.weapons_inventory = self.engine.player.inventory.weapons
+        self.armor_inventory = self.engine.player.inventory.armor
+
+        self.characters_available = [c for c in ascii_uppercase]
         self.all_keys = []
 
-        self.weapons_keys = ascii_uppercase[0:len(self.weapons_inventory)]
+        self.weapons_keys = self.characters_available[0:len(self.weapons_inventory)]
         self.all_keys.extend(self.weapons_keys)
         self.weapons_dictionary = {k: i for k, i in zip(self.weapons_keys, self.weapons_inventory)}
+        self.characters_available = self.characters_available[len(self.weapons_inventory):]
+
+        print(self.characters_available)
+
+        self.armor_keys = self.characters_available[0:len(self.armor_inventory)]
+        self.all_keys.extend(self.armor_keys)
+        self.armor_dictionary = {k: i for k, i in zip(self.armor_keys, self.armor_inventory)}
+        self.characters_available = self.characters_available[len(self.armor_inventory)-1:-1]
+
 
     def ev_keydown(self, event: tcod.event.KeyDown) -> Optional[Action]:
         player = self.engine.player
@@ -42,6 +58,9 @@ class InventoryViewEventHandler(EventHandler):
             match key.label:
                 case key.label if key.label in self.weapons_dictionary.keys():
                     self.engine.switch_handler(HandlerType.ITEM_VIEW, item=self.weapons_dictionary[key.label])
+
+                case key.label if key.label in self.armor_dictionary.keys():
+                    self.engine.switch_handler(HandlerType.ITEM_VIEW, item=self.armor_dictionary[key.label])
 
         if key in ESCAPE_KEYS:
             self.engine.switch_handler(HandlerType.GAME)

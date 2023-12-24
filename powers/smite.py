@@ -18,6 +18,10 @@ if TYPE_CHECKING:
 # the damage is rather low, but if you target one unit all by itself in the
 # radius, it can hit that unit multiple times
 # won't target player
+
+# this can be genericized by doing some of the same stuff being used to
+# overwrite methods, at some point
+
 class Smite(BasePower):
     def __init__(self, **kwargs):
 

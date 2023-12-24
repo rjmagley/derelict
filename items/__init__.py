@@ -18,11 +18,12 @@ class WeaponType(StrEnum):
 
 class ArmorType(StrEnum):
     HELMET = "helmet"
-    TORSO = "torso"
+    CHEST = "chestplate"
     ARMS = "arms"
     LEGS = "legs"
     BACKPACK = "backpack"
     SHIELD_GENERATOR = "shield"
+    MAGAZINE = "magazine"
 
 class AmmunitionType(StrEnum):
     LIGHT = "light"
@@ -52,6 +53,7 @@ class ArmorProperty(StrEnum):
     SHIELD_REGENERATION = "shield regeneration"
     DAMAGE_RESISTANCE = "damage resistance"
     BASE_PSY = "base psy"
+    VISION_RANGE = "vision range"
 
 class RangedWeaponProperty(StrEnum):
     SAMPLE = "sample"
@@ -76,3 +78,9 @@ class WeaponName(StrEnum):
 
     # exotic weapons start here
     THIRD_RAIL = "The Third Rail"
+
+class ArmorName(StrEnum):
+    # rare armor start here
+    # there's no common armor before this because the player starts with the
+    # common armor they need - no more is randomly generated
+    TS_ONE = "Truesight One Monocular"

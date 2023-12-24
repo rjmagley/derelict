@@ -26,6 +26,7 @@ from entities.player import Player
 from input_handlers import HandlerType, provide_handler
 from items import AmmunitionType
 from items.base_weapon import BaseWeapon
+from items.base_armor import BaseArmor
 from items.ranged_weapon import RangedWeapon
 from input_handlers.game_event_handler import GameEventHandler
 from floor_generation.floor_generation import generate_floor
@@ -108,6 +109,8 @@ class GameEngine():
 
     def render(self) -> None:
 
+        # starting to wonder if this bundle of switch/case statements wouldn't
+        # be better off just living in the handler classes themselves
         match self.event_handler.handler_type:
             case HandlerType.GAME:
                 self.update_fov()
@@ -125,6 +128,9 @@ class GameEngine():
             case HandlerType.ITEM_VIEW:
                 if isinstance(self.event_handler.item, BaseWeapon):
                     render_weapon_description(self.root_console, self.inventory_console, self.event_handler.item, self.player)
+                    self.context.present(self.root_console)
+                elif isinstance(self.event_handler.item, BaseArmor):
+                    render_armor_description(self.root_console, self.inventory_console, self.event_handler.item, self.player)
                     self.context.present(self.root_console)
 
             # looking is very incomplete - shows no information really
@@ -146,7 +152,9 @@ class GameEngine():
                 render_targeting_information(self.root_console, self.bottom_console, self.event_handler.power, self, self.map)
 
             case HandlerType.CHARACTER_PROFILE:
-                render_character_profile(self.root_console, self.player)
+                render_character_profile(self.root_console, self.center_console, self.player)
+                render_status_side(self.root_console, self.side_console, self.player)
+                render_messages_bottom(self.root_console, self.bottom_console, self.message_log)
 
             case HandlerType.POWER_LIST:
                 render_power_list(self.root_console, self.inventory_console, self.player)
@@ -156,6 +164,9 @@ class GameEngine():
                 render_weapon_selector(self.root_console, self.bottom_console, self.player)
                 render_map(self.root_console, self.center_console, self.player, self.map)
                 render_status_side(self.root_console, self.side_console, self.player)
+
+            case HandlerType.INTERMISSION:
+                render_intermission(self.root_console, self.event_handler)
 
 
 
@@ -192,3 +203,8 @@ class GameEngine():
         self.difficulty_level += 1
         self.map = generate_floor(160, 20, self, self.difficulty_level)
         self.message_log.add_message(f"Welcome... to level {self.difficulty_level}!", color.magenta)
+
+        # when the map changes, the player's shield is refreshed and their psy
+        # points are refilled
+        self.player.shield_points = self.player.max_shield
+        self.player.psy_points = self.player.max_psy
