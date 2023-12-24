@@ -203,3 +203,8 @@ class GameEngine():
         self.difficulty_level += 1
         self.map = generate_floor(160, 20, self, self.difficulty_level)
         self.message_log.add_message(f"Welcome... to level {self.difficulty_level}!", color.magenta)
+
+        # when the map changes, the player's shield is refreshed and their psy
+        # points are refilled
+        self.player.shield_points = self.player.max_shield
+        self.player.psy_points = self.player.max_psy

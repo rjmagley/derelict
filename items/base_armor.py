@@ -12,7 +12,7 @@ class BaseArmor(BaseItem):
             match armor_type:
                 case ArmorType.HELMET:
                     name = "Basic Helmet"
-                case ArmorType.TORSO:
+                case ArmorType.CHEST:
                     name = "Basic Chestplate"
                 case ArmorType.ARMS:
                     name = "Basic Vambraces"

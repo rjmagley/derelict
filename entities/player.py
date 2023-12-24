@@ -54,7 +54,7 @@ class Player(Combatant):
 
         # these six represent all the player's armor
         self.helmet = BaseArmor(armor_type = ArmorType.HELMET, properties = {ArmorProperty.BASE_ARMOR: 10})
-        self.chest = BaseArmor(armor_type = ArmorType.TORSO, properties = {ArmorProperty.BASE_ARMOR: 10, ArmorProperty.DAMAGE_RESISTANCE: 3})
+        self.chest = BaseArmor(armor_type = ArmorType.CHEST, properties = {ArmorProperty.BASE_ARMOR: 10, ArmorProperty.DAMAGE_RESISTANCE: 3})
         self.arms = BaseArmor(armor_type = ArmorType.ARMS, properties = {ArmorProperty.BASE_ARMOR: 10})
         self.legs = BaseArmor(armor_type = ArmorType.LEGS, properties = {ArmorProperty.BASE_ARMOR: 10})
         self.backpack = BaseArmor(armor_type = ArmorType.BACKPACK, properties = {ArmorProperty.BASE_ARMOR: 10, ArmorProperty.ENERGY_CAPACITY: 50, ArmorProperty.ENERGY_REGENERATION: Decimal(10.0)})
@@ -276,12 +276,30 @@ class Player(Combatant):
         # magazine is going to have to be a special case because ammo needs
         # to be transferred around - no free refills
         match armor.armor_type:
-
             case ArmorType.HELMET:
                 self.inventory.remove_item(armor)
                 self.inventory.insert_item(self.helmet)
                 self.helmet = armor
-                print(f"Now equipped: {self.helmet.name}")
+            case ArmorType.CHEST:
+                self.inventory.remove_item(armor)
+                self.inventory.insert_item(self.chest)
+                self.chest = armor
+            case ArmorType.ARMS:
+                self.inventory.remove_item(armor)
+                self.inventory.insert_item(self.arms)
+                self.arms = armor
+            case ArmorType.LEGS:
+                self.inventory.remove_item(armor)
+                self.inventory.insert_item(self.legs)
+                self.legs = armor
+            case ArmorType.BACKPACK:
+                self.inventory.remove_item(armor)
+                self.inventory.insert_item(self.backpack)
+                self.backpack = armor
+            case ArmorType.SHIELD_GENERATOR:
+                self.inventory.remove_item(armor)
+                self.inventory.insert_item(self.shield_generator)
+                self.shield_generator = armor
 
     def die(self) -> None:
         print("You died!")

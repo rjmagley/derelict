@@ -35,7 +35,7 @@ class IntermissionEventHandler(EventHandler):
             'right_shoulder': [self.player.right_shoulder] + [w for w in self.inventory.weapons if w.is_shoulder],
             'magazine': [self.player.magazine] + [m for m in self.inventory.armor if m.armor_type == ArmorType.MAGAZINE],
             'helmet': [self.player.helmet] + [a for a in self.inventory.armor if a.armor_type == ArmorType.HELMET],
-            'chest': [self.player.chest] + [a for a in self.inventory.armor if a.armor_type == ArmorType.TORSO],
+            'chest': [self.player.chest] + [a for a in self.inventory.armor if a.armor_type == ArmorType.CHEST],
             'arms': [self.player.arms] + [a for a in self.inventory.armor if a.armor_type == ArmorType.ARMS],
             'legs': [self.player.legs] + [a for a in self.inventory.armor if a.armor_type == ArmorType.LEGS],
             'backpack': [self.player.backpack] + [a for a in self.inventory.armor if a.armor_type == ArmorType.BACKPACK],
@@ -113,7 +113,6 @@ class IntermissionEventHandler(EventHandler):
                     self.items_to_drop[inventory_dict_key].append(chosen_item)
 
         elif key in CONFIRM_KEYS:
-            # 
             self.equip_chosen_items()
             self.drop_selected_items()
             self.engine.switch_handler(HandlerType.GAME)
@@ -128,9 +127,20 @@ class IntermissionEventHandler(EventHandler):
             self.player.equip_left_shoulder(self.chosen_items['left_shoulder'])
         if self.chosen_items['right_shoulder'] != self.player.right_shoulder:
             self.player.equip_right_shoulder(self.chosen_items['right_shoulder'])
+        
+        # now armor
         if self.chosen_items['helmet'] != self.player.helmet:
             self.player.equip_armor(self.chosen_items['helmet'])
-            print(f"Equipped helmet is now: {self.player.helmet.name}")
+        if self.chosen_items['chest'] != self.player.chest:
+            self.player.equip_armor(self.chosen_items['chest'])
+        if self.chosen_items['arms'] != self.player.arms:
+            self.player.equip_armor(self.chosen_items['arms'])
+        if self.chosen_items['legs'] != self.player.legs:
+            self.player.equip_armor(self.chosen_items['legs'])
+        if self.chosen_items['backpack'] != self.player.backpack:
+            self.player.equip_armor(self.chosen_items['backpack'])
+        if self.chosen_items['shield'] != self.player.shield_generator:
+            self.player.equip_armor(self.chosen_items['shield'])
 
     def drop_selected_items(self):
         for _, l in self.items_to_drop.items():

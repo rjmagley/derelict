@@ -107,7 +107,7 @@ def render_intermission(intermission_console: Console, handler: IntermissionEven
         if l in handler.items_to_drop['legs']:
             bg_color = color.red
         else:
-            bg_color = color.dark_gray if l == handler.chosen_items['helmet'] else color.black
+            bg_color = color.dark_gray if l == handler.chosen_items['legs'] else color.black
         intermission_console.print(51, y_offset+1, string=f"> {l.name}" if handler.inventory_items['legs'].index(l) == handler.current_index['legs'] else f"{l.name}",
         bg = bg_color)
         y_offset += 1

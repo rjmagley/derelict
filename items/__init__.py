@@ -18,7 +18,7 @@ class WeaponType(StrEnum):
 
 class ArmorType(StrEnum):
     HELMET = "helmet"
-    TORSO = "torso"
+    CHEST = "chestplate"
     ARMS = "arms"
     LEGS = "legs"
     BACKPACK = "backpack"
