@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Tuple, Optional
 if TYPE_CHECKING:
     from floor_map import FloorMap
     from game_engine import GameEngine
+    from modifiers import Modifier, ModifierProperty
 
 import math
 
@@ -33,7 +34,11 @@ class BaseEntity():
             self.engine = map.engine
             self.x = x
             self.y = y
-        self.move_speed = 0
+        # self.move_speed = 0
+            
+        self.modifiers: list[Modifier] = []
+
+
 
     def distance(self, target: BaseEntity):
         return math.sqrt(

@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Optional
 from render_order import RenderOrder
 
 from .base_entity import BaseEntity
+from .modifiers import ModifierProperty
 
 if TYPE_CHECKING:
     from entities.ai.basic_ai import BasicAI
@@ -19,7 +20,7 @@ class Mover(BaseEntity):
         # an entity is "awake" if it needs to act - this will cut down on some
         # of the checks that have to be made later
         self.awake = False
-        self.move_speed = move_speed
+        self._move_speed = move_speed
         self.render_order = RenderOrder.COMBATANT
         if ai != None:
             self.ai = ai(self)
@@ -27,6 +28,11 @@ class Mover(BaseEntity):
     @property
     def is_alive(self) -> bool:
         return False
+    
+    @property
+    def move_speed(self) -> int:
+        modified_value = sum([m.amount for m in self.modifiers if m.property_type == ModifierProperty.MOVEMENT_SPEED])
+        return self._move_speed + modified_value
 
     def move(self, dx: int, dy: int) -> None:
         self.x += dx
