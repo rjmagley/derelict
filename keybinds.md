@@ -1,5 +1,11 @@
 movement: arrow keys, keypad or vim keys (although I might ditch those)
 
+vim keys are:
+y  k  i
+
+h     l
+
+b  j  n
 g: grab item
 i: inventory
 x: examine/look
