@@ -84,6 +84,7 @@ class GameEngine():
                 elif action_result.time_passed:
                     turn_passed = True
                     self.player.delay += action_result.time_taken
+                    self.player.decrease_modifier_duration(action_result.time_taken)
                 if action_result.message:
                     self.add_message(action_result.message, action_result.message_color)
 
@@ -95,6 +96,7 @@ class GameEngine():
                     action_result = e.ai.perform()
                     if action_result.time_passed:
                         e.delay += action_result.time_taken
+                        e.decrease_modifier_duration(action_result.time_taken)
                     if action_result.message:
                         self.add_message(action_result.message, action_result.message_color)
                 else:
