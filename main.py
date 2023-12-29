@@ -8,7 +8,7 @@ from floor_generation.floor_generation import generate_floor, generate_test_floo
 
 from entities.modifiers import Modifier, ModifierProperty
 
-from powers.smite import Smite
+from powers.smite import SmitePower
 
 from input_handlers.intro_handler import IntroEventHandler
 
@@ -86,9 +86,9 @@ def main():
 
     player = generate_player(selected)
     # testing modifiers
-    player.modifiers.append(
-        Modifier(ModifierProperty.MOVEMENT_SPEED, -8, 100, False, "Speed", color.bright_cyan, color.bright_yellow)
-    )
+    # player.modifiers.append(
+    #     Modifier(ModifierProperty.MOVEMENT_SPEED, -8, 100, False, "Speed", color.bright_cyan, color.bright_yellow)
+    # )
     player.delay = 0
     
     
@@ -104,7 +104,7 @@ def main():
     # starting_weapon.map = map
     # starting_weapon.engine = engine
 
-    player.powers.append(Smite(caster = player))
+    player.powers.append(SmitePower(caster = player))
     # player.powers.append(BasePower(caster = player, power_cost = 99, name = "impossible"))
 
     engine.change_map(map)

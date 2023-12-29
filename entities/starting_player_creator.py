@@ -15,6 +15,8 @@ from items.rare_weapons import get_rare_weapon
 
 from items import WeaponType, AmmunitionType, ArmorType, ArmorProperty,ReloadType
 
+from powers.alacrity import AlacrityPower
+
 def generate_player(class_name: str):
 
     player = Player(x=None, y=None, char='@')
@@ -88,6 +90,8 @@ def generate_player(class_name: str):
             player.inventory.insert_item(starting_rifle)
 
             player.equip_right_hand(starting_rifle)
+
+            player.powers.append(AlacrityPower(caster = player))
             
 
         case 'test':

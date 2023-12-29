@@ -72,6 +72,10 @@ class GameEngine():
         self.center_console = Console(map.width, map.height, order="F")
     
     def handle_turns(self) -> None:
+        # now that the player can move and act faster/slower than normal,
+        # this messes with the periodic refresh call
+        # this may be time to move this logic out of turn-handling and into
+        # a seperate function
         if self.player.delay % 10 == 0:
             self.player.periodic_refresh()
         if self.player.delay <= 0:

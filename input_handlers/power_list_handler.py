@@ -38,7 +38,12 @@ class PowerListHandler(EventHandler):
         if key.label in power_keys:
             if not powers[key.label].can_cast:
                 return ActionResult(False, "You lack the psy points to cast this.")
-            self.engine.switch_handler(powers[key.label].handler_type, power=powers[key.label])
+            else:
+                if powers[key.label].is_targeted:
+                    self.engine.switch_handler(powers[key.label].handler_type, power=powers[key.label])
+                else:
+                    powers[key.label].cast()
+                    self.engine.switch_handler(HandlerType.GAME)
 
         if key in ESCAPE_KEYS:
             self.engine.switch_handler(HandlerType.GAME)

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from input_handlers.handler_types import HandlerType
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 if TYPE_CHECKING:
     from entities.player import Player
@@ -10,6 +10,8 @@ if TYPE_CHECKING:
 # base class for psychic powers
 # for now, only the player has access to these
 class BasePower():
+
+    handler_type: Optional[HandlerType]
 
     def __init__(self, caster: Player):
 
@@ -19,6 +21,9 @@ class BasePower():
         self.handler_type = HandlerType.POWER_TARGETING
         self.description = "no description"
         self.radius = 1
+        # some powers need a target, some are just cast automatically - buffing
+        # the player, hitting all enemies in LOS, etc
+        self.is_targeted = True
 
     @property
     def can_cast(self) -> bool:

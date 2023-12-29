@@ -22,7 +22,7 @@ if TYPE_CHECKING:
 # this can be genericized by doing some of the same stuff being used to
 # overwrite methods, at some point
 
-class Smite(BasePower):
+class SmitePower(BasePower):
     def __init__(self, **kwargs):
 
         super().__init__(**kwargs)
