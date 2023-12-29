@@ -49,9 +49,6 @@ class Player(Combatant):
         # the player's magazine is where their ammo is stored/created/etc.
         self.magazine = Magazine()
 
-        # shield generator controls shield stuff
-        
-
         # these six represent all the player's armor
         self.helmet = BaseArmor(armor_type = ArmorType.HELMET, properties = {ArmorProperty.BASE_ARMOR: 10})
         self.chest = BaseArmor(armor_type = ArmorType.CHEST, properties = {ArmorProperty.BASE_ARMOR: 10, ArmorProperty.DAMAGE_RESISTANCE: 3})

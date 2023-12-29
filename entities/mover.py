@@ -31,8 +31,8 @@ class Mover(BaseEntity):
     
     @property
     def move_speed(self) -> int:
-        modified_value = sum([m.amount for m in self.modifiers if m.property_type == ModifierProperty.MOVEMENT_SPEED])
-        return self._move_speed + modified_value
+        modified_value = sum(m.amount for m in self.modifiers if m.property_type == ModifierProperty.MOVEMENT_SPEED and m.multiplicative == False)
+        return self._move_speed + int(modified_value)
 
     def move(self, dx: int, dy: int) -> None:
         self.x += dx

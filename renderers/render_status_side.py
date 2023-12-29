@@ -55,5 +55,13 @@ def render_status_side(root_console: Console, side_console: Console, player: Pla
         side_console.print(x = 0, y = 15, string=player.left_shoulder.name, fg = color.white)
         side_console.print(x = 0, y = 16, string=f"{player.left_shoulder.status_string}", fg = color.white)
 
+    side_console.print(x = 0, y = 18, string = "Status Effects:")
+    # keeping track of y-position for effects
+    # there is probably a smarter mathy way of doing this but
+    y_offset = 0
+    for i, m in enumerate(player.modifiers):
+        side_console.print(x = (i % 4) * 5, y = 19 + y_offset, string = f"{m.short_name}", fg = m.fg_color, bg = m.bg_color)
+
+
     side_console.blit(dest = root_console, dest_x = 60, dest_y = 0, width = 20, height = 20)
     side_console.clear()

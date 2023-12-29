@@ -8,6 +8,11 @@ class ModifierProperty(StrEnum):
 @dataclass
 class Modifier:
     property_type: ModifierProperty
-    amount: int
+    amount: int | Decimal
     duration: int
     multiplicative: bool
+    # the below are for displaying in the UI, for the player status
+    # short-name should be five chars
+    short_name: str
+    fg_color: tuple[int, int, int]
+    bg_color: tuple[int, int, int]
