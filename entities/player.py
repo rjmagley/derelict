@@ -10,6 +10,7 @@ from random import randint
 
 from render_order import RenderOrder
 from items.base_weapon import BaseWeapon
+from entities.pickups.ammo_pickup import AmmoPickup
 
 from actions import ActionResult
 
@@ -185,9 +186,16 @@ class Player(Combatant):
     def move(self, dx: int, dy: int) -> None:
         self.x += dx
         self.y += dy
-        item_present = self.engine.map.get_item_at_location(self.x, self.y)
-        if item_present:
-            self.engine.message_log.add_message(f"On the ground here is: {item_present.name}.", color.light_gray)
+        item = self.engine.map.get_item_at_location(self.x, self.y)
+        if item:
+            # player automatically picks up ammo if it fits into their magazine
+            if isinstance(item, AmmoPickup):
+                if self.magazine.is_space_for_ammo(item.ammo_type, item.amount):
+                    self.magazine.add_ammo(item)
+                    item.on_consume()
+                    self.engine.message_log.add_message(f"You scoop the {item.name} into your magazine.")
+            else:
+                self.engine.message_log.add_message(f"On the ground here is: {item.name}.", color.light_gray)
 
     # the player's HP setter is a bit messier than normal - players have
     # shields, then armor, then a few states before death

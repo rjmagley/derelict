@@ -39,6 +39,10 @@ class Magazine(BaseItem):
     def get_current_ammo(self, ammo_type: AmmunitionType) -> int:
         return self.ammunition[ammo_type]
 
+    # used to see if player should automatically pick up ammo they walk over
+    def is_space_for_ammo(self, ammo_type: AmmunitionType, amount: int) -> bool:
+        return amount + self.ammunition[ammo_type] < self.maximum_ammunition[ammo_type]
+
     def get_percentage(self, ammo_type: AmmunitionType) -> str:
         return f"{self.ammunition[ammo_type]/self.maximum_ammunition[ammo_type]*100:.0f}"
 
