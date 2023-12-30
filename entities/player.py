@@ -40,6 +40,12 @@ class PlayerSkill(StrEnum):
 # Player - the player character, moved by the player, etc.
 class Player(Combatant):
 
+    helmet: BaseArmor
+    chest: BaseArmor
+    arms: BaseArmor
+    legs: BaseArmor
+    backpack: BaseArmor
+    shield_generator: BaseArmor
     def __init__(self, **kwargs):
         
         # the player's inventory - handles things held by the player
@@ -50,12 +56,14 @@ class Player(Combatant):
         self.magazine = Magazine()
 
         # these six represent all the player's armor
+        # these defaults are set here so that a freshly created player has some base armor to work with
+        # the player creator may end up replacing some of these
         self.helmet = BaseArmor(armor_type = ArmorType.HELMET, properties = {ArmorProperty.BASE_ARMOR: 10})
         self.chest = BaseArmor(armor_type = ArmorType.CHEST, properties = {ArmorProperty.BASE_ARMOR: 10, ArmorProperty.DAMAGE_RESISTANCE: 3})
         self.arms = BaseArmor(armor_type = ArmorType.ARMS, properties = {ArmorProperty.BASE_ARMOR: 10})
         self.legs = BaseArmor(armor_type = ArmorType.LEGS, properties = {ArmorProperty.BASE_ARMOR: 10})
         self.backpack = BaseArmor(armor_type = ArmorType.BACKPACK, properties = {ArmorProperty.BASE_ARMOR: 10, ArmorProperty.ENERGY_CAPACITY: 50, ArmorProperty.ENERGY_REGENERATION: Decimal(10.0)})
-        self.shield_generator = BaseArmor(armor_type = ArmorType.SHIELD_GENERATOR, properties = {ArmorProperty.BASE_SHIELD: 10, ArmorProperty.SHIELD_REBOOT_TIME: 600, ArmorProperty.SHIELD_REGENERATION: 1})
+        self.shield_generator = BaseArmor(armor_type = ArmorType.SHIELD_GENERATOR, properties = {ArmorProperty.BASE_SHIELD: 10, ArmorProperty.SHIELD_REBOOT_TIME: 50, ArmorProperty.SHIELD_REGENERATION: 10})
 
 
         # weapons held by the player, in hands/on shoulders
@@ -352,9 +360,11 @@ class Player(Combatant):
         pass
 
     def regenerate_shield(self) -> None:
+        # print(f"current player shield reboot time: {self.shield_reboot_time}")
         if self.shield_reboot_time == 0:
             if self.shield_points < self.max_shield:
                 self.partial_shield += sum(self.get_armor_properties(ArmorProperty.SHIELD_REGENERATION))
+                # print(f"adding {sum(self.get_armor_properties(ArmorProperty.SHIELD_REGENERATION))} to partial_shield")
                 if self.partial_shield >= 100:
                     self.partial_shield -= 100
                     self.shield_points += 1
