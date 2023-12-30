@@ -41,6 +41,3 @@ class Combatant(Mover):
 
     def take_damage(self, damage: int) -> None:
         raise NotImplementedError
-
-    def periodic_refresh(self):
-        pass

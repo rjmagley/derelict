@@ -55,7 +55,7 @@ class Player(Combatant):
         self.arms = BaseArmor(armor_type = ArmorType.ARMS, properties = {ArmorProperty.BASE_ARMOR: 10})
         self.legs = BaseArmor(armor_type = ArmorType.LEGS, properties = {ArmorProperty.BASE_ARMOR: 10})
         self.backpack = BaseArmor(armor_type = ArmorType.BACKPACK, properties = {ArmorProperty.BASE_ARMOR: 10, ArmorProperty.ENERGY_CAPACITY: 50, ArmorProperty.ENERGY_REGENERATION: Decimal(10.0)})
-        self.shield_generator = BaseArmor(armor_type = ArmorType.SHIELD_GENERATOR, properties = {ArmorProperty.BASE_SHIELD: 10, ArmorProperty.SHIELD_REBOOT_TIME: 5, ArmorProperty.SHIELD_REGENERATION: Decimal(15.0)})
+        self.shield_generator = BaseArmor(armor_type = ArmorType.SHIELD_GENERATOR, properties = {ArmorProperty.BASE_SHIELD: 10, ArmorProperty.SHIELD_REBOOT_TIME: 600, ArmorProperty.SHIELD_REGENERATION: 1})
 
 
         # weapons held by the player, in hands/on shoulders
@@ -184,7 +184,7 @@ class Player(Combatant):
     # the player's HP setter is a bit messier than normal - players have
     # shields, then armor, then a few states before death
     def take_damage(self, value: int) -> None:
-        print(self.shield_points)
+        print(f"taking damage, current shield points: {self.shield_points}")
         if self.shield_points != 0:
             remaining_damage = self.take_shield_damage(value) - sum(self.get_armor_properties(ArmorProperty.DAMAGE_RESISTANCE))
         else:
@@ -375,6 +375,7 @@ class Player(Combatant):
     # gonna call this every 10 auts to do things like player shield recharge,
     # ticking down status effects, etc. 
     def periodic_refresh(self):
+        super().periodic_refresh()
         self.regenerate_shield()
         self.regenerate_energy()
         for w in self.equipped_weapons:

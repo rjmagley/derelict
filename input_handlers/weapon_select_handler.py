@@ -30,7 +30,6 @@ class WeaponSelectEventHandler(EventHandler):
     def ev_keydown(self, event: tcod.event.KeyDown) -> Optional[Action]:
         key = event.sym
 
-        print(key.label)
 
         if key.label in self.weapon_keys:
             self.engine.switch_handler(HandlerType.TARGETING, weapon=self.weapon_dict[key.label])

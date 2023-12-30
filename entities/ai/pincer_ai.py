@@ -60,8 +60,6 @@ class PincerAI(BasicHostile):
         path: List[List[int]] = pathfinder.path_to((x, y))[1:].tolist()
 
         # test
-        for index in path:
-            print(index[0], index[1])
 
         return [(index[0], index[1]) for index in path]
 

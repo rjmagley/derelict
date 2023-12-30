@@ -113,8 +113,7 @@ def main():
     engine.update_fov()
 
     while True:
-        engine.render()
-        engine.handle_turns()
+        engine.game_loop()
 
 
 if __name__ == "__main__":

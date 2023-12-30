@@ -59,6 +59,49 @@ class GameEngine():
         self.context = context
         self.dying_entities = []
         self.difficulty_level = 1
+        self.auts_elapsed = 0
+
+    def game_loop(self):
+        self.render()
+        # self.handle_turns()
+        self.check_player_turn()
+        self.check_enemy_turns()
+        for e in self.map.living_entities:
+            e.periodic_refresh()
+        
+        self.handle_deaths()
+
+        self.auts_elapsed += 1
+
+    def check_player_turn(self):
+        
+        self.player.delay -= 1
+        if self.player.delay <= 0:
+            turn_passed = False
+            while turn_passed != True:
+                self.render()
+                self.update_fov()
+                action_result = self.event_handler.handle_events()
+                if action_result == None:
+                    continue
+                elif action_result.time_passed:
+                    turn_passed = True
+                    self.player.delay += action_result.time_taken
+                if action_result.message:
+                    self.add_message(action_result.message, action_result.message_color)
+
+    def check_enemy_turns(self):
+        for e in [e for e in self.map.awake_entities if e != self.player]:
+            e.delay -= 1
+            if e.ai:
+                # print(f"{e.name} - {e.delay}")
+                if e.delay <= 0:
+                    action_result = e.ai.perform()
+                    if action_result.time_passed:
+                        e.delay += action_result.time_taken
+                    if action_result.message:
+                        self.add_message(action_result.message, action_result.message_color)
+
 
     def switch_handler(self, handler, **kwargs) -> None:
         print(f"switching handler to {handler}")
@@ -71,46 +114,21 @@ class GameEngine():
         self.map = map
         self.center_console = Console(map.width, map.height, order="F")
     
-    def handle_turns(self) -> None:
-        # now that the player can move and act faster/slower than normal,
-        # this messes with the periodic refresh call
-        # this may be time to move this logic out of turn-handling and into
-        # a seperate function
-        if self.player.delay % 10 == 0:
-            self.player.periodic_refresh()
-        if self.player.delay <= 0:
-            turn_passed = False
-            while turn_passed != True:
-                self.render()
-                action_result = self.event_handler.handle_events()
-                if action_result == None:
-                    continue
-                elif action_result.time_passed:
-                    turn_passed = True
-                    self.player.delay += action_result.time_taken
-                    self.player.decrease_modifier_duration(action_result.time_taken)
-                if action_result.message:
-                    self.add_message(action_result.message, action_result.message_color)
-
-        for e in [e for e in self.map.awake_entities if e != self.player]:
+    # def handle_turns(self) -> None:
+    #     # now that the player can move and act faster/slower than normal,
+    #     # this messes with the periodic refresh call
+    #     # this may be time to move this logic out of turn-handling and into
+    #     # a seperate function
+    #     if self.player.delay % 10 == 0:
+    #         self.player.periodic_refresh()
+    #     if self.player.delay <= 0:
             
-            if e.ai:
-                # print(f"{e.name} - {e.delay}")
-                if e.delay <= 0:
-                    action_result = e.ai.perform()
-                    if action_result.time_passed:
-                        e.delay += action_result.time_taken
-                        e.decrease_modifier_duration(action_result.time_taken)
-                    if action_result.message:
-                        self.add_message(action_result.message, action_result.message_color)
-                else:
-                    e.delay -= 1
-                if e.delay % 10 == 0:
-                    e.periodic_refresh()
-        self.player.delay -= 1
+
         
-        self.update_fov()
-        self.handle_deaths()
+    #     self.player.delay -= 1
+        
+    #     self.update_fov()
+    #     self.handle_deaths()
 
 
     def render(self) -> None:

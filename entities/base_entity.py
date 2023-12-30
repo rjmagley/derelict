@@ -59,9 +59,8 @@ class BaseEntity():
     def move(self, x, y):
         raise NotImplementedError
     
-    # called after a turn occurs to tick down any modifiers the entities has
-    def decrease_modifier_duration(self, duration_delta):
+    def periodic_refresh(self):
         for m in self.modifiers:
-            m.duration -= duration_delta
+            m.duration -= 1
             if m.duration <= 0:
                 self.modifiers.remove(m)

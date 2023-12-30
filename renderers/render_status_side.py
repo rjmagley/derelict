@@ -17,7 +17,7 @@ def render_status_side(root_console: Console, side_console: Console, player: Pla
 
     magazine: Magazine = player.magazine
 
-    side_console.print(x = 0, y = 0, string = f"{player.x}, {player.y}", fg = color.white)
+    side_console.print(x = 0, y = 0, string = f"{player.engine.auts_elapsed}", fg = color.white)
     side_console.print(x = 16, y = 0, string = "Ammo", fg = color.white)
     side_console.print(x = 0, y = 1, string = f"ARM: {player.armor_points}/{player.max_armor}", fg = color.white)
     side_console.print(x = 15, y = 1, string = f"L:{magazine.get_percentage(AmmunitionType.LIGHT)}", fg = color.light_gray)

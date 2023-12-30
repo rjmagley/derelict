@@ -9,7 +9,7 @@ from items.melee_weapon import MeleeWeapon
 from .pickups import PickupType
 
 goblin_test_weapons = [
-    RangedRechargeWeapon(damage_die=5, die_count=2, charge_needed=10, max_charge=10, recharge_rate=1, burst_count=2, minimum_range=7, maximum_range=7, range_interval=7, name='goblin test gun'),
+    RangedRechargeWeapon(damage_die=5, die_count=2, charge_needed=100, max_charge=100, recharge_rate=1, burst_count=2, minimum_range=7, maximum_range=7, range_interval=7, name='goblin test gun'),
     MeleeWeapon(damage_die=3, die_count=4, name='goblin test fist')
 ]
 
