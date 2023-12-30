@@ -50,7 +50,8 @@ class Player(Combatant):
     def __init__(self, **kwargs):
         
         # the player's inventory - handles things held by the player
-        # things equipped by the player are different
+        # things equipped by the player are different - those all live here,
+        # in the player object itself
         self.inventory = Inventory()
 
         # the player's magazine is where their ammo is stored/created/etc.
@@ -74,10 +75,6 @@ class Player(Combatant):
         self.left_hand = None
         self.right_shoulder = None
         self.left_shoulder = None
-
-        # ammunition is a dictionary representing the four ammunition types
-        # ammunition is stored as a number from 0 to the player's max ammo
-        # (starts at 1000) and rendered as a percentage on the UI
         
         self.player_stats = {
             WeaponType.PISTOL: 10,
