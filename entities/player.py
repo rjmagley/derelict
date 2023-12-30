@@ -382,26 +382,31 @@ class Player(Combatant):
     def get_psy_status(self) -> str:
         return f"{self.psy_points}/{self.max_psy}"
 
-    # gonna call this every 10 auts to do things like player shield recharge,
-    # ticking down status effects, etc. 
     def periodic_refresh(self):
         super().periodic_refresh()
         self.regenerate_shield()
         self.regenerate_energy()
+        # player psy regenerates more slowly - at maximum, one every ten aut
+        # it might be interesting to be able to change that 10 via armor or
+        # talents or something to increase the rate at which recharges occur
+        # this may need tweaking - the costs for powers may need to increase by
+        # a factor - right now, if you use something that costs 2 psy to kill
+        # an enemy, you immediately regain at least one psy point 
+        if self.engine.auts_elapsed % 10 == 0:
+            self.regenerate_psy()
         for w in self.equipped_weapons:
             if isinstance(w, RangedRechargeWeapon):
                 w.recharge()
-        pass
+
+    
+    def regenerate_psy(self):
+        if self.psy_points < self.max_psy:
+            if self.partial_psy >= 100:
+                self.partial_psy -= 100
+                self.psy_points += 1
 
     # will call this when an enemy dies to the player to handle replenishing
     # psy, and other things that may need to happen
-    # this has the side effect of the player regaining at most one point per
-    # enemy death, with the remaining points trickling in as the player gets
-    # more kills - this might need to be rolled into the periodic refresh code
     def on_enemy_death(self, enemy: Enemy):
         if self.psy_points < self.max_psy:
-                self.partial_psy += randint(1, enemy.level) * 10
-                if self.partial_psy >= 100:
-                    self.partial_psy -= 100
-                    self.psy_points += 1
-        pass
+            self.partial_psy += randint(1, enemy.level) * 100

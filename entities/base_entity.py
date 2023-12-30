@@ -59,8 +59,9 @@ class BaseEntity():
     def move(self, x, y):
         raise NotImplementedError
     
+    # this is called every aut to handle things like modifier duration ticking down
     def periodic_refresh(self):
-        for m in self.modifiers:
+        for m in [m for m in self.modifiers if m.is_timed == True]:
             m.duration -= 1
             if m.duration <= 0:
                 self.modifiers.remove(m)

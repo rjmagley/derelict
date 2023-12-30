@@ -101,7 +101,6 @@ class GameEngine():
                     if action_result.message:
                         self.add_message(action_result.message, action_result.message_color)
 
-
     def switch_handler(self, handler, **kwargs) -> None:
         print(f"switching handler to {handler}")
         self.event_handler = provide_handler(handler)(self, **kwargs)
@@ -112,23 +111,6 @@ class GameEngine():
     def change_map(self, map) -> None:
         self.map = map
         self.center_console = Console(map.width, map.height, order="F")
-    
-    # def handle_turns(self) -> None:
-    #     # now that the player can move and act faster/slower than normal,
-    #     # this messes with the periodic refresh call
-    #     # this may be time to move this logic out of turn-handling and into
-    #     # a seperate function
-    #     if self.player.delay % 10 == 0:
-    #         self.player.periodic_refresh()
-    #     if self.player.delay <= 0:
-            
-
-        
-    #     self.player.delay -= 1
-        
-    #     self.update_fov()
-    #     self.handle_deaths()
-
 
     def render(self) -> None:
 
