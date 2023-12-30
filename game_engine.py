@@ -62,7 +62,6 @@ class GameEngine():
         self.auts_elapsed = 0
 
     def game_loop(self):
-        self.render()
         # self.handle_turns()
         self.check_player_turn()
         self.check_enemy_turns()

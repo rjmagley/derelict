@@ -60,7 +60,7 @@ def generate_player(class_name: str):
             maximum_range=22, range_interval=6)
             starting_shotgun = RangedPhysicalWeapon(die_count=7, damage_die=3, magazine_size=10, burst_count=1, weapon_types=[WeaponType.SHOTGUN], name='light shotgun', hands=2, ammunition_size=20, ammunition_type=AmmunitionType.LIGHT, minimum_range=5,
             maximum_range=11, range_interval=3, reload_type=ReloadType.SINGLE)
-            starting_shoulder = RangedEnergyWeapon(damage_die=4, die_count=6, charge_needed=100, burst_count=1, radius=1, minimum_range=7,
+            starting_shoulder = RangedEnergyWeapon(damage_die=4, die_count=6, charge_needed=25, burst_count=1, radius=1, minimum_range=7,
             maximum_range=34, range_interval=7, is_shoulder=True, weapon_types=[WeaponType.HEAVY, WeaponType.ENERGY], name='laser cannon')
 
             player.inventory.insert_item(starting_shotgun)
