@@ -25,6 +25,11 @@ class BasePower():
         # the player, hitting all enemies in LOS, etc
         self.is_targeted = True
 
+    # making it easier to access the engine for message generation purposes
+    @property
+    def engine(self):
+        return self.caster.engine
+
     @property
     def can_cast(self) -> bool:
         return self.caster.psy_points >= self.power_cost

@@ -27,8 +27,11 @@ class AlacrityPower(BasePower):
         self.handler_type = None
         self.is_targeted = False
 
+    # currently this can stack - maybe it shouldn't
     def cast(self):
         self.caster.psy_points -= self.power_cost
         self.caster.modifiers.append(
             Modifier(ModifierProperty.MOVEMENT_SPEED, -5, 20, False, " Ala ", color.bright_yellow, color.blue)
         )
+        
+        self.engine.add_message("Your movement speed increases!", color.bright_yellow)

@@ -42,4 +42,4 @@ class SmitePower(BasePower):
             target = random.choice(targets)
             damage = die_rollers.roll_dice(3, 4)
             target.take_damage(damage)
-            target.engine.add_message(f"The {target.name} takes {damage} damage!", color.cyan)
+            self.engine.add_message(f"The {target.name} takes {damage} damage!", color.cyan)

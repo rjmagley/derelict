@@ -35,7 +35,7 @@ class BaseEntity():
             self.x = x
             self.y = y
         # self.move_speed = 0
-            
+
         self.modifiers: list[Modifier] = []
 
 
