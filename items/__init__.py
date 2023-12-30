@@ -44,6 +44,9 @@ class ReloadType(StrEnum):
     RECHARGE = "recharge"
 
 # various properties that armor can have, positive or negative
+# I wonder if it would make sense for these to also be properties attached to
+# various buffs, status effects, etc.
+# that might be a unification for later though
 class ArmorProperty(StrEnum):
     ENERGY_CAPACITY = "energy capacity"
     ENERGY_REGENERATION = "energy regeneration"

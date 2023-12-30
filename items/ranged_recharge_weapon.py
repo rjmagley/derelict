@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 
 class RangedRechargeWeapon(RangedEnergyWeapon):
 
-    def __init__(self, charge_needed: int = 10, max_charge: int = 20, recharge_rate: int = 2, **kwargs):
+    def __init__(self, charge_needed: int = 100, max_charge: int = 200, recharge_rate: int = 2, **kwargs):
         super().__init__(**kwargs)
         self.max_charge = max_charge
         self.charge_needed = charge_needed

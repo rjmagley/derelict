@@ -15,16 +15,11 @@ from items.rare_weapons import get_rare_weapon
 
 from items import WeaponType, AmmunitionType, ArmorType, ArmorProperty,ReloadType
 
+from powers.alacrity import AlacrityPower
+
 def generate_player(class_name: str):
 
     player = Player(x=None, y=None, char='@')
-
-    player.helmet = BaseArmor(armor_type = ArmorType.HELMET, properties = {ArmorProperty.BASE_ARMOR: 10})
-    player.chest = BaseArmor(armor_type = ArmorType.CHEST, properties = {ArmorProperty.BASE_ARMOR: 10, ArmorProperty.DAMAGE_RESISTANCE: 3})
-    player.arms = BaseArmor(armor_type = ArmorType.ARMS, properties = {ArmorProperty.BASE_ARMOR: 10})
-    player.legs = BaseArmor(armor_type = ArmorType.LEGS, properties = {ArmorProperty.BASE_ARMOR: 10})
-    player.backpack = BaseArmor(armor_type = ArmorType.BACKPACK, properties = {ArmorProperty.BASE_ARMOR: 10, ArmorProperty.ENERGY_CAPACITY: 50, ArmorProperty.ENERGY_REGENERATION: Decimal(10.0)})
-    player.shield_generator = BaseArmor(armor_type = ArmorType.SHIELD_GENERATOR, properties = {ArmorProperty.BASE_SHIELD: 10, ArmorProperty.SHIELD_REBOOT_TIME: 5, ArmorProperty.SHIELD_REGENERATION: Decimal(15.0)})
 
     match class_name:
         case 'noble':
@@ -65,7 +60,7 @@ def generate_player(class_name: str):
             maximum_range=22, range_interval=6)
             starting_shotgun = RangedPhysicalWeapon(die_count=7, damage_die=3, magazine_size=10, burst_count=1, weapon_types=[WeaponType.SHOTGUN], name='light shotgun', hands=2, ammunition_size=20, ammunition_type=AmmunitionType.LIGHT, minimum_range=5,
             maximum_range=11, range_interval=3, reload_type=ReloadType.SINGLE)
-            starting_shoulder = RangedEnergyWeapon(damage_die=4, die_count=6, charge_needed=10, burst_count=1, radius=1, minimum_range=7,
+            starting_shoulder = RangedEnergyWeapon(damage_die=4, die_count=6, charge_needed=25, burst_count=1, radius=1, minimum_range=7,
             maximum_range=34, range_interval=7, is_shoulder=True, weapon_types=[WeaponType.HEAVY, WeaponType.ENERGY], name='laser cannon')
 
             player.inventory.insert_item(starting_shotgun)
@@ -88,6 +83,8 @@ def generate_player(class_name: str):
             player.inventory.insert_item(starting_rifle)
 
             player.equip_right_hand(starting_rifle)
+
+            player.powers.append(AlacrityPower(caster = player))
             
 
         case 'test':

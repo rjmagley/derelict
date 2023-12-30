@@ -81,6 +81,7 @@ class Enemy(Combatant):
                 self.engine.dying_entities.append(self)
 
     def periodic_refresh(self):
+        super().periodic_refresh()
         for w in self.weapons:
             if isinstance(w, RangedRechargeWeapon):
                 w.recharge()

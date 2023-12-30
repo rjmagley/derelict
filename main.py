@@ -6,7 +6,9 @@ from game_engine import GameEngine
 from items.weapon_generator import place_random_common_weapon
 from floor_generation.floor_generation import generate_floor, generate_test_floor2
 
-from powers.smite import Smite
+from entities.modifiers import Modifier, ModifierProperty
+
+from powers.smite import SmitePower
 
 from input_handlers.intro_handler import IntroEventHandler
 
@@ -83,6 +85,10 @@ def main():
         root_console.clear()
 
     player = generate_player(selected)
+    # testing modifiers
+    # player.modifiers.append(
+    #     Modifier(ModifierProperty.MOVEMENT_SPEED, -8, 100, False, "Speed", color.bright_cyan, color.bright_yellow)
+    # )
     player.delay = 0
     
     
@@ -98,7 +104,7 @@ def main():
     # starting_weapon.map = map
     # starting_weapon.engine = engine
 
-    player.powers.append(Smite(caster = player))
+    player.powers.append(SmitePower(caster = player))
     # player.powers.append(BasePower(caster = player, power_cost = 99, name = "impossible"))
 
     engine.change_map(map)
@@ -107,8 +113,7 @@ def main():
     engine.update_fov()
 
     while True:
-        engine.render()
-        engine.handle_turns()
+        engine.game_loop()
 
 
 if __name__ == "__main__":

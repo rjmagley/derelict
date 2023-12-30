@@ -40,6 +40,12 @@ class PlayerSkill(StrEnum):
 # Player - the player character, moved by the player, etc.
 class Player(Combatant):
 
+    helmet: BaseArmor
+    chest: BaseArmor
+    arms: BaseArmor
+    legs: BaseArmor
+    backpack: BaseArmor
+    shield_generator: BaseArmor
     def __init__(self, **kwargs):
         
         # the player's inventory - handles things held by the player
@@ -49,16 +55,15 @@ class Player(Combatant):
         # the player's magazine is where their ammo is stored/created/etc.
         self.magazine = Magazine()
 
-        # shield generator controls shield stuff
-        
-
         # these six represent all the player's armor
+        # these defaults are set here so that a freshly created player has some base armor to work with
+        # the player creator may end up replacing some of these
         self.helmet = BaseArmor(armor_type = ArmorType.HELMET, properties = {ArmorProperty.BASE_ARMOR: 10})
         self.chest = BaseArmor(armor_type = ArmorType.CHEST, properties = {ArmorProperty.BASE_ARMOR: 10, ArmorProperty.DAMAGE_RESISTANCE: 3})
         self.arms = BaseArmor(armor_type = ArmorType.ARMS, properties = {ArmorProperty.BASE_ARMOR: 10})
         self.legs = BaseArmor(armor_type = ArmorType.LEGS, properties = {ArmorProperty.BASE_ARMOR: 10})
-        self.backpack = BaseArmor(armor_type = ArmorType.BACKPACK, properties = {ArmorProperty.BASE_ARMOR: 10, ArmorProperty.ENERGY_CAPACITY: 50, ArmorProperty.ENERGY_REGENERATION: Decimal(10.0)})
-        self.shield_generator = BaseArmor(armor_type = ArmorType.SHIELD_GENERATOR, properties = {ArmorProperty.BASE_SHIELD: 10, ArmorProperty.SHIELD_REBOOT_TIME: 5, ArmorProperty.SHIELD_REGENERATION: Decimal(15.0)})
+        self.backpack = BaseArmor(armor_type = ArmorType.BACKPACK, properties = {ArmorProperty.BASE_ARMOR: 10, ArmorProperty.ENERGY_CAPACITY: 50, ArmorProperty.ENERGY_REGENERATION: 10})
+        self.shield_generator = BaseArmor(armor_type = ArmorType.SHIELD_GENERATOR, properties = {ArmorProperty.BASE_SHIELD: 10, ArmorProperty.SHIELD_REBOOT_TIME: 50, ArmorProperty.SHIELD_REGENERATION: 10})
 
 
         # weapons held by the player, in hands/on shoulders
@@ -187,7 +192,7 @@ class Player(Combatant):
     # the player's HP setter is a bit messier than normal - players have
     # shields, then armor, then a few states before death
     def take_damage(self, value: int) -> None:
-        print(self.shield_points)
+        print(f"taking damage, current shield points: {self.shield_points}")
         if self.shield_points != 0:
             remaining_damage = self.take_shield_damage(value) - sum(self.get_armor_properties(ArmorProperty.DAMAGE_RESISTANCE))
         else:
@@ -355,9 +360,11 @@ class Player(Combatant):
         pass
 
     def regenerate_shield(self) -> None:
+        # print(f"current player shield reboot time: {self.shield_reboot_time}")
         if self.shield_reboot_time == 0:
             if self.shield_points < self.max_shield:
                 self.partial_shield += sum(self.get_armor_properties(ArmorProperty.SHIELD_REGENERATION))
+                # print(f"adding {sum(self.get_armor_properties(ArmorProperty.SHIELD_REGENERATION))} to partial_shield")
                 if self.partial_shield >= 100:
                     self.partial_shield -= 100
                     self.shield_points += 1
@@ -375,25 +382,31 @@ class Player(Combatant):
     def get_psy_status(self) -> str:
         return f"{self.psy_points}/{self.max_psy}"
 
-    # gonna call this every 10 auts to do things like player shield recharge,
-    # ticking down status effects, etc. 
     def periodic_refresh(self):
+        super().periodic_refresh()
         self.regenerate_shield()
         self.regenerate_energy()
+        # player psy regenerates more slowly - at maximum, one every ten aut
+        # it might be interesting to be able to change that 10 via armor or
+        # talents or something to increase the rate at which recharges occur
+        # this may need tweaking - the costs for powers may need to increase by
+        # a factor - right now, if you use something that costs 2 psy to kill
+        # an enemy, you immediately regain at least one psy point 
+        if self.engine.auts_elapsed % 10 == 0:
+            self.regenerate_psy()
         for w in self.equipped_weapons:
             if isinstance(w, RangedRechargeWeapon):
                 w.recharge()
-        pass
+
+    
+    def regenerate_psy(self):
+        if self.psy_points < self.max_psy:
+            if self.partial_psy >= 100:
+                self.partial_psy -= 100
+                self.psy_points += 1
 
     # will call this when an enemy dies to the player to handle replenishing
     # psy, and other things that may need to happen
-    # this has the side effect of the player regaining at most one point per
-    # enemy death, with the remaining points trickling in as the player gets
-    # more kills - this might need to be rolled into the periodic refresh code
     def on_enemy_death(self, enemy: Enemy):
         if self.psy_points < self.max_psy:
-                self.partial_psy += randint(1, enemy.level) * 10
-                if self.partial_psy >= 100:
-                    self.partial_psy -= 100
-                    self.psy_points += 1
-        pass
+            self.partial_psy += randint(1, enemy.level) * 100

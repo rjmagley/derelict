@@ -32,7 +32,6 @@ class GameEventHandler(EventHandler):
 
         key, mod = event.sym, event.mod
 
-        print(key, mod)
 
 
         match key:
