@@ -29,6 +29,8 @@ from items.inventory import Inventory
 from items.magazine import Magazine
 from items.base_armor import BaseArmor
 
+from powers import PowerType
+
 import color
 
 if TYPE_CHECKING:
@@ -89,6 +91,10 @@ class Player(Combatant):
             WeaponType.POLEARM: 10,
             WeaponType.BLUNT: 10,
             WeaponType.SHIELD: 10,
+            PowerType.OFFENSE: 10,
+            PowerType.DEFENSE: 10,
+            PowerType.MANIPULATION: 10,
+            PowerType.ENHANCE: 10,
             PlayerSkill.DUALWIELD: 10
         }
 
