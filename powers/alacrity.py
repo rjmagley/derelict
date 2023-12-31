@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 from powers.base_power import BasePower
 import color
 from entities.modifiers import Modifier, ModifierProperty
+from . import PowerType
 
 if TYPE_CHECKING:
     from entities.player import Player
@@ -26,6 +27,7 @@ class AlacrityPower(BasePower):
         self.power_cost = 2
         self.handler_type = None
         self.is_targeted = False
+        self.power_type = PowerType.ENHANCE
 
     # currently this can stack - maybe it shouldn't?
     # making it not stack would require keeping track of the source of 
@@ -35,11 +37,8 @@ class AlacrityPower(BasePower):
     # affected by an enemy's speed debuff
     def cast(self):
         self.caster.psy_points -= self.power_cost
-        # the 20 below is a magic number - when the player has psy-related 
-        # skills, it might be cool to do 20 + some number based on that
-        # skill modifier
         self.caster.modifiers.append(
-            Modifier(ModifierProperty.MOVEMENT_SPEED, -5, 20, False, " Ala ", color.bright_yellow, color.blue)
+            Modifier(ModifierProperty.MOVEMENT_SPEED, -5, 20 + self.caster.player_stats[PowerType.ENHANCE], False, " Ala ", color.bright_yellow, color.blue)
         )
         
         self.engine.add_message("Your movement speed increases!", color.bright_yellow)
