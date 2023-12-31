@@ -18,7 +18,8 @@ if TYPE_CHECKING:
 
 # the damage is rather low, but if you target one unit all by itself in the
 # radius, it can hit that unit multiple times
-# won't target player
+# for some reason I had a comment here: "won't target player"
+# definitely intentionally false - close-up combat will get some different powers
 
 # this can be genericized by doing some of the same stuff being used to
 # overwrite methods, at some point
