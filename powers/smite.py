@@ -7,7 +7,7 @@ from powers.base_power import BasePower
 import die_rollers
 import color
 import random
-from . import PowerType
+from . import PowerSkill, PowerTags
 
 if TYPE_CHECKING:
     from entities.player import Player
@@ -33,9 +33,10 @@ class SmitePower(BasePower):
         self.power_cost = 2
         self.radius = 3
         self.handler_type = HandlerType.POWER_TARGETING
-        self.power_type = PowerType.OFFENSE
+        self.power_skill = PowerSkill.OFFENSE
+        self.tags = {PowerTags.ENEMY_TARGET}
 
-    def cast(self, target: Enemy):
+    def cast(self, target: Enemy, **kwargs):
         self.caster.psy_points -= self.power_cost
         original_target = target
         assert isinstance(original_target.x, int)
@@ -46,6 +47,6 @@ class SmitePower(BasePower):
                 break
             target = random.choice(targets)
             # damage increases as player's offensive power increases
-            damage = die_rollers.roll_dice(3, self.caster.player_stats[PowerType.OFFENSE] - 6)
+            damage = die_rollers.roll_dice(3, self.caster.player_stats[PowerSkill.OFFENSE] - 6)
             target.take_damage(damage)
             self.engine.add_message(f"The {target.name} takes {damage} damage!", color.cyan)

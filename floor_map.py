@@ -33,8 +33,14 @@ class FloorMap():
         # maybe even projectiles? if I ever want to implement like, slow moving
         # or dodgable projectiles, like crawl's OODs
         self.entities = entities
+        # this is part of the refactor listed above - gonna have a seperate layer for "effect" entities
+        self.effects = []
+
         self.downstairs = [0, 0]
         self.tiles = numpy.full((width, height), fill_value=tile_types.wall, order="F")
+
+        self.temporary_los_obstruction = numpy.full((width, height), fill_value = 0, order="F")
+
 
         self.visible = numpy.full((width, height), fill_value=False, order='F')
         self.explored = numpy.full((width, height), fill_value=False, order='F')
@@ -189,3 +195,8 @@ class FloorMap():
                 return False
 
         return True
+    
+    def update_temporary_los(self):
+        self.temporary_los_obstruction = numpy.full((self.width, self.height), fill_value = 0, order="F")
+        for e in [e for e in self.effects if e.blocks_vision == True]:
+            self.temporary_los_obstruction[e.x][e.y] = 1

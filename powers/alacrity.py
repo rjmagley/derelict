@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from powers.base_power import BasePower
 import color
 from entities.modifiers import Modifier, ModifierProperty
-from . import PowerType
+from . import PowerSkill, PowerTags
 
 if TYPE_CHECKING:
     from entities.player import Player
@@ -27,7 +27,8 @@ class AlacrityPower(BasePower):
         self.power_cost = 2
         self.handler_type = None
         self.is_targeted = False
-        self.power_type = PowerType.ENHANCE
+        self.power_skill = PowerSkill.ENHANCE
+        self.tags = {PowerTags.SELF_TARGET}
 
     # currently this can stack - maybe it shouldn't?
     # making it not stack would require keeping track of the source of 
@@ -38,7 +39,7 @@ class AlacrityPower(BasePower):
     def cast(self):
         self.caster.psy_points -= self.power_cost
         self.caster.modifiers.append(
-            Modifier(ModifierProperty.MOVEMENT_SPEED, -5, 20 + self.caster.player_stats[PowerType.ENHANCE], False, " Ala ", color.bright_yellow, color.blue)
+            Modifier(ModifierProperty.MOVEMENT_SPEED, -5, 20 + self.caster.player_stats[PowerSkill.ENHANCE], False, " Ala ", color.bright_yellow, color.blue)
         )
         
         self.engine.add_message("Your movement speed increases!", color.bright_yellow)

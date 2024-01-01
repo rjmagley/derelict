@@ -9,6 +9,7 @@ from floor_generation.floor_generation import generate_floor, generate_test_floo
 from entities.modifiers import Modifier, ModifierProperty
 
 from powers.smite import SmitePower
+from powers.fog import FogPower
 
 from input_handlers.intro_handler import IntroEventHandler
 
@@ -105,6 +106,7 @@ def main():
     # starting_weapon.engine = engine
 
     player.powers.append(SmitePower(caster = player))
+    player.powers.append(FogPower(caster = player))
     # player.powers.append(BasePower(caster = player, power_cost = 99, name = "impossible"))
 
     engine.change_map(map)

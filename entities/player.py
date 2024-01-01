@@ -29,7 +29,7 @@ from items.inventory import Inventory
 from items.magazine import Magazine
 from items.base_armor import BaseArmor
 
-from powers import PowerType
+from powers import PowerSkill
 
 import color
 
@@ -91,10 +91,10 @@ class Player(Combatant):
             WeaponType.POLEARM: 10,
             WeaponType.BLUNT: 10,
             WeaponType.SHIELD: 10,
-            PowerType.OFFENSE: 10,
-            PowerType.DEFENSE: 10,
-            PowerType.MANIPULATION: 10,
-            PowerType.ENHANCE: 10,
+            PowerSkill.OFFENSE: 10,
+            PowerSkill.DEFENSE: 10,
+            PowerSkill.MANIPULATION: 10,
+            PowerSkill.ENHANCE: 10,
             PlayerSkill.DUALWIELD: 10
         }
 

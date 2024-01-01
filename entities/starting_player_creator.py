@@ -15,7 +15,7 @@ from items.rare_weapons import get_rare_weapon
 
 from items import WeaponType, AmmunitionType, ArmorType, ArmorProperty,ReloadType
 
-from powers import PowerType
+from powers import PowerSkill
 
 from powers.alacrity import AlacrityPower
 
@@ -34,10 +34,10 @@ def generate_player(class_name: str):
             player.player_stats[WeaponType.POLEARM] = 14
             player.player_stats[WeaponType.BLUNT] = 14
             player.player_stats[WeaponType.SHIELD] = 14
-            player.player_stats[PowerType.OFFENSE] = 15
-            player.player_stats[PowerType.DEFENSE] = 15
-            player.player_stats[PowerType.MANIPULATION] = 15
-            player.player_stats[PowerType.ENHANCE] = 15
+            player.player_stats[PowerSkill.OFFENSE] = 15
+            player.player_stats[PowerSkill.DEFENSE] = 15
+            player.player_stats[PowerSkill.MANIPULATION] = 15
+            player.player_stats[PowerSkill.ENHANCE] = 15
             starting_pistol = RangedPhysicalWeapon(die_count=2, damage_die=6, magazine_size=8, burst_count=1, weapon_types=[WeaponType.PISTOL], name='heavy pistol', hands=1, ammunition_size=12, ammunition_type=AmmunitionType.LIGHT, minimum_range=5,
             maximum_range=10, range_interval=3)
             starting_sword = MeleeWeapon(die_count=3, damage_die=5, weapon_types=[WeaponType.SWORD], name='longsword', hands=1)
@@ -62,10 +62,10 @@ def generate_player(class_name: str):
             player.player_stats[WeaponType.SMG] = 15
             player.player_stats[WeaponType.HEAVY] = 15
 
-            player.player_stats[PowerType.OFFENSE] = 12
-            player.player_stats[PowerType.DEFENSE] = 12
-            player.player_stats[PowerType.MANIPULATION] = 8
-            player.player_stats[PowerType.ENHANCE] = 8
+            player.player_stats[PowerSkill.OFFENSE] = 12
+            player.player_stats[PowerSkill.DEFENSE] = 12
+            player.player_stats[PowerSkill.MANIPULATION] = 8
+            player.player_stats[PowerSkill.ENHANCE] = 8
 
             starting_rifle = RangedPhysicalWeapon(die_count=3, damage_die=6, magazine_size=20, burst_count=2, weapon_types=[WeaponType.RIFLE], name='heavy burster', hands=2, ammunition_size=20, ammunition_type=AmmunitionType.HEAVY, minimum_range=9,
             maximum_range=22, range_interval=6)
@@ -91,10 +91,10 @@ def generate_player(class_name: str):
             player.player_stats[WeaponType.SMG] = 10
             player.player_stats[WeaponType.HEAVY] = 8
 
-            player.player_stats[PowerType.OFFENSE] = 12
-            player.player_stats[PowerType.DEFENSE] = 10
-            player.player_stats[PowerType.MANIPULATION] = 14
-            player.player_stats[PowerType.ENHANCE] = 14
+            player.player_stats[PowerSkill.OFFENSE] = 12
+            player.player_stats[PowerSkill.DEFENSE] = 10
+            player.player_stats[PowerSkill.MANIPULATION] = 14
+            player.player_stats[PowerSkill.ENHANCE] = 14
 
             player.class_name = 'Ranger'
             starting_rifle = RangedRechargeWeapon(damage_die=8, die_count=3, burst_count=1, weapon_types=[WeaponType.RIFLE], name='recharge rifle', hands=2, minimum_range=10,

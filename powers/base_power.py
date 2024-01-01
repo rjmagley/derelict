@@ -2,18 +2,19 @@ from __future__ import annotations
 
 from input_handlers.handler_types import HandlerType
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, Set
 
 if TYPE_CHECKING:
     from entities.player import Player
-    from . import PowerType
+    from . import PowerSkill, PowerTags
 
 # base class for psychic powers
 # for now, only the player has access to these
 class BasePower():
 
     handler_type: Optional[HandlerType]
-    power_type: Optional[PowerType]
+    power_type: Optional[PowerSkill]
+    tags: Set[PowerTags]
 
     def __init__(self, caster: Player):
 
@@ -27,6 +28,7 @@ class BasePower():
         # the player, hitting all enemies in LOS, etc
         self.is_targeted = True
         self.power_type = None
+        self.tags = set()
 
     # making it easier to access the engine for message generation purposes
     @property
@@ -37,5 +39,5 @@ class BasePower():
     def can_cast(self) -> bool:
         return self.caster.psy_points >= self.power_cost
 
-    def cast(self) -> None:
+    def cast(self, **kwargs) -> None:
         raise NotImplementedError

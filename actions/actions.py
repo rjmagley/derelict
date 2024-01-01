@@ -23,6 +23,9 @@ if TYPE_CHECKING:
 # actions return a boolean to determine if a turn was taken or not
 # the player shouldn't be penalized for attempting an impossible action
 
+# can someone remind me why these are all classes? was it to reduce some repetition
+# by using inheritance?
+
 class Action():
 
     def __init__(self, entity: BaseEntity) -> None:
@@ -181,14 +184,16 @@ class PlayerReloadAction(Action):
         return self.weapon.reload(self.player)
 
 class PlayerCastPowerAction(Action):
-    def __init__(self, player, power, target) -> None:
+    def __init__(self, player, power, target = None, x: Optional[int] = None, y: Optional[int] = None) -> None:
         super().__init__(player)
         self.player = player
         self.power = power
         self.target = target
+        self.x = x
+        self.y = y
 
     def perform(self) -> ActionResult:
-        self.power.cast(self.target)
+        self.power.cast(target = self.target, x = self.x, y = self.y)
         return ActionResult(True, time_taken = 10)
 
 
