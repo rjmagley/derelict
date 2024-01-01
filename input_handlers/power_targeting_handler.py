@@ -67,7 +67,7 @@ class PowerTargetingEventHandler(LookEventHandler):
                     case _ if PowerTags.FREE_TARGET in self.power.tags:
                         # at some point adding some functions like "isPositionVisible"
                         # to the FloorMap class might be wise
-                        if not self.engine.map.visible[self.x][self.y]:
+                        if not self.engine.map.visible[self.x, self.y]:
                             return ActionResult(False, "You can't see that location.")
                         action = PlayerCastPowerAction(self.player, self.power, x = self.x, y = self.y).perform()
                         self.engine.switch_handler(HandlerType.GAME)

@@ -176,7 +176,7 @@ class FloorMap():
                 try:
                     for x_position in [x for x in range(x-loop_iterations, x+loop_iterations+1)]:
                         for y_position in [y for y in range(y-loop_iterations, y+loop_iterations+1)]:
-                            if self.tiles['walkable'][x_position][y_position] and not self.entity_matching_type_at_location(entity, x_position, y_position):
+                            if self.tiles['walkable'][x_position, y_position] and not self.entity_matching_type_at_location(entity, x_position, y_position):
                                 potential_locations.append((x_position, y_position))
                 # catch this if we start going out of bounds, ending the loop
                 except:
@@ -191,7 +191,7 @@ class FloorMap():
         points = bresenham((entity_a.x, entity_a.y), (entity_b.x, entity_b.y)).tolist()
 
         for p in points:
-            if self.tiles['blocking'][p[0]][p[1]]:
+            if self.tiles['blocking'][p[0], p[1]]:
                 return False
 
         return True

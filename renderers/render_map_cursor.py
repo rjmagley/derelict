@@ -31,7 +31,7 @@ def render_map_cursor(root_console: Console, center_console: Console, map: Floor
 
     draw_color = color.green
     for p in points[1:-1]:
-        if map.tiles['blocking'][p[0]][p[1]]:
+        if map.tiles['blocking'][p[0], p[1]]:
             draw_color = color.red
         center_console.print(x = p[0], y = p[1], fg = draw_color, string='*')
 

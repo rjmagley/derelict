@@ -38,7 +38,7 @@ class FogPower(BasePower):
         for i in range(x - self.radius + 1, x + self.radius):
             for j in range(y - self.radius + 1, y + self.radius):
                 print(i, j)
-                if not current_map.tiles['blocking'][i][j]:
+                if not current_map.tiles['blocking'][i, j]:
                     potential_tiles.append([i, j])
 
         fogged_tiles = random.sample(potential_tiles, 5)
