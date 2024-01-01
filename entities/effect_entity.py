@@ -28,8 +28,12 @@ class EffectEntity(BaseEntity):
         self.duration = duration
         self.map.effects.append(self)
 
+        if blocks_vision:
+            self.map.temporary_los_obstruction[self.x, self.y] += 1
+
     def periodic_refresh(self):
         self.duration -= random.randint(1, 3)
         if self.duration <= 0:
             self.map.effects.remove(self)
             self.map.entities.remove(self)
+            self.map.temporary_los_obstruction[self.x, self.y] -= 1

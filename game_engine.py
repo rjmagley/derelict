@@ -184,7 +184,7 @@ class GameEngine():
     # around corners aren't visible - also, should this even be in the engine?
     # should it live in the map?
     def update_fov(self) -> None:
-        self.map.update_temporary_los()
+        # self.map.update_temporary_los()
         self.map.visible[:] = compute_fov(
             self.map.tiles['transparent'] != self.map.temporary_los_obstruction,
             (self.player.x, self.player.y),
