@@ -199,4 +199,4 @@ class FloorMap():
     def update_temporary_los(self):
         self.temporary_los_obstruction = numpy.full((self.width, self.height), fill_value = 0, order="F")
         for e in [e for e in self.effects if e.blocks_vision == True]:
-            self.temporary_los_obstruction[e.x][e.y] = 1
+            self.temporary_los_obstruction[e.x, e.y] = 1

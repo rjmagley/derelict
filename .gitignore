@@ -6,3 +6,4 @@ main.dist/
 main.bin
 launch.json
 .vscode
+.vscode/settings.json
