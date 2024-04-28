@@ -21,9 +21,6 @@ from items.rare_armor import get_rare_armor
 
 from .vault_loader import VaultLoader
 
-# right now I'm following the tutorial's general implementation of this stuff
-# later I'd rather do something vault-based, like DCSS does
-
 # Room - generic room class, keeps track of the center of the room
 class Room():
     def __init__(self, x: int, y: int, width: int, height: int, tile_data: List[List[str]]):
@@ -57,6 +54,7 @@ class Room():
 
 
 # RectangularRoom - rooms that are a rectangle
+# this isn't actually a thing anymore but I do Not want to refactor this now
 class RectangularRoom(Room):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

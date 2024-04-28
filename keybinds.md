@@ -18,6 +18,7 @@ f: Fire weapon in main hand
 Shift-T: Fire auxillary weapons or offhand weapon - you'll get a choice of weapons to fire
 r: Reload weapon in main hand - eventually this will be expanded to handle reloading other weapons, maybe a special selection for which weapon to reload?
 c: Cast a power - select with letter keys, use movement keys to target the cursor if necessary. Some powers will automatically fire on the appropriate target when selected.
+\>: Go down stairs. (For now, this will send you down to the next level immediately for testing purposes.)
 
 %: player status screen
 

@@ -18,8 +18,8 @@ from .event_handler import EventHandler
 
 from input_handlers.handler_types import HandlerType
 from items.ranged_weapon import RangedWeapon
-from items.ranged_energy_weapon import RangedEnergyWeapon
 
+# every day I look at this I think there must be a better way of doing this
 class GameEventHandler(EventHandler):
 
     def __init__(self, engine: GameEngine):

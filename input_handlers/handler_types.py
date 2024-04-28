@@ -1,5 +1,7 @@
 from enum import auto, Enum
 
+# defining HandlerTypes so that handlers know what they are -
+# makes it a little easier to switch handlers when necessary
 class HandlerType(Enum):
     ENDGAME = auto()
     GAME = auto()

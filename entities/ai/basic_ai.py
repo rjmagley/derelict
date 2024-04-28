@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List, Tuple
+from typing import List, Tuple, TYPE_CHECKING
 
 import tcod
 import numpy
@@ -8,6 +8,9 @@ from random import randint
 
 from entities.mover import Mover
 from actions.actions import MeleeAction, MovementAction, WaitAction, PlayerFireAction
+
+if TYPE_CHECKING:
+    from entities.enemy import Enemy
 
 class BasicAI():
     

@@ -17,6 +17,9 @@ common_weapons = [WeaponName.BURST_PISTOL, WeaponName.LIGHT_SMG,
     WeaponName.LIGHT_AUTOCANNON, WeaponName.ENERGY_RIFLE, WeaponName.LONGSWORD]
 
 def place_random_common_weapon(x: int, y: int, map = None) -> BaseWeapon:
+    # it would be really cool if these stats were defined in a .json file
+    # rather than hardcoded here - could we create instances of these
+    # and then copy them when necessary?
     match random.choice(common_weapons):
         case WeaponName.BURST_PISTOL:
             weapon_stats = {'damage_die': 4, 'die_count': 2, 'magazine_size': 10, 'burst_count': 2, 'weapon_types': [WeaponType.PISTOL], 'name': 'burst pistol', 'hands': 1, 'ammunition_size': 10, 'ammunition_type': AmmunitionType.LIGHT, 'minimum_range': 6, 'maximum_range': 12, 'range_interval': 4}

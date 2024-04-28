@@ -141,11 +141,6 @@ class PickupItemAction(Action):
         # into the player's stats somehow - maybe like, a talent that both
         # speeds up ammo reloading and item pickup speed?
 
-        # if isinstance(item, AmmoPickup):
-        #     player.magazine.add_ammo(item)
-        #     item.on_consume()
-        #     return ActionResult(True, f"You put the {item.name} into your magazine.", color.light_gray, 10)
-
         if isinstance(item, BaseItem):
             if player.inventory.space_remaining(item):
                 self.engine.map.entities.remove(item)
