@@ -6,6 +6,7 @@ y  k  i
 h     l
 
 b  j  n
+
 g: grab item
 i: inventory
 x: examine/look
