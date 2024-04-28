@@ -24,7 +24,7 @@ if TYPE_CHECKING:
 # FloorMap - contains all the data for a given floor, including its layout
 
 class FloorMap():
-    def __init__(self, engine: GameEngine, width: int, height: int, entities: Iterable[BaseEntity] = {}) -> None:
+    def __init__(self, engine: GameEngine, width: int, height: int, entities: List[BaseEntity] = []) -> None:
         self.engine = engine
         self.width = width
         self.height = height

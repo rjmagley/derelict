@@ -141,7 +141,7 @@ def place_enemies(room: Room, floor: FloorMap) -> None:
                 elif monster_choice <= 7:
                     floor.entities.add(monsters.create_goblin(x=x, y=y, map=floor))
                 else:
-                    floor.entities.add(monsters.create_slow_goblin(x=x, y=y, map=floor))
+                    floor.entities.add(monsters.create_hobgoblin(x=x, y=y, map=floor))
 
 
 def place_items(room: Room, map: FloorMap) -> None:
