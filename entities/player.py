@@ -31,6 +31,8 @@ from items.base_armor import BaseArmor
 
 from powers import PowerSkill
 
+from .modifiers import Modifier, ModifierProperty
+
 import color
 
 if TYPE_CHECKING:
@@ -212,9 +214,8 @@ class Player(Combatant):
         if remaining_damage > 0:
             self.armor_points -= remaining_damage
             if self.armor_points <= 0:
-                print("player died")
-                # self.engine.switch_handler(EndgameEventHandler)
-                self.die()
+                self.armor_points = 0
+                self.wound_player()
 
     # depletes shield, returns any damage left to hit armor
     # could also do some interesting stuff with this for directly targeting
@@ -228,6 +229,19 @@ class Player(Combatant):
         else:
             self.shield_points -= value
             return 0
+        
+    #
+    def wound_player(self) -> None:
+        if self.has_modifier_of_type(ModifierProperty.PLAYER_WOUNDED):
+            self.modifiers.append(Modifier(
+                ModifierProperty.PLAYER_CRIPPLED, 1, 0, False, "WOUND", color.bright_red, color.dark_gray, False
+                )
+            )
+        else:
+            self.modifiers.append(Modifier(
+                ModifierProperty.PLAYER_WOUNDED, 1, 0, False, "-CPL-", color.red, color.bright_yellow, False
+                )
+            )
 
     def has_equipped(self, item: BaseWeapon):
         return item is self.right_hand or item is self.left_hand

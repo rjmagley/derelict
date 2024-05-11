@@ -36,9 +36,8 @@ class BaseEntity():
             self.y = y
         # self.move_speed = 0
 
+        # list of modifiers currently attached to the entity
         self.modifiers: list[Modifier] = []
-
-
 
     def distance(self, target: BaseEntity):
         return math.sqrt(
@@ -65,3 +64,11 @@ class BaseEntity():
             m.duration -= 1
             if m.duration <= 0:
                 self.modifiers.remove(m)
+
+    # returns True if a modifier of the given type exists in the modifiers list
+    # and False otherwise
+    def has_modifier_of_type(self, modifier_property: ModifierProperty) -> bool:
+        for m in self.modifiers:
+            if m.property_type == modifier_property:
+                return True
+        return False

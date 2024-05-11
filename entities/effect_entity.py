@@ -36,4 +36,5 @@ class EffectEntity(BaseEntity):
         if self.duration <= 0:
             self.map.effects.remove(self)
             self.map.entities.remove(self)
-            self.map.temporary_los_obstruction[self.x, self.y] -= 1
+            if self.blocks_vision:
+                self.map.temporary_los_obstruction[self.x, self.y] -= 1

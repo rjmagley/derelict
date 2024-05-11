@@ -4,6 +4,8 @@ from dataclasses import dataclass
 
 class ModifierProperty(StrEnum):
     MOVEMENT_SPEED = "movement speed"
+    PLAYER_WOUNDED = "player wounded"
+    PLAYER_CRIPPLED = "player crippled"
 
 @dataclass
 class Modifier:
