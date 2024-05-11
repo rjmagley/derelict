@@ -36,6 +36,8 @@ from messages import MessageLog
 import tile_types
 import color
 
+from entities.modifiers import ModifierProperty
+
 
 
 # GameEngine - responsible for holding state of entire game - entities, maps,
@@ -221,3 +223,15 @@ class GameEngine():
         # points are refilled
         self.player.shield_points = self.player.max_shield
         self.player.psy_points = self.player.max_psy
+
+        # their wound/cripple status is also reduced
+        if self.player.has_modifier_of_type(ModifierProperty.PLAYER_CRIPPLED) and self.player.has_modifier_of_type(ModifierProperty.PLAYER_WOUNDED):
+            for m in self.player.modifiers:
+                if m.property_type == ModifierProperty.PLAYER_CRIPPLED:
+                    self.player.modifiers.remove(m)
+
+        else:
+            if self.player.has_modifier_of_type(ModifierProperty.PLAYER_WOUNDED):
+                for m in self.player.modifiers:
+                    if m.property_type == ModifierProperty.PLAYER_WOUNDED:
+                        self.player.modifiers.remove(m)
