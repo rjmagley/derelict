@@ -76,6 +76,8 @@ from .power_targeting_handler import PowerTargetingEventHandler
 from .weapon_select_handler import WeaponSelectEventHandler
 from .intermission_handler import IntermissionEventHandler
 
+from .handler_types import HandlerType
+
 def provide_handler(handler: HandlerType) -> type[EventHandler]:
     match handler:
         case HandlerType.ENDGAME:

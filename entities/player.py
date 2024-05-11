@@ -35,6 +35,8 @@ from .modifiers import Modifier, ModifierProperty
 
 import color
 
+from input_handlers import HandlerType
+
 if TYPE_CHECKING:
     from items.ranged_weapon import RangedWeapon
     from entities.enemy import Enemy
@@ -238,12 +240,18 @@ class Player(Combatant):
                         ModifierProperty.PLAYER_CRIPPLED, 1, 0, False, "-CPL-", color.red, color.bright_yellow, False
                         )
                 )
+                self.engine.add_message("You have been CRIPPLED!", color.red)
+                self.engine.add_message("Your death is imminent!", color.bright_yellow)
+            else:
+                self.die()
         else:
             if not self.has_modifier_of_type(ModifierProperty.PLAYER_WOUNDED):
                 self.modifiers.append(Modifier(
                 ModifierProperty.PLAYER_WOUNDED, 1, 0, False, "WOUND", color.bright_red, color.dark_gray, False
                 )
+                
             )
+            self.engine.add_message("You have been wounded!", color.red)
 
     def has_equipped(self, item: BaseWeapon):
         return item is self.right_hand or item is self.left_hand
@@ -335,6 +343,8 @@ class Player(Combatant):
 
     def die(self) -> None:
         print("You died!")
+        self.engine.add_message("You die...", color.light_gray)
+        self.engine.switch_handler(HandlerType.ENDGAME)
 
     def ranged_attack(self, target: Combatant, weapon: RangedWeapon) -> ActionResult:
         if not weapon.is_special:
