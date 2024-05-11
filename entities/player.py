@@ -233,13 +233,15 @@ class Player(Combatant):
     #
     def wound_player(self) -> None:
         if self.has_modifier_of_type(ModifierProperty.PLAYER_WOUNDED):
-            self.modifiers.append(Modifier(
-                ModifierProperty.PLAYER_CRIPPLED, 1, 0, False, "WOUND", color.bright_red, color.dark_gray, False
+            if not self.has_modifier_of_type(ModifierProperty.PLAYER_CRIPPLED):
+                self.modifiers.append(Modifier(
+                        ModifierProperty.PLAYER_CRIPPLED, 1, 0, False, "-CPL-", color.red, color.bright_yellow, False
+                        )
                 )
-            )
         else:
-            self.modifiers.append(Modifier(
-                ModifierProperty.PLAYER_WOUNDED, 1, 0, False, "-CPL-", color.red, color.bright_yellow, False
+            if not self.has_modifier_of_type(ModifierProperty.PLAYER_WOUNDED):
+                self.modifiers.append(Modifier(
+                ModifierProperty.PLAYER_WOUNDED, 1, 0, False, "WOUND", color.bright_red, color.dark_gray, False
                 )
             )
 

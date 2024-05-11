@@ -7,6 +7,8 @@ from render_order import RenderOrder
 from .base_entity import BaseEntity
 from .modifiers import ModifierProperty
 
+from math import floor
+
 if TYPE_CHECKING:
     from entities.ai.basic_ai import BasicAI
 
@@ -32,7 +34,10 @@ class Mover(BaseEntity):
     @property
     def move_speed(self) -> int:
         modified_value = sum(m.amount for m in self.modifiers if m.property_type == ModifierProperty.MOVEMENT_SPEED and m.multiplicative == False)
-        return self._move_speed + int(modified_value)
+        speed = self._move_speed + int(modified_value)
+        if self.has_modifier_of_type(ModifierProperty.PLAYER_CRIPPLED):
+            speed = floor(speed * 2)
+        return speed
 
     def move(self, dx: int, dy: int) -> None:
         self.x += dx

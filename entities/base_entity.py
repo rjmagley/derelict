@@ -67,6 +67,8 @@ class BaseEntity():
 
     # returns True if a modifier of the given type exists in the modifiers list
     # and False otherwise
+    # it might actually be wise to create some kind of ModifierList class that
+    # makes handling modifiers a bit easier in finding them, removing them, etc.
     def has_modifier_of_type(self, modifier_property: ModifierProperty) -> bool:
         for m in self.modifiers:
             if m.property_type == modifier_property:
