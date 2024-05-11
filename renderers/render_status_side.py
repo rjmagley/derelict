@@ -25,7 +25,7 @@ def render_status_side(root_console: Console, side_console: Console, player: Pla
     side_console.print(x = 15, y = 2, string = f"H:{magazine.get_percentage(AmmunitionType.HEAVY)}", fg = color.white)
     side_console.print(x = 0, y = 3, string = f"PSY: {player.get_psy_status()}", fg = color.bright_magenta)
     side_console.print(x = 15, y = 3, string = f"E:{magazine.get_percentage(AmmunitionType.EXPLOSIVE)}", fg = color.yellow)
-    side_console.print(x = 0, y = 4, string = f"ENG: {player.get_energy_status()}", fg = color.bright_blue)
+    side_console.print(x = 0, y = 4, string = f"NRG: {player.get_energy_status()}", fg = color.bright_blue)
     side_console.print(x = 15, y = 4, string = f"X:{magazine.get_percentage(AmmunitionType.EXOTIC)}", fg = color.magenta)
 
     side_console.print(x = 0, y = 6, string="Hands:", fg = color.white)
