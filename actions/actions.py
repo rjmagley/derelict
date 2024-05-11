@@ -8,7 +8,6 @@ from entities.combatant import Combatant
 from entities.mover import Mover
 from . import ActionResult
 import color
-from entities.player import Player
 from entities.pickups import BasePickup
 from entities.pickups.ammo_pickup import AmmoPickup
 from items.ranged_weapon import RangedWeapon
@@ -80,38 +79,40 @@ class BumpAction(DirectionalAction):
         if isinstance(self.blocking_entity, Combatant) and self.blocking_entity.is_alive:
             return MeleeAction(self.entity, self.blocking_entity).perform()
         else:
-            if isinstance(self.entity, Player):
-                return PlayerMovementAction(self.entity, *self.direction).perform()
-            else:
-                return MovementAction(self.entity, *self.direction).perform()
+            return MovementAction(self.entity, *self.direction).perform()
 
 class MovementAction(DirectionalAction):
 
     def perform(self) -> ActionResult:
-        if not self.engine.map.in_bounds(*self.destination):
-            return ActionResult(False, time_taken = 10)
-        if not self.engine.map.tiles['walkable'][*self.destination]:
-            return ActionResult(False, time_taken = 10)
-        if self.engine.map.get_blocking_entity_at_location(*self.destination):
-            return ActionResult(False, time_taken = 10)
+        # hacky logic - player moves need to print error messages,
+        # enemy moves don't
+        if self.entity == self.engine.player:
+            if not self.engine.map.in_bounds(*self.destination):
+                self.engine.add_message("You can't move there.", color.light_gray)
+                return ActionResult(False, "You can't move there.", color.light_gray)
+            if not self.engine.map.tiles['walkable'][*self.destination]:
+                return ActionResult(False, "You can't move there.", color.light_gray)
+            if self.engine.map.get_blocking_entity_at_location(*self.destination):
+                return ActionResult(False, "Something blocks your way.", color.light_gray)
+        else:
+            if not self.engine.map.in_bounds(*self.destination):
+                return ActionResult(False, time_taken = 10)
+            if not self.engine.map.tiles['walkable'][*self.destination]:
+                return ActionResult(False, time_taken = 10)
+            if self.engine.map.get_blocking_entity_at_location(*self.destination):
+                return ActionResult(False, time_taken = 10)
 
         self.entity.move(*self.direction)
         return ActionResult(True, time_taken = self.entity.move_speed)
 
 
-class PlayerMovementAction(DirectionalAction):
+# class PlayerMovementAction(DirectionalAction):
 
-    def perform(self) -> ActionResult:
-        if not self.engine.map.in_bounds(*self.destination):
-            self.engine.add_message("You can't move there.", color.light_gray)
-            return ActionResult(False, "You can't move there.", color.light_gray)
-        if not self.engine.map.tiles['walkable'][*self.destination]:
-            return ActionResult(False, "You can't move there.", color.light_gray)
-        if self.engine.map.get_blocking_entity_at_location(*self.destination):
-            return ActionResult(False, "Something blocks your way.", color.light_gray)
+#     def perform(self) -> ActionResult:
 
-        self.entity.move(*self.direction)
-        return ActionResult(True, time_taken = self.entity.move_speed)
+
+#         self.entity.move(*self.direction)
+#         return ActionResult(True, time_taken = self.entity.move_speed)
 
 
 class MeleeAction(DirectionalAction):
