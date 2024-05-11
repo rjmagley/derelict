@@ -175,6 +175,11 @@ class GameEngine():
             case HandlerType.INTERMISSION:
                 render_intermission(self.root_console, self.event_handler)
 
+            case HandlerType.ENDGAME:
+                render_endgame_status(self.root_console, self.center_console, self.player)
+                render_messages_bottom(self.root_console, self.bottom_console, self.message_log)
+                render_status_side(self.root_console, self.side_console, self.player)
+
 
 
         self.context.present(self.root_console)
